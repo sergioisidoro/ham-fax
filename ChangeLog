@@ -1,0 +1,344 @@
+2003-01-24  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* src/DeviceInterface.cpp, src/DeviceInterface.hpp, src/Modulator.hpp:
+	added interfaces for device and modulator access
+
+	* ChangeLog, Makefile.am, NEWS, acinclude.m4, configure.ac, AUTHORS:
+	build system switched to automake and autoconf
+
+2001-07-25  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* Error.cpp, Error.hpp, FaxWindow.cpp, File.cpp, File.hpp,
+	 PTC.cpp, Sound.cpp: 
+	 - some clean up in File, PTC and Sound
+
+2001-07-23  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* Config.cpp, Config.hpp, DisplayLevel.cpp, DisplayLevel.hpp,
+	 FaxDemodulator.cpp, FaxWindow.cpp, Makefile.in,
+	 OptionsDialog.cpp, OptionsDialog.hpp, PTC.cpp, PTC.hpp,
+	 ReceiveDialog.cpp, ReceiveDialog.hpp, Sound.cpp, Spectrum.cpp,
+	 Spectrum.hpp, TODO: 
+	 - spectrum display in ReceiveDialog
+	 - configuration option for ptc serial speed
+
+2001-07-16  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* PTC.cpp, README:
+	 - when exiting the program while receiving the ptc now leaves fax mode
+
+	* Config.cpp, Config.hpp, FaxModulator.cpp, FaxWindow.cpp,
+	 FaxWindow.hpp, File.cpp, HelpDialog.cpp, OptionsDialog.cpp,
+	 PTC.cpp, PTT.cpp, Sound.cpp, TransmitDialog.cpp, hamfax.cpp: 
+	 - fixed destructors
+	 - Config now completely uses connect
+	 - captions of dialogs are set in the dialog's constructors
+
+	* CHANGELOG, FaxWindow.cpp, FaxWindow.hpp, Sound.cpp, Sound.hpp, TODO:
+	 - ptt now works correct
+
+2001-07-13  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* Config.cpp, Config.hpp, DisplayLevel.cpp, DisplayLevel.hpp,
+	 FaxDemodulator.cpp, FaxDemodulator.hpp, FaxModulator.cpp,
+	 FaxModulator.hpp, FaxReceiver.cpp, FaxReceiver.hpp,
+	 FaxTransmitter.cpp, FaxTransmitter.hpp, FaxWindow.cpp,
+	 FaxWindow.hpp, File.cpp, File.hpp, Makefile.in, PTC.cpp, PTC.hpp,
+	 ReceiveDialog.cpp, ReceiveDialog.hpp, ScaleDialog.cpp,
+	 ScaleDialog.hpp, Sound.cpp, Sound.hpp, TODO: 
+	 - code clean up: unnecessary signed and unsigned
+	 - cast changes
+
+	* Config.cpp, DisplayLevel.cpp, FaxDemodulator.cpp,
+	 FaxModulator.cpp, FaxReceiver.cpp, FaxTransmitter.cpp,
+	 FaxWindow.cpp, Sound.cpp: 
+	 - some cast fixes
+
+2001-07-12  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* Config.hpp, FaxImage.cpp, FaxImage.hpp, FaxReceiver.cpp,
+	 FaxReceiver.hpp, FaxWindow.cpp, FaxWindow.hpp, Makefile.in,
+	 OptionsDialog.cpp, OptionsDialog.hpp, PTC.cpp, PTC.hpp, PTT.cpp,
+	 PTT.hpp, ScaleDialog.cpp, ScaleDialog.hpp, Sound.cpp, Sound.hpp,
+	 Config.cpp: 
+	 - some clean up
+	 - handling of options dialog
+	 - scaling and changing ioc
+
+	* FaxImage.cpp, FaxModulator.cpp, FaxModulator.hpp,
+	 FaxReceiver.cpp, FaxReceiver.hpp, FaxTransmitter.cpp,
+	 FaxTransmitter.hpp, FaxWindow.cpp, FaxWindow.hpp, File.cpp,
+	 File.hpp, HelpDialog.cpp, Makefile.in, PTC.cpp, PTC.hpp,
+	 ReceiveDialog.cpp, Sound.cpp, Sound.hpp, TransmitDialog.cpp,
+	 configure, configure.in: 
+	 - better handling of directories in autoconf
+	 - shifting image now works correct
+	 - changes to handle buffered data at transmission end
+	 - cancelling of transmission now switches to apt stop
+
+2001-07-10  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* doc/HamFax.html:  - help text
+
+	* CHANGELOG, FaxImage.cpp, FaxReceiver.cpp, FaxReceiver.hpp,
+	 FaxWindow.cpp, PTC.cpp, ReceiveDialog.cpp, Sound.cpp,
+	 doc/HamFax.html: 
+	 - help text
+	 - little fixes
+
+2001-07-09  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* HamFax.html:  - HamFax.html now is in directory doc
+
+	* CHANGELOG, CorrectDialog.cpp, CorrectDialog.hpp, HelpDialog.cpp,
+	 Makefile.in, OptionsDialog.cpp, PTC.cpp, README,
+	 ReceiveDialog.cpp, ScaleDialog.cpp, TODO, TransmitDialog.cpp,
+	 doc/HamFax.html, hamfax.cpp: 
+	 - changed version number to 0.3
+	 - set border of dialogs to 15
+	 - update to CHANGELOG and TODO
+
+	* FaxReceiver.cpp, FaxReceiver.hpp, FaxWindow.cpp,
+	 ReceiveDialog.cpp, ReceiveDialog.hpp, TransmitDialog.cpp: 
+	 - ReceiveDialog now behaves better
+
+	* FaxImage.cpp, FaxImage.hpp, FaxReceiver.cpp, FaxReceiver.hpp,
+	 FaxWindow.cpp, FaxWindow.hpp, HelpDialog.cpp, Makefile.in, TODO: 
+	 - some fixes mainly in FaxWindow and FaxImage
+	 - added HelpDialog
+
+2001-07-06  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* HamFax.html:  - help text HamFax.html
+
+	* FaxImage.cpp, FaxImage.hpp, FaxReceiver.cpp, FaxReceiver.hpp,
+	 FaxTransmitter.hpp, FaxWindow.cpp, FaxWindow.hpp, HelpDialog.cpp,
+	 HelpDialog.hpp, Makefile.in, PTC.cpp, PTC.hpp, ReceiveDialog.cpp,
+	 ReceiveDialog.hpp, Sound.cpp, TransmitDialog.cpp,
+	 TransmitDialog.hpp, configure.in: 
+	 - clean up, especiallay FaxImage and FaxWindow
+	 - HelpDialog added
+
+2001-07-03  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* Config.cpp, Config.hpp, FaxWindow.cpp, FaxWindow.hpp: - tool tips
+
+	* FaxImage.cpp, FaxImage.hpp, FaxReceiver.cpp, FaxReceiver.hpp,
+	 FaxWindow.cpp, FaxWindow.hpp, ReceiveDialog.cpp: 
+	 - received demodulated data is now stored in FaxReceiver
+	 - phasing can be skipped, too
+
+2001-06-28  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* FaxReceiver.cpp, FaxReceiver.hpp, FaxWindow.cpp, FaxWindow.hpp,
+	 PTT.cpp, PTT.hpp: 
+	 - cleanup for PTT
+
+	* FaxImage.cpp, FaxReceiver.hpp, FaxTransmitter.cpp,
+	 FaxTransmitter.hpp, FaxWindow.cpp, FaxWindow.hpp, Sound.cpp,
+	 TransmitDialog.cpp, TransmitDialog.hpp: 
+	 - fix in Sound
+	 - removed ReceiveDialog* and TransmitDialog* members in FaxWindow
+
+2001-06-27  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* FaxImage.cpp, FaxImage.hpp, FaxReceiver.cpp, FaxReceiver.hpp,
+	 FaxWindow.cpp, FaxWindow.hpp: 
+	 - slant correction out of raw data
+
+	* FaxImage.cpp, FaxImage.hpp, FaxTransmitter.cpp,
+	 FaxTransmitter.hpp, FaxView.cpp, FaxView.hpp, FaxWindow.cpp,
+	 FaxWindow.hpp, File.cpp, File.hpp, Makefile.in: 
+	 - merged FaxView and FaxImage into FaxImage
+	 - fixed transmitting to and receiving from File
+
+2001-06-26  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* FaxDemodulator.cpp, FaxDemodulator.hpp, FaxModulator.cpp,
+	 FaxModulator.hpp, FaxReceiver.cpp, FaxReceiver.hpp,
+	 FaxTransmitter.cpp, FaxTransmitter.hpp, FaxWindow.cpp,
+	 FaxWindow.hpp, File.cpp, File.hpp, PTC.cpp, PTC.hpp, Sound.cpp,
+	 Sound.hpp, TODO: 
+	 - implemented QSocketNotifier (Sound and PTC) and QTimer (File)
+
+2001-06-25  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* Config.cpp, Config.hpp, FaxImage.cpp, FaxImage.hpp,
+	 FaxReceiver.cpp, FaxReceiver.hpp, FaxTransmitter.cpp,
+	 FaxTransmitter.hpp, FaxWindow.cpp, FaxWindow.hpp, TODO: 
+	 - slant correction (from QImage to QImage)
+	 - first implementation of color fax
+
+2001-06-22  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* FaxImage.cpp, FaxImage.hpp, FaxView.cpp, FaxView.hpp,
+	 FaxWindow.cpp, FaxWindow.hpp, Makefile.in, TODO: 
+	 - slant correction
+
+	* FaxControl.cpp, FaxControl.hpp, Makefile.in, TODO:
+	 - removed FaxControl
+
+	* Config.cpp, Config.hpp, FaxControl.cpp, FaxDemodulator.cpp,
+	 FaxDemodulator.hpp, FaxModulator.cpp, FaxModulator.hpp,
+	 FaxReceiver.cpp, FaxReceiver.hpp, FaxTransmitter.cpp,
+	 FaxTransmitter.hpp, FaxWindow.cpp, FaxWindow.hpp, PTC.cpp,
+	 PTC.hpp: 
+	 - control elements from FaxControl moved to toolbars
+	 - more consistent naming of variables indicating phasing lines
+
+2001-06-21  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* README:  - version number set to 0.2 in README
+
+	* FaxImage.cpp, FaxReceiver.cpp, FaxWindow.cpp, TODO:
+	 - +-2Hz tolerance with apt removed
+	 - image is no longer resized to null image
+	 - changes to phasing reception
+
+2001-06-20  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* DisplayLevel.cpp, DisplayLevel.hpp, FaxImage.cpp,
+	 FaxReceiver.cpp, ReceiveDialog.cpp, ReceiveDialog.hpp, TODO: 
+	 - QImage::save() is always called with correct handler
+	 - DisplayStatus is set to zero when window is shown
+
+	* CHANGELOG, README, hamfax.cpp:  - new file: CHANGELOG
+	 - this is going to be version 0.2
+
+	* FaxControl.cpp, FaxImage.cpp, FaxReceiver.cpp,
+	 FaxTransmitter.cpp, FaxTransmitter.hpp, FaxWindow.cpp,
+	 FaxWindow.hpp, TODO: 
+	 - auto scroll switch in options menu should be correct now
+	 - some changes to phase transmission
+
+2001-06-19  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* Config.cpp, Config.hpp, FaxControl.cpp, FaxControl.hpp,
+	 FaxImage.cpp, FaxImage.hpp, FaxWindow.cpp, FaxWindow.hpp, TODO: 
+	 - added statusbar
+	 - switch for scrolling to last received line
+
+	* Config.cpp, Config.hpp, DisplayLevel.cpp, DisplayLevel.hpp,
+	 FaxControl.cpp, FaxControl.hpp, FaxDemodulator.cpp,
+	 FaxDemodulator.hpp, FaxImage.cpp, FaxImage.hpp, FaxModulator.cpp,
+	 FaxModulator.hpp, FaxReceiver.cpp, FaxReceiver.hpp,
+	 FaxTransmitter.cpp, FaxTransmitter.hpp, FaxView.cpp, FaxView.hpp,
+	 FaxWindow.cpp, FaxWindow.hpp, File.cpp, File.hpp, Makefile.in,
+	 OptionsDialog.cpp, OptionsDialog.hpp, PTC.cpp, PTC.hpp, PTT.cpp,
+	 PTT.hpp, README, ReceiveDialog.cpp, ReceiveDialog.hpp,
+	 ScaleDialog.cpp, ScaleDialog.hpp, Sound.cpp, Sound.hpp, TODO,
+	 TransmitDialog.cpp, TransmitDialog.hpp, configure.in, hamfax.cpp: 
+	 - DisplayLevel added
+
+2001-06-18  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* FaxImage.cpp, FaxImage.hpp, FaxWindow.cpp, FaxWindow.hpp, TODO:
+	 - removed widthUpdated from FaxImage
+	 - moved scaleImage from FaxWindow to FaxImage
+
+	* FaxImage.cpp, FaxWindow.cpp, TODO:
+	 - saving and loading in all Qt image formats possible
+	 - proper initialisation of lpm in FaxTransmitter
+
+	* Config.cpp, Config.hpp, FaxControl.cpp, FaxControl.hpp,
+	 FaxDemodulator.cpp, FaxDemodulator.hpp, FaxModulator.cpp,
+	 FaxModulator.hpp, FaxReceiver.cpp, FaxReceiver.hpp,
+	 FaxTransmitter.cpp, FaxTransmitter.hpp, FaxWindow.cpp,
+	 FaxWindow.hpp, Makefile.in, PTC.cpp, PTC.hpp, PTT.cpp, PTT.hpp,
+	 README, Sound.cpp, Sound.hpp, TODO: 
+	 - configuration file via class Config
+	 - this made some code changes necessary
+	 - some changes to README
+
+2001-06-12  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* FaxWindow.cpp, FaxWindow.hpp, README, TODO, hamfax.cpp:
+	- added quick save in File menu
+	- changed version number to 0.1
+
+	* FaxImage.cpp, FaxImage.hpp, FaxReceiver.cpp, FaxTransmitter.cpp,
+	FaxTransmitter.hpp, FaxWindow.cpp, FaxWindow.hpp, PTC.cpp,
+	PTC.hpp, ReceiveDialog.cpp, TODO, TransmitDialog.cpp,
+	TransmitDialog.hpp: 
+	- image reception should start after 5 non phasing lines
+	- if image too small 50 lines are added instead of 20
+	- starting image is 904x1
+	- ptc sets now deviation on init
+	- changed signals between FaxTransmitter and TransmitDialog
+	- added scaling and resizing options to image menu
+
+2001-06-11  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* FaxControl.cpp, FaxControl.hpp, FaxReceiver.cpp,
+	FaxReceiver.hpp, FaxWindow.cpp, ReceiveDialog.cpp, TODO,
+	TransmitDialog.cpp: 
+	- renamed phasePol in FaxReceiver to phaseNormal
+	- some improvements and a comment for the decoding of phasing lines
+	- cleanup in layout of FaxControl and FaxWindow
+	- adjusted size of TransmitDialog and ReceiveDialog
+	- some minor cleanup in FaxWindow
+
+	* FaxReceiver.cpp, FaxReceiver.hpp, FaxWindow.cpp,
+	ReceiveDialog.cpp, ReceiveDialog.hpp, TODO: 
+	- changed appearance of menu bar
+	- added QFrame for lower left corner
+	- phasing low/high detection now like apt detection
+	- moved receive status texts from FaxReceiver to ReceiveDialog
+
+	* FaxImage.cpp, FaxImage.hpp, FaxReceiver.cpp, FaxReceiver.hpp,
+	FaxWindow.cpp, Makefile.in, TODO: 
+	- got rid of FaxImage* in FaxReceiver
+	- changed values for apt detection
+	- implemented scrolling to current received line
+	- some cleanup in FaxWindow::load and FaxWindow::save
+
+2001-06-09  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* Makefile:
+	- removed Makefile; it is generated by configure before compiling
+
+	* Error.cpp, Error.hpp, FaxControl.cpp, FaxControl.hpp,
+	 FaxDemodulator.cpp, FaxDemodulator.hpp, FaxImage.cpp,
+	 FaxImage.hpp, FaxModulator.cpp, FaxModulator.hpp,
+	 FaxReceiver.cpp, FaxReceiver.hpp, FaxTransmitter.cpp,
+	 FaxTransmitter.hpp, FaxView.cpp, FaxView.hpp, FaxWindow.cpp,
+	 FaxWindow.hpp, File.cpp, File.hpp, Makefile, Makefile.in,
+	 OptionsDialog.cpp, OptionsDialog.hpp, PTC.cpp, PTC.hpp, PTT.cpp,
+	 PTT.hpp, README, ReceiveDialog.cpp, ReceiveDialog.hpp,
+	 ScaleDialog.cpp, ScaleDialog.hpp, Sound.cpp, Sound.hpp,
+	 TransmitDialog.cpp, TransmitDialog.hpp, configure.in, hamfax.cpp: 
+	 - added callsign to author's name
+	 - changed text in FaxWindow::about
+
+2001-06-08  cschmitt  <cschmitt@users.sourceforge.net>
+
+	* COPYING, FaxDemodulator.cpp, FaxDemodulator.hpp,
+	FaxReceiver.cpp, FaxReceiver.hpp, FaxTransmitter.cpp,
+	FaxTransmitter.hpp, FaxView.cpp, FaxView.hpp, OptionsDialog.hpp,
+	ReceiveDialog.cpp, ReceiveDialog.hpp, ScaleDialog.cpp,
+	ScaleDialog.hpp, TransmitDialog.cpp, TransmitDialog.hpp,
+	aclocal.m4, configure, hamfax.cpp, install-sh:
+	New file.
+
+	* COPYING, FaxDemodulator.cpp, FaxDemodulator.hpp,
+	FaxReceiver.cpp, FaxReceiver.hpp, FaxTransmitter.cpp,
+	FaxTransmitter.hpp, FaxView.cpp, FaxView.hpp, OptionsDialog.hpp,
+	ReceiveDialog.cpp, ReceiveDialog.hpp, ScaleDialog.cpp,
+	ScaleDialog.hpp, TransmitDialog.cpp, TransmitDialog.hpp,
+	aclocal.m4, configure, hamfax.cpp, install-sh:
+	initial checkin
+
+	* Error.cpp, Error.hpp, FaxControl.cpp, FaxControl.hpp,
+	FaxImage.cpp, FaxImage.hpp, FaxModulator.cpp, FaxModulator.hpp,
+	FaxWindow.cpp, FaxWindow.hpp, File.cpp, File.hpp, Makefile,
+	Makefile.in, OptionsDialog.cpp, PTC.cpp, PTC.hpp, PTT.cpp,
+	PTT.hpp, README, Sound.cpp, Sound.hpp, TODO, configure.in:
+	New file.
+
+	* Error.cpp, Error.hpp, FaxControl.cpp, FaxControl.hpp,
+	FaxImage.cpp, FaxImage.hpp, FaxModulator.cpp, FaxModulator.hpp,
+	FaxWindow.cpp, FaxWindow.hpp, File.cpp, File.hpp, Makefile,
+	Makefile.in, OptionsDialog.cpp, PTC.cpp, PTC.hpp, PTT.cpp,
+	PTT.hpp, README, Sound.cpp, Sound.hpp, TODO, configure.in:
+	initial checkin
+
