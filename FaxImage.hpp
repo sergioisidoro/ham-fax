@@ -21,6 +21,7 @@
 #include <qobject.h>
 #include <qimage.h>
 #include <qstring.h>
+#include <qpoint.h>
 
 class FaxImage : public QObject {
 	Q_OBJECT
@@ -36,6 +37,8 @@ public:
 private:
 	QImage image;
 	bool autoScroll;
+	QPoint slant1;
+	QPoint slant2;
 signals:
 	void sizeUpdated(unsigned int width, unsigned int height);
 	void contentUpdated(int x, int y, int w, int h);
@@ -64,6 +67,8 @@ public slots:
 	void rotateLeft(void);
 	void rotateRight(void);
 	void setAutoScroll(bool b);
+	void setSlantPoint(const QPoint& p);
+	void correctSlant(void);
 };
 
 #endif

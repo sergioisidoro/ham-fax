@@ -23,6 +23,7 @@
 #include <qtimer.h>
 #include <qtoolbar.h>
 #include <qcombobox.h>
+#include <qmessagebox.h>
 
 #include "Config.hpp"
 #include "FaxDemodulator.hpp"
@@ -30,6 +31,7 @@
 #include "FaxModulator.hpp"
 #include "FaxReceiver.hpp"
 #include "FaxTransmitter.hpp"
+#include "FaxView.hpp"
 #include "File.hpp"
 #include "PTC.hpp"
 #include "PTT.hpp"
@@ -43,6 +45,7 @@ public:
 	FaxWindow(const QString& version);
 private:
 	enum { FILE, DSP, SCSPTC };
+	FaxView* faxView;
 	int interface;
 	int pttID;
 	int scrollID;
@@ -71,14 +74,19 @@ private:
 	QTimer* timer;
 	TransmitDialog* transmitDialog;
 	ReceiveDialog* receiveDialog;
+	QMessageBox* slantDialog;
+	enum { WAITFIRST, WAITSECOND, NOTHING } slantState;
 signals:
 	void loadFile(QString fileName);
 	void saveFile(QString fileName);
+	void correctSlant(void);
 public slots:
         void setModulation(bool b);
 	void setPhasingPol(bool b);
 	void endTransmission(void);
 	void endReception(void);
+	void slantWaitSecond(void);
+	void slantEnd(void);
 private slots:
         void load(void);
         void save(void);
@@ -95,6 +103,7 @@ private slots:
 	void setAutoScroll(bool b);
 	void quickSave(void);
 	void newImageSize(unsigned int w, unsigned int h);
+	void slantWaitFirst(void);
 };
 
 #endif

@@ -42,3 +42,9 @@ void FaxView::update(int x, int y, int w, int h)
 {
 	updateContents(x,y,w,h);
 }
+
+void FaxView::contentsMousePressEvent(QMouseEvent* m)
+{
+	emit clicked(m->pos());
+	emit clicked();
+}

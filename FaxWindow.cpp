@@ -28,7 +28,6 @@
 #include <qmenubar.h>
 #include <math.h>
 #include "Error.hpp"
-#include "FaxView.hpp"
 #include "OptionsDialog.hpp"
 #include "ScaleDialog.hpp"
 
@@ -37,7 +36,7 @@ FaxWindow::FaxWindow(const QString& version)
 {
 	config=new Config(this);
 	faxImage=new FaxImage(this);
-	FaxView* faxView=new FaxView(this,faxImage);
+	faxView=new FaxView(this,faxImage);
 	setCentralWidget(faxView);
 	faxTransmitter=new FaxTransmitter(this,faxImage);
 	faxReceiver=new FaxReceiver(this);
@@ -235,9 +234,12 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(faxReceiver,SIGNAL(receptionEnded()),
 		this,SLOT(endReception()));
 
+	connect(faxView,SIGNAL(clicked(const QPoint&)),
+		faxImage,SLOT(setSlantPoint(const QPoint&)));
+	connect(this,SIGNAL(correctSlant()),faxImage,SLOT(correctSlant()));
+
 	buildMenuBar();
 	config->readFile();
-	resize(650,0);
 }
 
 void FaxWindow::buildMenuBar(void)
@@ -275,6 +277,9 @@ void FaxWindow::buildMenuBar(void)
 	imageMenu->insertItem(tr("rotate left"),faxImage,SLOT(rotateLeft()));
 	imageMenu->insertItem(tr("rotate right"),
 			      faxImage,SLOT(rotateRight()));
+	imageMenu->insertSeparator();
+	imageMenu->insertItem(tr("slant correction"),
+			      this,SLOT(slantWaitFirst()));
 
 	optionsMenu=new QPopupMenu(this);
 	optionsMenu->insertItem(tr("device settings"),
@@ -299,7 +304,6 @@ void FaxWindow::buildMenuBar(void)
 	menuBar()->insertItem(tr("&Options"),optionsMenu);
 	menuBar()->insertSeparator();
 	menuBar()->insertItem(tr("&Help"),helpMenu);
-	menuBar()->setFrameStyle(QFrame::Panel|QFrame::Raised);
 
 	connect(transmitMenu,SIGNAL(activated(int)),
 		this,SLOT(initTransmit(int)));
@@ -634,4 +638,32 @@ void FaxWindow::setModulation(bool b)
 void FaxWindow::setPhasingPol(bool b)
 {
 	invertPhase->setCurrentItem(b ? 1 : 0);
+}
+
+void FaxWindow::slantWaitFirst(void)
+{
+	slantDialog=new QMessageBox(this->caption(),
+				    tr("select first point of vertical line"),
+				    QMessageBox::Information,
+				    QMessageBox::Cancel,
+				    QMessageBox::NoButton,
+				    QMessageBox::NoButton,
+				    this,0,false);
+	slantDialog->show();
+	connect(faxView,SIGNAL(clicked()),this,SLOT(slantWaitSecond()));
+}
+
+void FaxWindow::slantWaitSecond(void)
+{
+	slantDialog->setText(tr("select second point of vertical line"));
+	disconnect(faxView,SIGNAL(clicked()),this,SLOT(slantWaitSecond()));
+	connect(faxView,SIGNAL(clicked()),this,SLOT(slantEnd()));
+}
+
+void FaxWindow::slantEnd(void)
+{
+	slantDialog->hide();
+	disconnect(faxView,SIGNAL(clicked()),this,SLOT(slantEnd()));
+	emit correctSlant();
+	delete slantDialog;
 }

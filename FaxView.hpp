@@ -20,6 +20,7 @@
 
 #include <qscrollview.h>
 #include <qwidget.h>
+#include <qpoint.h>
 #include "FaxImage.hpp"
 
 class FaxView : public QScrollView {
@@ -27,9 +28,13 @@ class FaxView : public QScrollView {
 public:
 	FaxView(QWidget* parent, FaxImage* faxImage);
 private:
-	FaxImage* faxImage;
 	void drawContents(QPainter* p,
 			  int clipx,int clipy,int clipw,int cliph);
+	virtual void contentsMousePressEvent(QMouseEvent* m);
+	FaxImage* faxImage;
+signals:
+	void clicked(const QPoint& p);
+	void clicked(void);
 public slots:
         void updateView(unsigned int, unsigned int);
 	void update(int x, int y, int w, int h);

@@ -17,6 +17,5 @@ features:
 - color fax
 - spectroscope
 - include phasing lines in image and delete them after reception
-- is it possible to do slant correction in QImage?
 - fancy icon bar
 - do translation of strings

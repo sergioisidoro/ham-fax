@@ -58,7 +58,7 @@ FaxView.o: FaxView.cpp FaxView.hpp FaxImage.hpp
 
 FaxWindow.o: FaxWindow.cpp FaxWindow.hpp\
              Error.hpp FaxView.hpp OptionsDialog.hpp\
-             FaxControl.hpp FaxDemodulator.hpp FaxImage.hpp\
+             FaxDemodulator.hpp FaxImage.hpp\
              FaxModulator.hpp FaxReceiver.hpp FaxTransmitter.hpp\
              File.hpp PTC.hpp PTT.hpp ReceiveDialog.hpp\
              Sound.hpp TransmitDialog.hpp
