@@ -50,6 +50,12 @@ void ReceiveDialog::closeEvent(QCloseEvent* close)
 	emit cancelClicked();
 }
 
+void ReceiveDialog::show(void)
+{
+	level->setZero();
+	QDialog::show();
+}
+
 void ReceiveDialog::aptStart(void)
 {
 	showText(tr("searching APT start tone"));

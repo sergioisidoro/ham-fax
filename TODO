@@ -8,7 +8,7 @@ to fix:
 - read sound device without blocking , Qtimer=1 (?), QSocketNotifier
 - better handling of phasing (tr AND rcp)
 - fix input overruns while using PTC (better handling of serial data)
-- while sending and receiving with lpm>=310 the received image is shifted right
+- prevent image width of getting zero (this is current ioc information)
 
 features:
 - CW id before and after transmission

@@ -9,6 +9,7 @@ class DisplayLevel : public QFrame {
 public:
 	DisplayLevel(QWidget* parent);
 	virtual void paintEvent(QPaintEvent* e);
+	void setZero(void);
 private:
 	int m;
 	int w;

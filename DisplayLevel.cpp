@@ -21,6 +21,11 @@ void DisplayLevel::paintEvent(QPaintEvent* e)
 	paint.end();
 }
 
+void DisplayLevel::setZero(void)
+{
+	w=0;
+}
+
 void DisplayLevel::samples(signed short* buffer, unsigned int n)
 {
 	signed short min=32767;

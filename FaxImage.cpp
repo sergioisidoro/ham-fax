@@ -113,8 +113,13 @@ void FaxImage::load(QString fileName)
 
 void FaxImage::save(QString fileName)
 {
-	image.save(fileName,fileName.right(fileName.length()
-					   -fileName.find('.',-1)-1).upper());
+	int n=fileName.find('.');
+	if(n!=-1) {
+		QString handler=fileName.right(fileName.length()-n-1).upper();
+		if(QImageIO::outputFormats().contains(handler)) {
+			image.save(fileName,handler);
+		}
+	}
 }
 
 void FaxImage::scale(unsigned int width, unsigned int height)

@@ -90,7 +90,7 @@ void FaxReceiver::decodeApt(unsigned int& x)
 // Phasing lines consist of 2.5% white at the beginning, 95% black and again
 // 2.5% white at the end (or inverted). In normal phasing lines we try to
 // count the length between the white-black transitions. If the line has
-// a reasonable amount of black (4.9%--5.1%) and the length fits in the 
+// a reasonable amount of black (4.8%--5.2%) and the length fits in the 
 // range of 60--360lpm (plus some tolerance) it is considered a valid
 // phasing line. Then the start of a line and the lpm is calculated.
 
@@ -107,20 +107,18 @@ void FaxReceiver::decodePhasing(unsigned int& x)
 		  (!phaseNormal && x>=128 && !phaseHigh)) {
 		phaseHigh=phaseNormal?false:true;
 		if((double)currPhaseHigh >= 
-		   (phaseNormal?0.049:0.949)*currPhaseLength &&
+		   (phaseNormal?0.048:0.948)*currPhaseLength &&
 		   (double)currPhaseHigh <=
-		   (phaseNormal?0.051:0.951)*currPhaseLength &&
+		   (phaseNormal?0.052:0.952)*currPhaseLength &&
 		   (double)currPhaseLength/sampleRate<=1.1 &&
 		   (double)currPhaseLength/sampleRate>=0.09) {
 			double l=60.0*(double)sampleRate
 				/(double)currPhaseLength;
-			qDebug("phasing line, lpm=%f",l);
 			emit phasingLine(l);
 			lpmSum+=l;
 			++phaseLines;
 			lpm=lpmSum/(double)phaseLines;
 			imageSample=(int)(0.025*60.0/lpm*(double)sampleRate);
-			qDebug("setting image sample to %d",imageSample);
 			noPhaseLines=0;
 		} else if(phaseLines>0) {
 			if(++noPhaseLines>=5) {
