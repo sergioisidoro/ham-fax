@@ -4,9 +4,21 @@ to do:
 - translation (at least to german)
 - CW id before and after transmission
 - menu for some "standard modes"
-- switch for deciding wheter to determine the lpm from phasing
-   lines or use a fixed value
+- switch for deciding whether to determine the lpm from phasing
+   lines or use a fixed value; adding a control for rx lpm
+- possibility for changing lpm after reception to specific value
+   (slant correction does this implicitly)
+- switch for deciding whether to wait for apt start (and stop?)
 - move correct dialog, etc. to FaxImage (?)
 - correct beginning of line out of stored samples
    (necessary for correction of color facsimile)
 - add slider to dialogs for selecting ioc
+- allow 1% deviation from set sample rate
+   (according to Franco Spinelli <fraspin@tin.it> some cheap sound cards
+    behave this way)
+- allow minimal carrier frequency of 800Hz (1500Hz is a arbitrary restriction)
+- possibility for permanent slant correction
+- frequency / brightness scale for spectrum
+- automatic reception (perhaps a background/daemon process doing the work)
+- setting the frequency on the transceiver and doing the work
+   (have a look at hamlib)
