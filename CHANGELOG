@@ -1,4 +1,6 @@
+HamFax 0.5.1
  * fixed segmentation fault on exit (closing of audio file)
+ * fixed crash occuring while reception was cancelled immediately
 
 HamFax 0.5
  * fixed disconnect bug while writing to file

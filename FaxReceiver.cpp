@@ -36,7 +36,8 @@ void FaxReceiver::init(void)
 	state=APTSTART;
 	aptCount=aptTrans=0;
 	aptStop=aptHigh=false;
-	rawData.resize(8388608);
+	imageSample=0;
+	rawData.resize(1024*1024*8);
 	emit startReception();
 }
 
