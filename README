@@ -1,14 +1,14 @@
 HamFax v0.4
 ***********
 
-Copyright (C) 2001 Christof Schmitt, DH1CS <christof.schmitt@gmx.de>
+Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 
 HamFax is a QT/X11 application for sending and receiving
 facsimiles. It is licensed under the GNU General Public License (GPL),
 see the file COPYING for the complete text.
 
 If your have questions or comments please send them to me
-(christof.schmitt@gmx.de). I want to have some feedback on this program.
+(cschmitt@users.sourceforge.net). I want to have some feedback on this program.
 
 New versions of this program can be found at
 http://hamfax.sourceforge.net/
