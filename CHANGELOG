@@ -4,6 +4,7 @@ HamFax 0.5
  * failed read on sound device should no longer crash the program
  * error message if PTC (serial) device cannot be accessed
  * fixed handling of escape key in dialogs
+ * uninstall target in Makefile
  * minor changes
 
 HamFax 0.4

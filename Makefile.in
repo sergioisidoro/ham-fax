@@ -26,7 +26,7 @@ LIBS=@QT_LIBS@ -laudiofile
 QT_MOC=@QT_MOC@
 INSTALL=@INSTALL@
 
-.PHONY: all clean install 
+.PHONY: all clean install uninstall
 
 all: hamfax
 
@@ -40,6 +40,10 @@ install: hamfax
 	$(INSTALL) -o root -g root -m 0755 -s hamfax $(bindir)
 	$(INSTALL) -o root -g root -m 0755 -d $(docdir)
 	$(INSTALL) -o root -g root -m 0644 doc/HamFax.html $(docdir)
+
+uninstall:
+	rm -rfv $(bindir)/hamfax $(docdir)/HamFax.html
+	rmdir -p $(bindir) $(docdir)
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $<
