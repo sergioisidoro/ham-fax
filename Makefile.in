@@ -30,7 +30,7 @@ clean:
         config.cache config.log config.status moc_bnv_qt_test.C
 
 install: hamfax
-	$(INSTALL) hamfax $(INSTALLDIR)
+	$(INSTALL) -s hamfax $(INSTALLDIR)
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $<
@@ -63,6 +63,8 @@ FaxWindow.o: FaxWindow.cpp FaxWindow.hpp\
 
 File.o: File.cpp File.hpp
 
+HelpDialog.o: HelpDialog.cpp HelpDialog.hpp
+
 OptionsDialog.o: OptionsDialog.cpp OptionsDialog.hpp
 
 PTC.o: PTC.cpp PTC.hpp Error.hpp
@@ -89,6 +91,7 @@ hamfax: Config.o moc_Config.o\
         FaxTransmitter.o moc_FaxTransmitter.o\
         FaxWindow.o moc_FaxWindow.o\
         File.o moc_File.o\
+        HelpDialog.o moc_HelpDialog.o\
         OptionsDialog.o moc_OptionsDialog.o\
         PTC.o moc_PTC.o\
         PTT.o moc_PTT.o\

@@ -64,10 +64,10 @@ void FaxReceiver::decode(unsigned int* buf, unsigned int n)
 
 void FaxReceiver::decodeApt(unsigned int& x)
 {
-	if(x>230 && !aptHigh) {
+	if(x>220 && !aptHigh) {
 		aptHigh=true;
 		aptTrans++;
-	} else if(x<22 && aptHigh) {
+	} else if(x<42 && aptHigh) {
 		aptHigh=false;
 	}
 	if(++aptCount >= sampleRate/2) {
@@ -188,7 +188,7 @@ void FaxReceiver::correctLPM(double d)
 	emit startCorrection();
 }
 
-void FaxReceiver::correctWidth(unsigned int w)
+void FaxReceiver::correctWidth(int w)
 {
 	pixel=pixelSamples=imageSample=0;
 	lastCol=99;
@@ -262,7 +262,7 @@ void FaxReceiver::setAptStopFreq(int f)
 	aptStopFreq=f;
 }
 
-void FaxReceiver::setWidth(unsigned int width)
+void FaxReceiver::setWidth(int width)
 {
 	this->width=width;
 }

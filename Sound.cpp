@@ -157,7 +157,7 @@ void Sound::read(int fd)
 {
 	unsigned int n=512;
 	signed short buffer[n];
-	n=::read(fd,buffer,n);
+	n=::read(fd,buffer,n*sizeof(signed short))/sizeof(signed short);
 	emit data(buffer,n);
 }
 

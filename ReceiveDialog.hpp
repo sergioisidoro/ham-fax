@@ -37,11 +37,11 @@ private:
 	QPushButton* cancel;
 	DisplayLevel* level;
 public slots:
-	void apt(unsigned int f);
+	void apt(int f);
 	void aptStart(void);
 	void phasing(void);
 	void phasingLine(double lpm);
-	void imageRow(unsigned int row);
+	void imageRow(int row);
 	void samples(signed short* buffer, unsigned int n);
 signals:
         void cancelClicked(void);

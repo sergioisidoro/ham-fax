@@ -15,29 +15,28 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef TRANSMITDIALOG_HPP
-#define TRANSMITDIALOG_HPP
-
-#include <qdialog.h>
-#include <qlabel.h>
+#include "HelpDialog.hpp"
 #include <qpushbutton.h>
+#include <qlayout.h>
+#include <qtextbrowser.h>
 
-class TransmitDialog : public QDialog {
-	Q_OBJECT
-public:
-	TransmitDialog(QWidget* parent);
-private:
-	virtual void closeEvent(QCloseEvent* close);
-        void showText(const QString& s);
-	QLabel* status;
-	QPushButton* cancel;
-public slots:
-        void start(void);
-	void phasing(void);
-	void imageLine(int n);
-	void aptStop(void);
-signals:
-        void cancelClicked(void);
-};
+HelpDialog::HelpDialog(QWidget* parent)
+	: QDialog(parent,0,true)
+{
+	QVBoxLayout* layout=new QVBoxLayout(this,10,10);
+	QTextBrowser* browser=new QTextBrowser(this);
+	layout->addWidget(browser);
+	browser->mimeSourceFactory()->addFilePath(".");
+	browser->mimeSourceFactory()->addFilePath("/usr/share/doc/HamFax/");
+	browser->mimeSourceFactory()->addFilePath("/usr/local/share/doc/HamFax/");
+	browser->setSource("HamFax.html");
+	QPushButton* button=new QPushButton(tr("&Close"),this);
+	layout->addWidget(button);
+	connect(button,SIGNAL(clicked()),SLOT(close()));
+	resize(300,300);
+}
 
-#endif
+void HelpDialog::close(void)
+{
+	done(0);
+}

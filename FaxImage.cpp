@@ -19,49 +19,49 @@
 #include <math.h>
 
 FaxImage::FaxImage(QWidget* parent)
-	: QScrollView(parent), autoScroll(true)
+	: QScrollView(parent,0,WResizeNoErase|WNorthWestGravity),
+	  autoScroll(true)
 {
 	setResizePolicy(Manual);
+	viewport()->setBackgroundMode(PaletteMid);
 }
 
-unsigned int FaxImage::getRows(void)
+int FaxImage::getRows(void)
 {
 	return image.height();
 }
 
-unsigned int FaxImage::getCols(void)
+int FaxImage::getCols(void)
 {
 	return image.width();
 }
 
-unsigned int FaxImage::getPixelGray(unsigned int col, unsigned int row)
+int FaxImage::getPixelGray(int col, int row)
 {
 	return qGray(image.pixel(col,row));
 }
 
-unsigned int FaxImage::getPixelRed(unsigned int col, unsigned int row)
+int FaxImage::getPixelRed(int col, int row)
 {
 	return qRed(image.pixel(col,row));
 }
 
-unsigned int FaxImage::getPixelGreen(unsigned int col, unsigned int row)
+int FaxImage::getPixelGreen(int col, int row)
 {
 	return qGreen(image.pixel(col,row));
 }
 
-unsigned int FaxImage::getPixelBlue(unsigned int col, unsigned int row)
+int FaxImage::getPixelBlue(int col, int row)
 {
 	return qBlue(image.pixel(col,row));
 }
 
-bool FaxImage::setPixel(unsigned int col, unsigned int row,
-			unsigned int value, unsigned int rgbg)
+bool FaxImage::setPixel(int col, int row, int value, int rgbg)
 {
-	if(col>=(unsigned int)image.width() ||
-	   row>=(unsigned int)image.height()+1) {
+	if(col>=image.width() || row>=image.height()+1) {
 		return false;
 	}
-	if(row>=(unsigned int)image.height()) {
+	if(row>=image.height()) {
 		resize(0,0,image.width(),image.height()+50);
 	}
 	switch(rgbg) {
@@ -91,11 +91,12 @@ bool FaxImage::setPixel(unsigned int col, unsigned int row,
 	return true;
 }
 
-void FaxImage::create(unsigned int cols, unsigned int rows)
+void FaxImage::create(int cols, int rows)
 {
 	image.create(cols,rows,32);
 	image.fill(qRgb(80,80,80));
 	resizeContents(cols,rows);
+	updateContents(0,0,cols,rows);
 	emit sizeUpdated(cols,rows);
 	emit newImage();
 }
@@ -104,6 +105,7 @@ void FaxImage::load(QString fileName)
 {
 	image=QImage(fileName).convertDepth(32);
 	resizeContents(image.width(),image.height());
+	updateContents(0,0,image.width(),image.height());
 	emit sizeUpdated(image.width(),image.height());
 	emit newImage();
 }
@@ -119,18 +121,18 @@ void FaxImage::save(QString fileName)
 	}
 }
 
-void FaxImage::scale(unsigned int width, unsigned int height)
+void FaxImage::scale(int width, int height)
 {
 	if(height==0) {
 		height=width*image.height()/image.width();
 	}
 	image=image.smoothScale(width,height);
 	resizeContents(width,height);
+	updateContents(0,0,width,height);
 	emit sizeUpdated(width,height);
 }
 
-void FaxImage::resize(unsigned int x, unsigned int y,
-		      unsigned int w, unsigned int h)
+void FaxImage::resize(int x, int y, int w, int h)
 {
 	if(w==0) {
 		w=image.width();
@@ -140,6 +142,7 @@ void FaxImage::resize(unsigned int x, unsigned int y,
 	}
 	image=image.copy(x, y, w, h);
 	resizeContents(w,h);
+	updateContents(0,0,w,h);
 	emit sizeUpdated(w,h);
 }
 
@@ -155,10 +158,9 @@ void FaxImage::correctSlant(void)
 			 /(double)image.width());
 }
 
-void FaxImage::drawContents(QPainter* p,
-			    int clipx,int clipy,int clipw,int cliph)
+void FaxImage::drawContents(QPainter* p,int x,int y,int w,int h)
 {
-	p->drawImage(clipx,clipy,image,clipx,clipy,clipw,cliph);
+	p->drawImage(x,y,image,x,y,w,h);
 }
 
 void FaxImage::contentsMousePressEvent(QMouseEvent* m)
@@ -171,26 +173,30 @@ void FaxImage::contentsMousePressEvent(QMouseEvent* m)
 
 void FaxImage::shiftCol1(void)
 {
-	for(int c=0; c<image.width(); c++) {
-		for(int r=0; r<image.height(); r++) {
+	int w=image.width();
+	int h=image.height();
+	for(int c=0; c<w; c++) {
+		for(int r=0; r<h; r++) {
 			QRgb rgb=image.pixel(c,r);
 			rgb=qRgb(qGreen(rgb),qBlue(rgb),qRed(rgb));
 			image.setPixel(c,r,rgb);
 		}
 	}
-	viewport()->update();
+	updateContents(0,0,w,h);
 }
 
 void FaxImage::shiftCol2(void)
 {
-	for(int c=0; c<image.width(); c++) {
-		for(int r=0; r<image.height(); r++) {
+	int w=image.width();
+	int h=image.height();
+	for(int c=0; c<w; c++) {
+		for(int r=0; r<h; r++) {
 			QRgb rgb=image.pixel(c,r);
 			rgb=qRgb(qBlue(rgb),qRed(rgb),qGreen(rgb));
 			image.setPixel(c,r,rgb);
 		}
 	}
-	viewport()->update();
+	updateContents(0,0,w,h);
 }
 
 void FaxImage::correctBegin(void)
@@ -211,5 +217,5 @@ void FaxImage::correctBegin(void)
 			image.setPixel(c,r,pixel);
 		}
 	}
-	viewport()->update();
+	updateContents(0,0,w,h);
 }

@@ -55,7 +55,7 @@ public slots:
 signals:
 	void aptStart(void);
 	void phasing(void);
-	void imageLine(unsigned int n);
+	void imageLine(int n);
 	void aptStop(void);
 	void data(double* buf, unsigned int n);
 	void start(void);

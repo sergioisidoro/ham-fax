@@ -29,11 +29,12 @@ public:
 	~PTC(void);
 	void setDeviceName(QString s);
 	QString& getDeviceName(void);
-	void open(void);
 	void openInput(void);
+	void openOutput(void);
 	void close(void);
 	void receive(unsigned int* samples, unsigned int& count);
 private:
+	void open(void);
 	QString deviceName;
 	int device;
 	bool fm;

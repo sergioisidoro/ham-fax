@@ -53,7 +53,7 @@ void PTC::open(void)
 	cfsetispeed(&options,B57600);
 	cfsetospeed(&options,B57600);
 	options.c_cc[VMIN]=0;
-	options.c_cc[VTIME]=1;
+	options.c_cc[VTIME]=0;
 	cfmakeraw(&options);
 	tcsetattr(device,TCSAFLUSH,&options);
 
@@ -63,7 +63,7 @@ void PTC::open(void)
 	write(device,s,s.length());
 	s=QString("FAX DEVIATION %1\r").arg(deviation);
 	write(device,s,s.length());
-	s=QString("FAX %1\r").arg(fm ? "FMFAX" : "AMFAX");
+	s=QString("FAX %1\r").arg(fm ? "JVCOMM :HamFax FM" : "AMFAX");
 	write(device,s,s.length());
 	usleep(200000);
 	tcflush(device,TCIOFLUSH);
@@ -76,12 +76,28 @@ void PTC::openInput(void)
 	connect(notifier,SIGNAL(activated(int)),this,SLOT(read(int)));
 }
 
+void PTC::openOutput(void)
+{
+	open();
+	notifier=new QSocketNotifier(device,QSocketNotifier::Write);
+	connect(notifier,SIGNAL(activated(int)),this,SLOT(checkSpace(int)));
+}
+
 void PTC::close(void)
 {
 	if(device!=-1) {
+		notifier->setEnabled(false);
 		write(device,"\377",1); // return from fax mode
+		if(notifier->type()==QSocketNotifier::Read) {
+			disconnect(notifier,SIGNAL(activated(int)),
+				   this,SLOT(read(int)));
+		} else {
+			disconnect(notifier,SIGNAL(activated(int)),
+				   this,SLOT(checkSpace(int)));
+		}
 		::close(device);
 		device=-1;
+		delete notifier;
 	}
 }
 
@@ -96,12 +112,14 @@ void PTC::receive(unsigned int* samples, unsigned int& count)
 
 void PTC::transmit(double* samples, unsigned int count)
 {
-	char buf[count];
+	notifier->setEnabled(false);
+	unsigned char buf[count];
 	for(unsigned int i=0; i<count; i++) {
-		buf[i]=(char)(samples[i]*63.0);
+		buf[i]=(unsigned char)(samples[i]* (fm ? 240.0 : 63.0));
 	}
 	tcflush(device,TCIFLUSH);
 	write(device,buf,count);
+	notifier->setEnabled(true);
 }
 
 void PTC::setDeviation(int dev)
@@ -117,17 +135,23 @@ void PTC::setFM(bool fm)
 void PTC::read(int fd)
 {
 	unsigned int n=512;
-	unsigned int buffer[n];
-	n=::read(device,buffer,n);
-	emit data(buffer,n);
+	unsigned char buf[n];
+	n=::read(device,buf,n);
+	unsigned int buf2[n];
+	for(unsigned int i=0; i<n; i++) {
+		buf2[i]=buf[i];
+	}
+	emit data(buf2,n);
 }
 
 void PTC::checkSpace(int fd)
 {
 	int n;
-	ioctl(fd,TIOCOUTQ,&n);
-	if(n>=512) {
+//	ioctl(fd,TIOCOUTQ,&n);
+//	n=256-n;
+//	qDebug("%d",n);
+//	if(n>=512) {
 		n=512;
-	}
+//	}
 	emit spaceLeft(n);
 }

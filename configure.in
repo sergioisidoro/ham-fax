@@ -28,7 +28,6 @@ AC_CHECK_LIB(audiofile,afOpenFile)
 BNV_HAVE_QT
 
 dnl Checks for header files.
-AC_CHECK_HEADER(getopt.h)
 AC_CHECK_HEADER(sys/soundcard.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.

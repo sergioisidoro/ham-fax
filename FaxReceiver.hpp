@@ -63,31 +63,29 @@ private:
 	QArray<unsigned char> rawData;
 	QArray<unsigned char>::Iterator rawIt;
 signals:
-	void aptFound(unsigned int f);
+	void aptFound(int f);
 	void aptStopDetected(void);
-	void newPixel(unsigned int c, unsigned int h, 
-		      unsigned int v, unsigned int rgbg);
+	void newPixel(int c, int h, int v, int rgbg);
 	void startReception(void);
 	void startCorrection(void);
 	void end(void);
 	void startingPhasing(void);
 	void phasingLine(double lpm);
-	void imageRow(unsigned int row);
+	void imageRow(int row);
 	void bufferNotEmpty(bool);
-	void scaleImage(unsigned int w, unsigned int h);
-	void newSize(unsigned int x, unsigned int y,
-		     unsigned int w, unsigned int h);
+	void scaleImage(int w, int h);
+	void newSize(int x, int y, int w, int h);
 public slots:
 	void decode(unsigned int*, unsigned int n);
         void setAptStartFreq(int f);
 	void setAptStopFreq(int f);
-	void setWidth(unsigned int width);
+	void setWidth(int width);
 	void setPhasePol(bool pol);
 	void skip(void);
 	void endReception(void);
 	void setColor(bool b);
 	void correctLPM(double d);
-	void correctWidth(unsigned int w);
+	void correctWidth(int w);
 	void releaseBuffer(void);
 	void setTxLPM(int lpm);
 	void correctToIOC288(void);

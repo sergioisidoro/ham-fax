@@ -55,7 +55,7 @@ void TransmitDialog::phasing(void)
 	showText("Transmitting phasing");
 }
 
-void TransmitDialog::imageLine(unsigned int n)
+void TransmitDialog::imageLine(int n)
 {
 	showText(QString("Transmitting line %1").arg(n));
 }

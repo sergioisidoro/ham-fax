@@ -18,44 +18,41 @@
 #ifndef FAXIMAGE_HPP
 #define FAXIMAGE_HPP
 
-#include <qscrollview.h>
 #include <qimage.h>
-#include <qstring.h>
 #include <qpoint.h>
+#include <qscrollview.h>
+#include <qstring.h>
 
 class FaxImage : public QScrollView {
 	Q_OBJECT
 public:
 	FaxImage(QWidget* parent);
-	unsigned int getRows(void);
-	unsigned int getCols(void);
-	unsigned int getPixelGray(unsigned int col, unsigned int row);
-	unsigned int getPixelRed(unsigned int col, unsigned int row);
-	unsigned int getPixelGreen(unsigned int col, unsigned int row);
-	unsigned int getPixelBlue(unsigned int col, unsigned int row);
+	int getRows(void);
+	int getCols(void);
+	int getPixelGray(int col, int row);
+	int getPixelRed(int col, int row);
+	int getPixelGreen(int col, int row);
+	int getPixelBlue(int col, int row);
 private:
+	void drawContents(QPainter* p, int x,int y,int w,int h);
+	virtual void contentsMousePressEvent(QMouseEvent* m);
 	QImage image;
-	bool autoScroll;
 	QPoint slant1;
 	QPoint slant2;
-	void drawContents(QPainter* p,
-			  int clipx,int clipy,int clipw,int cliph);
-	virtual void contentsMousePressEvent(QMouseEvent* m);
+	bool autoScroll;
 signals:
-	void sizeUpdated(unsigned int width, unsigned int height);
+	void sizeUpdated(int, int);
 	void clicked(void);
 	void widthAdjust(double);
 	void newImage(void);
 	void shiftLine(double);
 public slots:
-        bool setPixel(unsigned int col, unsigned int row,
-		      unsigned int value, unsigned int rgbg);
-        void create(unsigned int cols, unsigned int rows);
+        bool setPixel(int col, int row, int value, int rgbg);
+        void create(int cols, int rows);
 	void load(QString fileName);
 	void save(QString fileName);
-	void scale(unsigned int width, unsigned int height=0);
-	void resize(unsigned int x, unsigned int y,
-		    unsigned int w, unsigned int h=0);
+	void scale(int width, int height=0);
+	void resize(int x, int y, int w, int h=0);
 	void setAutoScroll(bool b);
 	void correctSlant(void);
 	void shiftCol1(void);

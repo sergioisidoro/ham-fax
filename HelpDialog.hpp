@@ -15,29 +15,18 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef TRANSMITDIALOG_HPP
-#define TRANSMITDIALOG_HPP
+#ifndef HELPDIALOG_HPP
+#define HELPDIALOG_HPP
 
 #include <qdialog.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
+#include <qwidget.h>
 
-class TransmitDialog : public QDialog {
+class HelpDialog : public QDialog {
 	Q_OBJECT
 public:
-	TransmitDialog(QWidget* parent);
-private:
-	virtual void closeEvent(QCloseEvent* close);
-        void showText(const QString& s);
-	QLabel* status;
-	QPushButton* cancel;
-public slots:
-        void start(void);
-	void phasing(void);
-	void imageLine(int n);
-	void aptStop(void);
-signals:
-        void cancelClicked(void);
+	HelpDialog(QWidget* parent);
+private slots:
+        void close(void);
 };
 
 #endif

@@ -38,7 +38,7 @@ void ReceiveDialog::showText(const QString& s)
 	adjustSize();
 }
 
-void ReceiveDialog::apt(unsigned int f)
+void ReceiveDialog::apt(int f)
 {
 	aptText->setText(QString(tr("Apt frequency:\n%1 Hz")).arg(f));
 	adjustSize();
@@ -76,7 +76,7 @@ void ReceiveDialog::phasingLine(double lpm)
 	skip->setDisabled(true);
 }
 
-void ReceiveDialog::imageRow(unsigned int row)
+void ReceiveDialog::imageRow(int row)
 {
 	showText(tr("receiving line %1").arg(row));
 	skip->setDisabled(true);
