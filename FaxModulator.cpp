@@ -40,11 +40,11 @@ void FaxModulator::modulate(double* buffer, unsigned int number)
 	for(unsigned int i=0; i<number; i++) {
 		if(fm) {
 			sample[i]=sine[phase];
-			unsigned int f=(unsigned int)
-				((double)carrier+2.0*(buffer[i]-0.5)*dev);
+			unsigned int f=static_cast<unsigned int>
+				(carrier+2.0*(buffer[i]-0.5)*dev);
 			phase+=size_sine*f/sampleRate;
 		} else {
-			sample[i]=(signed short)
+			sample[i]=static_cast<signed short>
 				(0.04+0.96*buffer[i]*sine[phase]);
 			phase+=size_sine*carrier/sampleRate;
 		}

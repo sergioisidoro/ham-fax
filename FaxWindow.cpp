@@ -142,8 +142,9 @@ FaxWindow::FaxWindow(const QString& version)
 	receiveMenu->insertItem(tr("Receive from f&ile"),FILE);
 	receiveMenu->insertItem(tr("Receive from P&TC"),SCSPTC);
 	imageMenu=new QPopupMenu(this);
-	imageMenu->insertItem(tr("&Adjust IOC"),this,SLOT(adjustIOC()));
-	imageMenu->insertItem(tr("&Scale to IOC"),
+	imageMenu->insertItem(tr("&Adjust IOC (change width)"),
+			      this,SLOT(adjustIOC()));
+	imageMenu->insertItem(tr("&Scale to IOC (scale whole image)"),
 			      this,SLOT(scaleToIOC()));
 	imageMenu->insertSeparator();
 	slantID=imageMenu->insertItem(tr("slant correction"),

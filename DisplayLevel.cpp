@@ -39,7 +39,7 @@ void DisplayLevel::samples(signed short* buffer, unsigned int n)
 			min=s;
 		}
 	}
-	double level=(double)(max-min)/65536.0;
-	w=(int)(level*(double)(width()-2*m));
-	repaint();
+	double level=(max-min)/65536.0;
+	w=static_cast<int>(level*(width()-2*m));
+	update();
 }

@@ -56,9 +56,9 @@ void Sound::startOutput(void)
 		   ||channels!=1) {
 			throw Error(tr("could not set mono mode"));
 		}
-		int speed=(int)sampleRate;
+		int speed=sampleRate;
 		if(ioctl(devDSP,SNDCTL_DSP_SPEED,&speed)==-1
-		   ||speed!=(int)sampleRate) {
+		   ||speed!=sampleRate) {
 			throw Error(tr("could not set sample rate"));
 		}
 		notifier=new QSocketNotifier(devDSP,QSocketNotifier::Write,
@@ -91,7 +91,7 @@ void Sound::startInput(void)
 		}
 		int speed=sampleRate;
 		if(ioctl(devDSP,SNDCTL_DSP_SPEED,&speed)==-1
-		   ||speed!=(int)sampleRate) {
+		   ||speed!=sampleRate) {
 			throw Error(tr("could not set sample rate"));
 		}
 		notifier=new QSocketNotifier(devDSP,QSocketNotifier::Read,
@@ -132,7 +132,7 @@ void Sound::write(signed short* samples, unsigned int number)
 			notifier->setEnabled(false);
 			if((::write(devDSP,samples,
 				    number*sizeof(signed short)))
-			   !=(int)(number*sizeof(signed short))) {
+			   !=static_cast<int>(number*sizeof(signed short))) {
 				throw Error(tr("could not write to DSP"));
 			}
 			notifier->setEnabled(true);

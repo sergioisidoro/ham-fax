@@ -121,14 +121,15 @@ void FaxReceiver::decodePhasing(unsigned int& x)
 			lpmSum+=l;
 			++phaseLines;
 			lpm=lpmSum/(double)phaseLines;
-			imageSample=(int)(1.025*60.0/lpm*(double)sampleRate);
+			imageSample=static_cast<int>
+				(1.025*60.0/lpm*sampleRate);
 			
 			noPhaseLines=0;
 		} else if(phaseLines>0 && ++noPhaseLines>=5) {
 			state=IMAGE;
 			double pos=fmod(imageSample,sampleRate*60/lpm);
 			pos/=(double)sampleRate*60.0/(double)lpm;
-			lastCol=(unsigned int)(pos*width);
+			lastCol=static_cast<unsigned int>(pos*width);
 			pixel=pixelSamples=0;
 			lastRow=99; // just !=0 which is the first row
 			emit imageStarts();
@@ -141,10 +142,10 @@ void FaxReceiver::decodeImage(unsigned int& x)
 {
 	if(lpm>0) {
 		double pos=fmod(imageSample,sampleRate*60/lpm);
-		pos/=(double)sampleRate*60.0/(double)lpm;
-		unsigned int col=(unsigned int)(pos*width);
-		currRow=(unsigned int)((double)imageSample
-				       /(double)sampleRate*lpm/60.0);
+		pos/=sampleRate*60.0/lpm;
+		unsigned int col=static_cast<unsigned int>(pos*width);
+		currRow=static_cast<unsigned int>
+			(static_cast<double>(imageSample)/sampleRate*lpm/60.0);
 		int rawSize=rawData.size();
 		if(rawSize<=imageSample) {
 			rawData.resize(rawSize+1048576);
@@ -208,16 +209,16 @@ void FaxReceiver::adjustNext(void)
 	for(unsigned int i=0; i<512; i++) {
 		if(rawIt++>=rawData.end()) {
 			timer->stop();
-			int h=currRow-(int)(lpm/60.0)-1;
+			int h=currRow-static_cast<int>(lpm/60.0)-1;
 			emit newSize(0,2,0,color ? h/3 : h);
 			emit end();
 			break;
 		}
-		double pos=fmod(imageSample,(double)sampleRate*60.0/lpm);
-		pos/=(double)sampleRate*60.0/(double)lpm;
-		unsigned int col=(unsigned int)(pos*width);
-		currRow=(unsigned int)((double)imageSample
-				       /(double)sampleRate*lpm/60.0);
+		double pos=fmod(imageSample,sampleRate*60.0/lpm);
+		pos/=sampleRate*60.0/lpm;
+		unsigned int col=static_cast<unsigned int>(pos*width);
+		currRow=static_cast<unsigned int>
+			(imageSample*lpm/60.0/sampleRate);
 		if(col==lastCol) {
 			pixel+=*rawIt;
 			pixelSamples++;
@@ -274,7 +275,7 @@ void FaxReceiver::skip(void)
 		emit imageStarts();
 		double pos=fmod(imageSample,sampleRate*60/lpm);
 		pos/=(double)sampleRate*60.0/(double)lpm;
-		lastCol=(unsigned int)(pos*width);
+		lastCol=static_cast<unsigned int>(pos*width);
 		pixel=pixelSamples=imageSample=0;
 		lastRow=99; // just !=0 which is the first row
 	}
@@ -286,7 +287,7 @@ void FaxReceiver::skip(void)
 
 void FaxReceiver::endReception(void)
 {
-	int h=currRow-(int)(lpm/60.0)-1;
+	int h=currRow-static_cast<int>(lpm/60.0)-1;
 	rawData.resize(imageSample);
 	if(h>0) {
 		emit newSize(0,2,0,color ? h/3 : h);

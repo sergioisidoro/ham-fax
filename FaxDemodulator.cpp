@@ -24,7 +24,7 @@ FaxDemodulator::FaxDemodulator(QObject* parent)
 {
 	sine=new double[sine_size];
 	for(unsigned int i=0; i<sine_size; i++) {
-		sine[i]=sin(2.*M_PI*(double)i/(double)sine_size);
+		sine[i]=sin(2.0*M_PI*i/sine_size);
 	}
 	sin_phase=sine;
 	cos_phase=sine+sine_size/4;
@@ -36,7 +36,7 @@ FaxDemodulator::FaxDemodulator(QObject* parent)
 
 	asine=new double[asine_size];
 	for(unsigned int i=0; i<asine_size; i++) {
-		asine[i]=asin((double)i/(double)asine_size*2.0-1.0)/2.0/M_PI;
+		asine[i]=asin(2.0*i/asine_size-1.0)/2.0/M_PI;
 	}
 }
 
@@ -54,12 +54,12 @@ void FaxDemodulator::setCarrier(int carrier)
 
 void FaxDemodulator::setSampleRate(int sampleRate)
 {
-	rate=(unsigned int)sampleRate;
+	rate=sampleRate;
 }
 
 void FaxDemodulator::setDeviation(int dev)
 {
-	deviation=(unsigned int)dev;
+	deviation=dev;
 }
 
 void FaxDemodulator::setFM(bool fm)
@@ -76,8 +76,8 @@ void FaxDemodulator::newSamples(signed short* audio, unsigned int n)
 {
 	unsigned int demod[n];
 	for(unsigned int i=0; i<n; i++) {
-		*icurrent=(double)audio[i]* *cos_phase;
-		*qcurrent=(double)audio[i]* *sin_phase;
+		*icurrent=audio[i]* *cos_phase;
+		*qcurrent=audio[i]* *sin_phase;
 
 		double ifirout=0;
 		double qfirout=0;
@@ -101,20 +101,20 @@ void FaxDemodulator::newSamples(signed short* audio, unsigned int n)
 			qfirout/=abs;
 			
 			double y=qfirold*ifirout-ifirold*qfirout;
-			double x=(double)rate/(double)deviation
-				*asine[(unsigned int)
+			double x=static_cast<double>(rate)/deviation
+				*asine[static_cast<int>
 				      ((y+1.0)/2.0*asine_size)];
 			if(x<-1.0) {
 				x=-1.0;
 			} else if(x>1.0) {
 				x=1.0;
 			}
-			demod[i]=(unsigned char)((x/2.0+0.5)*255.0);
+			demod[i]=static_cast<unsigned char>((x/2.0+0.5)*255.0);
 		} else {
 			ifirout/=96000;
 			qfirout/=96000;
-			demod[i]=(unsigned char)
-				sqrt(ifirout*ifirout+qfirout*qfirout);
+			demod[i]=static_cast<unsigned char>
+				(sqrt(ifirout*ifirout+qfirout*qfirout));
 		}
 
 		ifirold=ifirout;

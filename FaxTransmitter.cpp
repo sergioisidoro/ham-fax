@@ -101,7 +101,7 @@ void FaxTransmitter::doNext(unsigned int n)
 				// get pixel determining current value
 				double pos=fmod(sampleNr,sampleRate*60/lpm);
 				pos/=(double)sampleRate*60.0/(double)lpm;
-				unsigned int c=(unsigned int)
+				unsigned int c=static_cast<unsigned int>
 					(pos*faxImage->getCols());
 				unsigned int r=sampleNr*lpm
 					/60/sampleRate;

@@ -230,7 +230,7 @@ void Config::setPhaseLines(int n)
 void Config::setPhaseInvert(bool b)
 {
 	if(value["phaseInvert"]!=b) {
-		value["phaseInvert"]=QString().sprintf("%u",(int)b);
+		value["phaseInvert"]=QString().sprintf("%u",b);
 		emit phaseInvert(b);
 	}
 }
@@ -243,7 +243,7 @@ void Config::setPhaseInvert(int i)
 void Config::setUseFM(bool b)
 {
 	if(value["fm"]!=b) {
-		value["fm"]=QString().sprintf("%u",(int)b);
+		value["fm"]=QString().sprintf("%u",b);
 		emit useFM(b);
 	}
 }
@@ -256,7 +256,7 @@ void Config::setUseFM(int i)
 void Config::setAutoScroll(bool b)
 {
 	if(value["autoScroll"]!=b) {
-		value["autoScroll"]=QString().sprintf("%u",(int)b);
+		value["autoScroll"]=QString().sprintf("%u",b);
 		emit autoScroll(b);
 	}
 }
@@ -264,7 +264,7 @@ void Config::setAutoScroll(bool b)
 void Config::setColor(bool b)
 {
 	if(value["color"]!=b) {
-		value["color"]=QString().sprintf("%u",(int)b);
+		value["color"]=QString().sprintf("%u",b);
 		emit color(b);
 	}
 }
@@ -277,6 +277,6 @@ void Config::setColor(int i)
 void Config::setToolTip(bool b)
 {
 	if(value["toolTip"]!=b) {
-		value["toolTip"]=QString().sprintf("%u",(int)b);
+		value["toolTip"]=QString().sprintf("%u",b);
 	}
 }
