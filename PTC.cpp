@@ -44,39 +44,48 @@ void PTC::setDeviceName(const QString& s)
 
 void PTC::open(void)
 {
-	device=::open(deviceName,O_RDWR|O_NOCTTY|O_NONBLOCK);
-	
-	struct termios options;
-	tcgetattr(device,&options);
-	switch(speed) {
-	case 38400:
-		cfsetispeed(&options,B38400);
-		cfsetospeed(&options,B38400);
-		break;
-	case 57600:
-		cfsetispeed(&options,B57600);
-		cfsetospeed(&options,B57600);
-		break;
-	case 115200:
-		cfsetispeed(&options,B115200);
-		cfsetospeed(&options,B115200);
-		break;
+	try {
+		device=::open(deviceName,O_RDWR|O_NOCTTY|O_NONBLOCK);
+		if(device==-1) {
+			throw Error("could not open serial device");
+		}
+		
+		struct termios options;
+		tcgetattr(device,&options);
+		switch(speed) {
+		case 38400:
+			cfsetispeed(&options,B38400);
+			cfsetospeed(&options,B38400);
+			break;
+		case 57600:
+			cfsetispeed(&options,B57600);
+			cfsetospeed(&options,B57600);
+			break;
+		case 115200:
+			cfsetispeed(&options,B115200);
+			cfsetospeed(&options,B115200);
+			break;
+		}
+		options.c_cflag|=CRTSCTS;
+		options.c_cc[VMIN]=0;
+		options.c_cc[VTIME]=0;
+		cfmakeraw(&options);
+		if(tcsetattr(device,TCSAFLUSH,&options)==-1) {
+			throw Error("could not set serial parameters");
+		}
+		write(device,"\r\r",2);
+		QString s=QString("FAX MBAUD %1\r").arg(speed);
+		write(device,s,s.length());
+		s=QString("FAX DEVIATION %1\r").arg(deviation);
+		write(device,s,s.length());
+		s=QString("FAX %1\r").arg(fm ? "JVCOMM :HamFax FM":"AMFAX");
+		write(device,s,s.length());
+		usleep(300000);
+		tcflush(device,TCIOFLUSH);
+	} catch(Error) {
+		close();
+		throw;
 	}
-	options.c_cflag|=CRTSCTS;
-	options.c_cc[VMIN]=0;
-	options.c_cc[VTIME]=0;
-	cfmakeraw(&options);
-	tcsetattr(device,TCSAFLUSH,&options);
-
-	write(device,"\r\r",2);
-	QString s=QString("FAX MBAUD %1\r").arg(speed);
-	write(device,s,s.length());
-	s=QString("FAX DEVIATION %1\r").arg(deviation);
-	write(device,s,s.length());
-	s=QString("FAX %1\r").arg(fm ? "JVCOMM :HamFax FM" : "AMFAX");
-	write(device,s,s.length());
-	usleep(300000);
-	tcflush(device,TCIOFLUSH);
 }
 
 void PTC::startInput(void)
@@ -117,10 +126,12 @@ void PTC::end(void)
 
 void PTC::close(void)
 {
-	write(device,"\377",1); // return from fax mode
-	::close(device);
-	device=-1;
-	emit deviceClosed();
+	if(device!=-1) {
+		write(device,"\377",1); // return from fax mode
+		::close(device);
+		device=-1;
+		emit deviceClosed();
+	}
 }
 
 void PTC::transmit(double* samples, int count)

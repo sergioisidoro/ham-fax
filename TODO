@@ -7,3 +7,5 @@ to do:
 - switch for deciding wheter to determine the lpm from phasing
    lines or use a fixed value
 - move correct dialog, etc. to FaxImage (?)
+- correct beginning of line out of stored samples
+   (necessary for correction of color facsimile)
