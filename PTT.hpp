@@ -32,9 +32,9 @@ public:
 	void closeDevice(void);
 	void set(bool press);
 private:
-	QString deviceName;
 	int device;
 	bool usePTT;
+	QString deviceName;
 public slots:
         void setUse(bool use);
 signals:

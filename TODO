@@ -4,14 +4,13 @@ to do:
 - write some documentation about HamFax and facsimiles
 
 to fix:
-- smarter handling of init, tr/rx, end
+- smarter handling of init, tr/rx, end, make use of Qt's connect
 - read sound device without blocking , Qtimer=1 (?), QSocketNotifier
 - better handling of phasing (tr AND rcp)
 - have a look at image resize at various lpms
 - fix input overruns while using PTC (better handling of serial data)
 
 features:
-- save and load options
 - CW id before and after transmission
 - color fax
 - spectroscope

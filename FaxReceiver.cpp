@@ -158,12 +158,12 @@ void FaxReceiver::decodeImage(unsigned int& x)
 	imageSample++;
 }
 
-void FaxReceiver::setAptStartFreq(int f)
+void FaxReceiver::setAptStartFreq(unsigned int f)
 {
 	aptStartFreq=f;
 }
 
-void FaxReceiver::setAptStopFreq(int f)
+void FaxReceiver::setAptStopFreq(unsigned int f)
 {
 	aptStopFreq=f;
 }

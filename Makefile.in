@@ -38,6 +38,8 @@ install: hamfax
 moc_%.cpp: %.hpp
 	$(QT_MOC) $< -o $@
 
+Config.o: Config.cpp Config.hpp
+
 Error.o: Error.cpp Error.hpp
 
 FaxControl.o: FaxControl.cpp FaxControl.hpp
@@ -79,7 +81,8 @@ TransmitDialog.o: TransmitDialog.cpp TransmitDialog.hpp
 
 hamfax.o: hamfax.cpp FaxWindow.hpp
 
-hamfax: Error.o\
+hamfax: Config.o moc_Config.o\
+        Error.o\
         FaxControl.o moc_FaxControl.o\
         FaxDemodulator.o moc_FaxDemodulator.o\
         FaxImage.o moc_FaxImage.o\

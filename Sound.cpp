@@ -23,7 +23,7 @@
 #include "Error.hpp"
 
 Sound::Sound(QObject* parent)
-	: QObject(parent), devDSP(-1)
+	: QObject(parent), devDSP(-1), devDSPName("/dev/dsp")
 {
 }
 

@@ -124,59 +124,39 @@ void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples)
 	}
 }
 
-void FaxTransmitter::setLPM(int lpm)
+void FaxTransmitter::setLPM(unsigned int lpm)
 {
-	if(this->lpm!=(unsigned int)lpm) {
-		this->lpm=(unsigned int)lpm;
-		emit newLPM(lpm);
-	}
+	this->lpm=lpm;
 }
 
-void FaxTransmitter::setAptStartFreq(int f)
+void FaxTransmitter::setAptStartFreq(unsigned int f)
 {
-	if(startFreq!=(unsigned int)f) {
-		startFreq=(unsigned int)f;
-		emit newAptStartFreq(f);
-	}
+	startFreq=f;
 }
 
-void FaxTransmitter::setAptStartLength(int t)
+void FaxTransmitter::setAptStartLength(unsigned int t)
 {
-	if(startLength!=(unsigned int)t) {
-		startLength=(unsigned int)t;
-		emit newAptStartLength(t);
-	}
+	startLength=t;
 }
 
-void FaxTransmitter::setAptStopFreq(int f)
+void FaxTransmitter::setAptStopFreq(unsigned int f)
 {
-	if(stopFreq!=(unsigned int)f) {
-		stopFreq=(unsigned int)f;
-		emit newAptStopFreq(f);
-	}
+	stopFreq=f;
 }
 
-void FaxTransmitter::setAptStopLength(int t)
+void FaxTransmitter::setAptStopLength(unsigned int t)
 {
-	if(stopLength!=(unsigned int)t) {
-		stopLength=(unsigned int)t;
-		emit newAptStopLength(t);
-	}
+	stopLength=t;
 }
 
-void FaxTransmitter::setPhasingLines(int n)
+void FaxTransmitter::setPhasingLines(unsigned int n)
 {
-	if(phasingLines!=(unsigned int)n) {
-		phasingLines=(unsigned int)n;
-		emit newPhasingLines(n);
-	}
+	phasingLines=n;
 }
 
 void FaxTransmitter::setPhasePol(bool pol)
 {
-	if(phasePol!=pol) {
-		emit newPhasePol(phasePol=pol);
-	}
+	phasePol=pol;
 }
 
 void FaxTransmitter::setSampleRate(unsigned int rate)

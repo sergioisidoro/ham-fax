@@ -23,6 +23,7 @@
 #include <qtimer.h>
 #include <qmenubar.h>
 
+#include "Config.hpp"
 #include "FaxControl.hpp"
 #include "FaxDemodulator.hpp"
 #include "FaxImage.hpp"
@@ -48,6 +49,7 @@ private:
 	void buildMenuBar(void);
 	QString getFileName(QString caption, QString filter);
 	virtual void closeEvent(QCloseEvent* close);
+	Config* config;
 	QString version;
 	QPopupMenu* optionsMenu;
 	FaxTransmitter* faxTransmitter;

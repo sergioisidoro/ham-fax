@@ -35,8 +35,8 @@ public:
 	void read(signed short* samples, unsigned int& number);
 	bool outputBufferEmpty(void);
 private:
-	QString devDSPName;
 	int devDSP;
+	QString devDSPName;
 };
 
 #endif

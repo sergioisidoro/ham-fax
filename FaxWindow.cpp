@@ -30,6 +30,7 @@
 FaxWindow::FaxWindow(const QString& version)
 	: version(version)
 {
+	config=new Config(this);
 	faxImage=new FaxImage(this);
 	FaxView* faxView=new FaxView(this,faxImage);
 	faxControl=new FaxControl(this);
@@ -45,82 +46,91 @@ FaxWindow::FaxWindow(const QString& version)
 	transmitDialog=new TransmitDialog(this);
 	receiveDialog=new ReceiveDialog(this);
 
-	buildMenuBar();
+	connect(config,SIGNAL(carrier(unsigned int)),
+		faxControl,SLOT(setCarrier(unsigned int)));
+	connect(faxControl,SIGNAL(newCarrier(unsigned int)),
+		config,SLOT(setCarrier(unsigned int)));
+	connect(config,SIGNAL(carrier(unsigned int)),
+		faxModulator,SLOT(setCarrier(unsigned int)));
+	connect(config,SIGNAL(carrier(unsigned int)),
+		faxDemodulator,SLOT(setCarrier(unsigned int)));
 
-	QHBoxLayout* layout=new QHBoxLayout(this);
-	layout->setMenuBar(menuBar);
-	layout->addWidget(faxControl);
-	layout->addWidget(faxView);
+	connect(config,SIGNAL(lpm(unsigned int)),
+		faxControl,SLOT(setLPM(unsigned int)));
+	connect(faxControl,SIGNAL(newLPM(unsigned int)),
+		config,SLOT(setLpm(unsigned int)));
+	connect(config,SIGNAL(lpm(unsigned int)),
+		faxControl,SLOT(setLPM(unsigned int)));
 
-	// FaxControl -- FaxTransmitter -- FaxReceiver
-	connect(faxControl,SIGNAL(newLPM(int)),
-		faxTransmitter,SLOT(setLPM(int)));
-	connect(faxTransmitter,SIGNAL(newLPM(int)),
-		faxControl,SLOT(setLPM(int)));
-	connect(faxControl,SIGNAL(newAptStartFreq(int)),
-		faxTransmitter,SLOT(setAptStartFreq(int)));
-	connect(faxTransmitter,SIGNAL(newAptStartFreq(int)),
-		faxControl,SLOT(setAptStartFreq(int)));
-	connect(faxTransmitter,SIGNAL(newAptStartFreq(int)),
-		faxReceiver,SLOT(setAptStartFreq(int)));
-	connect(faxControl,SIGNAL(newAptStartLength(int)),
-		faxTransmitter,SLOT(setAptStartLength(int)));
-	connect(faxTransmitter,SIGNAL(newAptStartLength(int)),
-		faxControl,SLOT(setAptStartLength(int)));
-	connect(faxControl,SIGNAL(newAptStopFreq(int)),
-		faxTransmitter,SLOT(setAptStopFreq(int)));
-	connect(faxTransmitter,SIGNAL(newAptStopFreq(int)),
-		faxControl,SLOT(setAptStopFreq(int)));
-	connect(faxTransmitter,SIGNAL(newAptStopFreq(int)),
-		faxReceiver,SLOT(setAptStopFreq(int)));
-	connect(faxControl,SIGNAL(newAptStopLength(int)),
-		faxTransmitter,SLOT(setAptStopLength(int)));
-	connect(faxTransmitter,SIGNAL(newAptStopLength(int)),
-		faxControl,SLOT(setAptStopLength(int)));
-	connect(faxControl,SIGNAL(newPhasingLength(int)),
-		faxTransmitter,SLOT(setPhasingLines(int)));
-	connect(faxTransmitter,SIGNAL(newPhasingLines(int)),
-		faxControl,SLOT(setPhasingLines(int)));
-	connect(faxControl,SIGNAL(newPhasingPol(bool)),
-		faxTransmitter,SLOT(setPhasePol(bool)));
-	connect(faxTransmitter,SIGNAL(newPhasePol(bool)),
+	connect(config,SIGNAL(aptStartFreq(unsigned int)),
+		faxControl,SLOT(setAptStartFreq(unsigned int)));
+	connect(faxControl,SIGNAL(newAptStartFreq(unsigned int)),
+		config,SLOT(setAptStartFreq(unsigned int)));
+	connect(config,SIGNAL(aptStartFreq(unsigned int)),
+		faxTransmitter,SLOT(setAptStartFreq(unsigned int)));
+	connect(config,SIGNAL(aptStartFreq(unsigned int)),
+		faxReceiver,SLOT(setAptStartFreq(unsigned int)));
+
+	connect(config,SIGNAL(aptStartLength(unsigned int)),
+		faxControl,SLOT(setAptStartLength(unsigned int)));
+	connect(faxControl,SIGNAL(newAptStartLength(unsigned int)),
+		config,SLOT(setAptStartLength(unsigned int)));
+	connect(config,SIGNAL(aptStartLength(unsigned int)),
+		faxTransmitter,SLOT(setAptStartLength(unsigned int)));
+
+	connect(config,SIGNAL(aptStopFreq(unsigned int)),
+		faxControl,SLOT(setAptStopFreq(unsigned int)));
+	connect(faxControl,SIGNAL(newAptStopFreq(unsigned int)),
+		config,SLOT(setAptStopFreq(unsigned int)));
+	connect(config,SIGNAL(aptStopFreq(unsigned int)),
+		faxTransmitter,SLOT(setAptStopFreq(unsigned int)));
+	connect(config,SIGNAL(aptStopFreq(unsigned int)),
+		faxReceiver,SLOT(setAptStopFreq(unsigned int)));
+
+	connect(config,SIGNAL(aptStopLength(unsigned int)),
+		faxControl,SLOT(setAptStopLength(unsigned int)));
+	connect(faxControl,SIGNAL(newAptStopLength(unsigned int)),
+		config,SLOT(setAptStopLength(unsigned int)));
+	connect(config,SIGNAL(aptStopLength(unsigned int)),
+		faxTransmitter,SLOT(setAptStopLength(unsigned int)));
+
+	connect(config,SIGNAL(phaseLines(unsigned int)),
+		faxControl,SLOT(setPhasingLines(unsigned int)));
+	connect(faxControl,SIGNAL(newPhasingLength(unsigned int)),
+		config,SLOT(setPhaseLines(unsigned int)));
+	connect(config,SIGNAL(phaseLines(unsigned int)),
+		faxTransmitter,SLOT(setPhasingLines(unsigned int)));
+
+	connect(config,SIGNAL(phaseInvert(bool)),
 		faxControl,SLOT(setPhasingPol(bool)));
-	connect(faxTransmitter,SIGNAL(newPhasePol(bool)),
+	connect(faxControl,SIGNAL(newPhasingPol(bool)),
+		config,SLOT(setPhaseInvert(bool)));
+	connect(config,SIGNAL(phaseInvert(bool)),
+		faxTransmitter,SLOT(setPhasePol(bool)));
+	connect(config,SIGNAL(phaseInvert(bool)),
 		faxReceiver,SLOT(setPhasePol(bool)));
-	faxTransmitter->setLPM(120);
-	faxTransmitter->setAptStartFreq(300);
-	faxTransmitter->setAptStartLength(5);
-	faxTransmitter->setAptStopFreq(450);
-	faxTransmitter->setAptStopLength(5);
-	faxTransmitter->setPhasingLines(20);
-	faxTransmitter->setPhasePol(true);
 
-	// FaxControl -- FaxModulator -- FaxDemodulator
-	connect(faxControl,SIGNAL(newCarrier(int)),
-		faxModulator,SLOT(setCarrier(int)));
-	connect(faxModulator,SIGNAL(newCarrier(int)),
-		faxControl,SLOT(setCarrier(int)));
-	connect(faxModulator,SIGNAL(newCarrier(int)),
-		faxDemodulator,SLOT(setCarrier(int)));
-	connect(faxControl,SIGNAL(newDeviation(int)),
-		faxModulator,SLOT(setDeviation(int)));
-	connect(faxModulator,SIGNAL(newDeviation(int)),
-		faxControl,SLOT(setDeviation(int)));
-	connect(faxModulator,SIGNAL(newDeviation(int)),
-		faxDemodulator,SLOT(setDeviation(int)));
-	connect(faxModulator,SIGNAL(newDeviation(int)),
-		ptc,SLOT(setDeviation(int)));
-	connect(faxControl,SIGNAL(newModulation(bool)),
-		faxModulator,SLOT(setFM(bool)));
-	connect(faxModulator,SIGNAL(newModulation(bool)),
+	connect(config,SIGNAL(deviation(unsigned int)),
+		faxControl,SLOT(setDeviation(unsigned int)));
+	connect(faxControl,SIGNAL(newDeviation(unsigned int)),
+		config,SLOT(setDeviation(unsigned int)));
+	connect(config,SIGNAL(deviation(unsigned int)),
+		faxModulator,SLOT(setDeviation(unsigned int)));
+	connect(config,SIGNAL(deviation(unsigned int)),
+		faxDemodulator,SLOT(setDeviation(unsigned int)));
+	connect(config,SIGNAL(deviation(unsigned int)),
+		ptc,SLOT(setDeviation(unsigned int)));
+
+	connect(config,SIGNAL(useFM(bool)),
 		faxControl,SLOT(setModulation(bool)));
-	connect(faxModulator,SIGNAL(newModulation(bool)),
+	connect(faxControl,SIGNAL(newModulation(bool)),
+		config,SLOT(setUseFM(bool)));
+	connect(config,SIGNAL(useFM(bool)),
+		faxModulator,SLOT(setFM(bool)));
+	connect(config,SIGNAL(useFM(bool)),
 		faxDemodulator,SLOT(setFM(bool)));
-	connect(faxModulator,SIGNAL(newModulation(bool)),
+	connect(config,SIGNAL(useFM(bool)),
 		ptc,SLOT(setFM(bool)));
-	faxModulator->setFM(true);
-	faxModulator->setCarrier(1900);
-	faxModulator->setDeviation(400);
 
 	// FaxWindow -- FaxImage -- FaxView
 	connect(this,SIGNAL(loadFile(QString)),faxImage,SLOT(load(QString)));
@@ -176,10 +186,13 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(faxReceiver,SIGNAL(receptionEnded()),
 		this,SLOT(endReception()));
 
-	ptc->setDeviceName("/dev/ttyS0");
-	sound->setDSPDevice("/dev/dsp");
-	ptt->setUse(false);
-	ptt->setDeviceName("/dev/ttyS1");
+	config->readFile();
+	buildMenuBar();
+	QHBoxLayout* layout=new QHBoxLayout(this);
+	layout->setMenuBar(menuBar);
+	layout->addWidget(faxControl);
+	layout->addWidget(faxView);
+	resize(650,0);
 }
 
 void FaxWindow::buildMenuBar(void)
@@ -217,7 +230,7 @@ void FaxWindow::buildMenuBar(void)
 	pttID=optionsMenu->
 		insertItem(tr("key PTT while transmitting with DSP"),
 			   this,SLOT(changePTT()));
-	optionsMenu->setItemChecked(pttID,false);
+	optionsMenu->setItemChecked(pttID,config->getKeyPTT());
 
 	QPopupMenu* helpMenu=new QPopupMenu(this);
 	helpMenu->insertItem(tr("&About"),this,SLOT(about()));
@@ -276,14 +289,14 @@ void FaxWindow::save(void)
 void FaxWindow::doOptionsDialog(void)
 {
 	OptionsDialog* d=new OptionsDialog(this);
-	d->devDSPName=sound->getDSPDevice();
-	d->devPTTName=ptt->getDeviceName();
-	d->devPTCName=ptc->getDeviceName();
+	d->devDSPName=config->getDSPDevice();
+	d->devPTTName=config->getPTTDevice();
+	d->devPTCName=config->getPTCDevice();
 	d->init();
 	if(d->exec()) {
-		sound->setDSPDevice(d->devDSPName);
-		ptt->setDeviceName(d->devPTTName);
-		ptc->setDeviceName(d->devPTCName);
+		config->setDSP(d->devDSPName);
+		config->setPTT(d->devPTTName);
+		config->setPTC(d->devPTCName);
 	}
 	delete d;
 }
@@ -304,10 +317,10 @@ void FaxWindow::changePTT(void)
 {
 	if(optionsMenu->isItemChecked(pttID)) {
 		optionsMenu->setItemChecked(pttID,false);
-		ptt->setUse(false);
+		config->setKeyPTT(false);
 	} else {
 		optionsMenu->setItemChecked(pttID,true);
-		ptt->setUse(true);
+		config->setKeyPTT(true);
 	}
 }
 
@@ -503,6 +516,7 @@ void FaxWindow::closeEvent(QCloseEvent* close)
 	case 0:
 		timer->stop();
 		close->accept();
+		config->writeFile();
 		break;
 	case 1:
 		break;

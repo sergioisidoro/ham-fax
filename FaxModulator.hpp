@@ -35,13 +35,9 @@ private:
 	bool fm;
 	unsigned int carrier;
 	unsigned int dev;
-signals:
-	void newCarrier(int carrier);
-	void newDeviation(int dev);
-	void newModulation(bool FM);
 public slots:
-        void setCarrier(int carrier);
-	void setDeviation(int dev);
+        void setCarrier(unsigned int carrier);
+	void setDeviation(unsigned int dev);
 	void setFM(bool fm);
 };
 

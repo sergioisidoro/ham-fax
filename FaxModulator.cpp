@@ -57,26 +57,17 @@ void FaxModulator::setSampleRate(unsigned int sr)
 	sampleRate=sr;
 }
 
-void FaxModulator::setCarrier(int carrier)
+void FaxModulator::setCarrier(unsigned int carrier)
 {
-	if(this->carrier!=(unsigned int)carrier) {
-		this->carrier=(unsigned int)carrier;
-		emit newCarrier(carrier);
-	}
+	this->carrier=carrier;
 }
 
-void FaxModulator::setDeviation(int dev)
+void FaxModulator::setDeviation(unsigned int dev)
 {
-	if(this->dev!=(unsigned int)dev) {
-		this->dev=(unsigned int)dev;
-		emit newDeviation(dev);
-	}
+	this->dev=dev;
 }
 
 void FaxModulator::setFM(bool fm)
 {
-	if(this->fm!=fm) {
-		this->fm=fm;
-		emit newModulation(fm);
-	}
+	this->fm=fm;
 }

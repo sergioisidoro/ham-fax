@@ -34,6 +34,7 @@ private:
 	QComboBox* modulation;
 	QSpinBox* startFreq;
 	QSpinBox* startLength;
+
 	QSpinBox* stopFreq;
 	QSpinBox* stopLength;
 	QSpinBox* phasing;
@@ -42,31 +43,39 @@ private:
 	QLabel* width;
 	QLabel* height;
 signals:
-	void newCarrier(int carrier);
-	void newDeviation(int deviation);
-	void newLPM(int lpm);
+	void newCarrier(unsigned int carrier);
+	void newDeviation(unsigned int deviation);
+	void newLPM(unsigned int lpm);
 	void newModulation(bool fm);
-	void newAptStartFreq(int f);
-	void newAptStartLength(int t);
-	void newAptStopFreq(int f);
-	void newAptStopLength(int t);
-	void newPhasingLength(int lines);
+	void newAptStartFreq(unsigned int f);
+	void newAptStartLength(unsigned int t);
+	void newAptStopFreq(unsigned int f);
+	void newAptStopLength(unsigned int t);
+	void newPhasingLength(unsigned int lines);
 	void newPhasingPol(bool pol);
 public slots:
-	void setCarrier(int carrier);
-	void setDeviation(int deviation);
-	void setLPM(int lpm);
+	void setCarrier(unsigned int carrier);
+	void setDeviation(unsigned int deviation);
+	void setLPM(unsigned int lpm);
 	void setModulation(bool fm);
-	void setAptStartFreq(int f);
-	void setAptStartLength(int t);
-	void setAptStopFreq(int f);
-	void setAptStopLength(int t);
-	void setPhasingLines(int lines);
+	void setAptStartFreq(unsigned int f);
+	void setAptStartLength(unsigned int t);
+	void setAptStopFreq(unsigned int f);
+	void setAptStopLength(unsigned int t);
+	void setPhasingLines(unsigned int lines);
 	void setPhasingPol(bool pol);
         void setImageSize(unsigned int width, unsigned int height);
 private slots:
         void newModSelect(int index);
 	void newPolSelect(int index);
+	void newCarSelect(int carrier);
+	void newDevSelect(int dev);
+	void newLpmSelect(int lpm);
+	void newAptStartFreqSel(int f);
+	void newAptStartLengSel(int l);
+	void newAptStopFreqSel(int f);
+	void newAptStopLengSel(int l);
+	void newPhaseLinesSel(int n);
 };
 
 #endif

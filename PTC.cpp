@@ -22,7 +22,9 @@
 #include "Error.hpp"
 
 PTC::PTC(QObject* parent) 
-	: QObject(parent), device(-1), fm(true), deviation(0)
+	: QObject(parent),
+	  deviceName("/dev/ttyS0"),
+	  device(-1), fm(true), deviation(0)
 {
 }
 
@@ -98,9 +100,9 @@ void PTC::transmit(double* samples, unsigned int count)
 	write(device,buf,count);
 }
 
-void PTC::setDeviation(int dev)
+void PTC::setDeviation(unsigned int dev)
 {
-	deviation=(unsigned int)dev;
+	deviation=dev;
 }
 
 void PTC::setFM(bool fm)

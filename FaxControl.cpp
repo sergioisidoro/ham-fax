@@ -91,24 +91,24 @@ FaxControl::FaxControl(QWidget* parent)
 
 	connect(modulation,SIGNAL(activated(int)),
 		this,SLOT(newModSelect(int)));
-	connect(carrier,SIGNAL(valueChanged(int)),
-		this,SIGNAL(newCarrier(int)));
-	connect(dev,SIGNAL(valueChanged(int)),
-		 this,SIGNAL(newDeviation(int)));
-	connect(lpm,SIGNAL(valueChanged(int)),
-		this,SIGNAL(newLPM(int)));
-	connect(startFreq,SIGNAL(valueChanged(int)),
-		this,SIGNAL(newAptStartFreq(int)));
-	connect(startLength,SIGNAL(valueChanged(int)),
-		this,SIGNAL(newAptStartLength(int)));
-	connect(stopFreq,SIGNAL(valueChanged(int)),
-		this,SIGNAL(newAptStopFreq(int)));
-	connect(stopLength,SIGNAL(valueChanged(int)),
-		this,SIGNAL(newAptStopLength(int)));
-	connect(phasing,SIGNAL(valueChanged(int)),
-		this,SIGNAL(newPhasingLength(int)));
 	connect(phasePol,SIGNAL(activated(int)),
 		this,SLOT(newPolSelect(int)));
+	connect(carrier,SIGNAL(valueChanged(int)),
+		this,SLOT(newCarSelect(int)));
+	connect(dev,SIGNAL(valueChanged(int)),
+		 this,SLOT(newDevSelect(int)));
+	connect(lpm,SIGNAL(valueChanged(int)),
+		this,SLOT(newLpmSelect(int)));
+	connect(startFreq,SIGNAL(valueChanged(int)),
+		this,SLOT(newAptStartFreqSel(int)));
+	connect(startLength,SIGNAL(valueChanged(int)),
+		this,SLOT(newAptStartLengSel(int)));
+	connect(stopFreq,SIGNAL(valueChanged(int)),
+		this,SLOT(newAptStopFreqSel(int)));
+	connect(stopLength,SIGNAL(valueChanged(int)),
+		this,SLOT(newAptStopLengSel(int)));
+	connect(phasing,SIGNAL(valueChanged(int)),
+		this,SLOT(newPhaseLinesSel(int)));
 }
 
 void FaxControl::newModSelect(int index)
@@ -121,17 +121,17 @@ void FaxControl::setModulation(bool fm)
 	modulation->setCurrentItem(fm ? 1 : 0);
 }
 
-void FaxControl::setCarrier(int carrier)
+void FaxControl::setCarrier(unsigned int carrier)
 {
 	this->carrier->setValue(carrier);
 }
 
-void FaxControl::setDeviation(int deviation)
+void FaxControl::setDeviation(unsigned int deviation)
 {
 	dev->setValue(deviation);
 }
 
-void FaxControl::setLPM(int lpm)
+void FaxControl::setLPM(unsigned int lpm)
 {
 	this->lpm->setValue(lpm);
 }
@@ -147,27 +147,27 @@ void FaxControl::setImageSize(unsigned int width, unsigned int height)
 	this->height->setText(s);
 }
 
-void FaxControl::setAptStartFreq(int f)
+void FaxControl::setAptStartFreq(unsigned int f)
 {
 	startFreq->setValue(f);
 }
 
-void FaxControl::setAptStartLength(int t)
+void FaxControl::setAptStartLength(unsigned int t)
 {
 	startLength->setValue(t);
 }
 
-void FaxControl::setAptStopFreq(int f)
+void FaxControl::setAptStopFreq(unsigned int f)
 {
 	stopFreq->setValue(f);
 }
 
-void FaxControl::setAptStopLength(int t)
+void FaxControl::setAptStopLength(unsigned int t)
 {
 	stopLength->setValue(t);
 }
 
-void FaxControl::setPhasingLines(int lines)
+void FaxControl::setPhasingLines(unsigned int lines)
 {
 	phasing->setValue(lines);
 }
@@ -180,4 +180,44 @@ void FaxControl::newPolSelect(int index)
 void FaxControl::setPhasingPol(bool pol)
 {
 	phasePol->setCurrentItem(pol ? 0 : 1);
+}
+
+void FaxControl::newCarSelect(int carrier)
+{
+	emit newCarrier((unsigned int)carrier);
+}
+
+void FaxControl::newDevSelect(int dev)
+{
+	emit newDeviation((unsigned int)dev);
+}
+
+void FaxControl::newLpmSelect(int lpm)
+{
+	emit newLPM((unsigned int)lpm);
+}
+
+void FaxControl::newAptStartFreqSel(int f)
+{
+	emit newAptStartFreq((unsigned int)f);
+}
+
+void FaxControl::newAptStartLengSel(int l)
+{
+	emit newAptStartLength((unsigned int)l);
+}
+
+void FaxControl::newAptStopFreqSel(int f)
+{
+	emit newAptStopFreq((unsigned int)f);
+}
+
+void FaxControl::newAptStopLengSel(int l)
+{
+	emit newAptStopLength((unsigned int)l);
+}
+
+void FaxControl::newPhaseLinesSel(int n)
+{
+	emit newPhasingLength((unsigned int)n);
 }

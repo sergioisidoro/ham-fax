@@ -23,7 +23,8 @@
 #include "Error.hpp"
 
 PTT::PTT(QObject* parent)
-	: QObject(parent), device(0), usePTT(false)
+	: QObject(parent), device(0), usePTT(false), 
+	deviceName("/dev/ttyS1")
 {	
 }
 

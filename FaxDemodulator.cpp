@@ -47,7 +47,7 @@ FaxDemodulator::~FaxDemodulator(void)
 	delete[] sine;
 }
 
-void FaxDemodulator::setCarrier(int carrier)
+void FaxDemodulator::setCarrier(unsigned int carrier)
 {
 	this->carrier=carrier;
 }
@@ -57,7 +57,7 @@ void FaxDemodulator::setSampleRate(unsigned int sampleRate)
 	rate=(unsigned int)sampleRate;
 }
 
-void FaxDemodulator::setDeviation(int dev)
+void FaxDemodulator::setDeviation(unsigned int dev)
 {
 	deviation=(unsigned int)dev;
 }

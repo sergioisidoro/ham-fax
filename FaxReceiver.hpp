@@ -66,8 +66,8 @@ signals:
 	void imageRow(unsigned int row);
 	void receptionEnded(void);
 public slots:
-        void setAptStartFreq(int f);
-	void setAptStopFreq(int f);
+        void setAptStartFreq(unsigned int f);
+	void setAptStopFreq(unsigned int f);
 	void setWidth(unsigned int width);
 	void setPhasePol(bool pol);
 	void startPhasing(void);
