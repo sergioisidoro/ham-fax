@@ -36,6 +36,13 @@ void CorrectDialog::setText(const QString& s)
 	text->setText(s);
 }
 
+void CorrectDialog::reject(void)
+{
+	// the escape key leads here
+	emit cancelClicked();
+	hide();
+}
+
 void CorrectDialog::hideWindow(void)
 {
 	hide();

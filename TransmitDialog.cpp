@@ -43,6 +43,14 @@ void TransmitDialog::closeEvent(QCloseEvent* close)
 	}
 }
 
+void TransmitDialog::reject(void)
+{
+	// the escape key leads here
+	if(cancel->isEnabled()) {
+		emit cancelClicked();
+	}
+}
+
 void TransmitDialog::start(void)
 {
 	cancel->setEnabled(true);

@@ -47,6 +47,14 @@ void ReceiveDialog::closeEvent(QCloseEvent* close)
 	}
 }
 
+void ReceiveDialog::reject(void)
+{
+	// the escape key leads here
+	if(cancel->isEnabled()) {
+		emit cancelClicked();
+	}
+}
+
 void ReceiveDialog::aptStart(void)
 {
 	status->setText(tr("searching APT start tone"));

@@ -3,6 +3,7 @@ HamFax 0.5
  * fixed line length while transmitting at high speed (>300lpm)
  * failed read on sound device should no longer crash the program
  * error message if PTC (serial) device cannot be accessed
+ * fixed handling of escape key in dialogs
  * minor changes
 
 HamFax 0.4

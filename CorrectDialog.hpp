@@ -28,6 +28,7 @@ public:
 	CorrectDialog(QWidget* parent);
 	void setText(const QString& s);
 private:
+	virtual void reject(void);
 	QLabel* text;
 signals:
 	void cancelClicked(void);

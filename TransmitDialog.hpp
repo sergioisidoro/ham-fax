@@ -28,6 +28,7 @@ public:
 	TransmitDialog(QWidget* parent);
 private:
 	virtual void closeEvent(QCloseEvent* close);
+	virtual void reject(void);
         void showText(const QString& s);
 	QLabel* status;
 	QPushButton* cancel;
