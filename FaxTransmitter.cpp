@@ -42,6 +42,7 @@ void FaxTransmitter::startTransmission(void)
 
 void FaxTransmitter::doNext(int n)
 {
+	double lineSamples=60.0*sampleRate/lpm;
 	double buf[n];
 	for(int i=0; i<n; i++) {
 		if(state==APTSTART) {
@@ -55,9 +56,9 @@ void FaxTransmitter::doNext(int n)
 			}
 		}
 		if(state==PHASING) {
-			if(sampleNr<sampleRate*phasingLines*60/lpm) {
-				double pos=fmod(sampleNr,sampleRate*60/lpm)
-					/sampleRate/60.0*lpm;
+			if(sampleNr<lineSamples*phasingLines) {
+				double pos=fmod(sampleNr,lineSamples)
+					/lineSamples;
 				buf[i] = (pos<0.025||pos>=0.975 )
 					? (phaseInvers?0.0:1.0) 
 					: (phaseInvers?1.0:0.0);
@@ -68,7 +69,7 @@ void FaxTransmitter::doNext(int n)
 			}
 		}
 		if(state==ENDPHASING) {
-			if(sampleNr<sampleRate*60/lpm) {
+			if(sampleNr<lineSamples) {
 				buf[i]= phaseInvers?0.0:1.0;
 				sampleNr++;
 			} else {
@@ -78,11 +79,11 @@ void FaxTransmitter::doNext(int n)
 			}
 		}
 		if(state==IMAGE) {
-			if(sampleNr<(color?3:1)*sampleRate*rows*60/lpm) {
-				double pos=fmod(sampleNr,sampleRate*60/lpm)
-					/sampleRate/60.0*lpm;
-				int c=static_cast<int>(pos*cols);
-				int r=sampleNr*lpm/60/sampleRate;
+			if(sampleNr<(color?3:1)*lineSamples*rows) {
+				int c;
+				c=static_cast<int>(fmod(sampleNr,lineSamples)
+						   /lineSamples*cols);
+				int r=static_cast<int>(sampleNr/lineSamples);
 				if(row!=r) {
 					emit imageLine((row=r)/(color?3:1));
 				}
