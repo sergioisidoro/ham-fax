@@ -22,6 +22,7 @@
 #include <qlayout.h>
 #include <qmessagebox.h>
 #include <qdatetime.h>
+#include <qimage.h>
 #include "Error.hpp"
 #include "FaxView.hpp"
 #include "OptionsDialog.hpp"
@@ -61,6 +62,8 @@ FaxWindow::FaxWindow(const QString& version)
 		config,SLOT(setLpm(unsigned int)));
 	connect(config,SIGNAL(lpm(unsigned int)),
 		faxControl,SLOT(setLPM(unsigned int)));
+	connect(config,SIGNAL(lpm(unsigned int)),
+		faxTransmitter,SLOT(setLPM(unsigned int)));
 
 	connect(config,SIGNAL(aptStartFreq(unsigned int)),
 		faxControl,SLOT(setAptStartFreq(unsigned int)));
@@ -200,7 +203,7 @@ void FaxWindow::buildMenuBar(void)
 	QPopupMenu* fileMenu=new QPopupMenu(this);
 	fileMenu->insertItem(tr("&Open"),this,SLOT(load()));
 	fileMenu->insertItem(tr("&Save"),this,SLOT(save()));
-	fileMenu->insertItem(tr("&Quick save"),this,SLOT(quickSave()));
+	fileMenu->insertItem(tr("&Quick save as PNG"),this,SLOT(quickSave()));
 	fileMenu->insertSeparator();
 	fileMenu->insertItem(tr("&Exit"),this,SLOT(close()));
 
@@ -272,7 +275,9 @@ void FaxWindow::aboutQT(void)
 
 void FaxWindow::load(void)
 {
-	QString fileName=getFileName(tr("load image"),"*.png");
+	QString fileName=getFileName(tr("load image"),
+				     "*."+QImage::inputFormatList().
+				     join(" *.").lower());
 	if(!fileName.isEmpty()) {
 		emit loadFile(fileName);
 	}
@@ -280,7 +285,9 @@ void FaxWindow::load(void)
 
 void FaxWindow::save(void)
 {
-	QString fileName=getFileName(tr("save image"),"*.png");
+	QString fileName=getFileName(tr("save image"),
+				     "*."+QImage::outputFormatList().
+				     join(" *.").lower());
 	if(!fileName.isEmpty()) {
 		emit saveFile(fileName);
 	}
@@ -330,8 +337,10 @@ QString FaxWindow::getFileName(QString caption, QString filter)
 	fd->setSizeGripEnabled(false);
 	fd->setCaption(caption);
 	fd->setFilter(filter);
-	fd->exec();
-	QString s=fd->selectedFile();
+	QString s;
+	if(fd->exec()) {
+		s=fd->selectedFile();
+	}
 	delete fd;
 	return s;
 }

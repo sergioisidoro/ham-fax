@@ -106,14 +106,15 @@ void FaxImage::create(unsigned int cols, unsigned int rows)
 
 void FaxImage::load(QString fileName)
 {
-	image=QImage(fileName,"PNG").convertDepth(32);
+	image=QImage(fileName).convertDepth(32);
 	emit sizeUpdated(image.width(),image.height());
 	emit widthUpdated(image.width());
 }
 
 void FaxImage::save(QString fileName)
 {
-	image.save(fileName,"PNG");
+	image.save(fileName,fileName.right(fileName.length()
+					   -fileName.find('.',-1)-1).upper());
 }
 
 void FaxImage::scale(unsigned int width, unsigned int height)
