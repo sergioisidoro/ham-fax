@@ -46,8 +46,8 @@ Config::Config()
 	setDefault("/hamfax/fax/LPM",120);
 	setDefault("/hamfax/phasing/lines",20);
 	setDefault("/hamfax/phasing/invert",false);
-	setDefault("/hamfax/directories/qm","/usr/share/hamfax");
-	setDefault("/hamfax/directories/doc","/usr/share/doc/hamfax");
+	setDefault("/hamfax/directories/qm", PKGDATADIR);
+	setDefault("/hamfax/directories/doc",PKGDATADIR);
 	setDefault("/hamfax/GUI/toolTips",true);
 	setDefault("/hamfax/GUI/autoScroll",true);
 	setDefault("/hamfax/GUI/font","Helvetica,11,-1,5,50,0,0,0,0,0");

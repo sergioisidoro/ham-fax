@@ -19,23 +19,31 @@ dnl
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(src/hamfax.cpp)
-AM_INIT_AUTOMAKE(HamFax, 1.1)
+AM_INIT_AUTOMAKE(HamFax, 0.6.3)
+AM_CONFIG_HEADER(src/config.h)
 
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 AC_PROG_INSTALL
 BNV_HAVE_QT
 
-AC_CHECK_LIB(audiofile,afOpenFile)
-AC_CHECK_HEADER(sys/soundcard.h, [AC_DEFINE([OSS], 1, [OSS])])
+AH_TEMPLATE(USE_FILE, [Build with support for audio files.])
+AC_CHECK_LIB(audiofile, afOpenFile,
+                        [AC_DEFINE(USE_FILE) USE_FILE="1" LIBS="$LIBS -laudiofile"])
+AM_CONDITIONAL(USE_FILE, test x$USE_FILE = x1)
+
+AH_TEMPLATE(USE_OSS, [Build with support for the open sound system (OSS).])
+AC_CHECK_HEADER(sys/soundcard.h, [AC_DEFINE(USE_OSS) USE_OSS="1"])
+AM_CONDITIONAL(USE_OSS, test x$USE_OSS = x1)
+
+AH_TEMPLATE(USE_PTC, [Build with support for the PTC-II])
+AC_SYS_POSIX_TERMIOS
+AM_CONDITIONAL(USE_PTC, test x$am_cv_sys_posix_termios = xyes)
+if test x$am_cv_sys_posix_termios = xyes; then
+   AC_DEFINE(USE_PTC)
+fi
 
 AC_PATH_PROG(LRELEASE, lrelease)
-AM_CONDITIONAL(INTERNATIONAL, test x$LRELEASE != x)
+AM_CONDITIONAL(USE_LRELEASE, test -n $LRELEASE)
 
-AC_SYS_POSIX_TERMIOS
-AM_CONDITIONAL(TERMIOS, test x$am_cv_sys_posix_termios = xyes)
-
-AC_DEFINE_UNQUOTED(DATADIR, @datadir@, [path to data directory])
-
-AC_CHECK_HEADER(sys/soundcard.h)
 AC_OUTPUT(Makefile)

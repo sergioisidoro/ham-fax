@@ -21,7 +21,6 @@ to do:
 - correct beginning of line out of stored samples
    (necessary for correction of color facsimile)
 - possibility for permanent slant correction
-- automatic generation of dependencies (automake, gcc -M or ?)
 - some kind of preview while decoding apt and phasing lines
 
 Features for the far future: (HamFax2; is anyone interested?)

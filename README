@@ -8,12 +8,11 @@ HamFax is a Qt/X11 application for sending and receiving
 facsimiles. It is licensed under the GNU General Public License (GPL),
 see the file COPYING for the complete text.
 
-If your have questions or comments please send them to me
-(cschmitt@users.sourceforge.net).
-I would like to have some feedback.
+If you have questions or comments please send them to me
+(cschmitt@users.sourceforge.net). I would like to have some feedback.
 
-New versions of this program and some related information can be found at
-http://hamfax.sourceforge.net/
+New versions of this program and some related information can be found
+at http://hamfax.sourceforge.net/
 
 Requirements:
 ************
@@ -24,10 +23,12 @@ Hardware:
  - a working sound card and/or a SCS-PTC (http://www.scs-ptc.com/)
 
 Software:
- - Linux (Other operating systems may work, too.)
+ - Linux (Other Unix-like operating systems may work, too. Please
+          report success or failures.)
  - X11
  - Qt v3.0 or newer (http://www.trolltech.com/)
  - Audiofile (http://www.68k.org./~michael/audiofile/)
+ - Support for the Open Sound System (OSS) or something compatible
 
 Note: They are standard packages in most recent linux distributions.
 
@@ -68,26 +69,24 @@ see file TODO for information on missing features
 Installation:
 *************
 
-Compiling from source requires the usual:
+HamFax uses automake and autoconf for the build process.  For building
+from a tar ball you don't need them, only if you grab the code from
+the CVS.  The easy way is (after untaring and changing the directory):
+
 ./configure
 make
-su
 make install
 
-Finally, check /etc/hamfaxrc for correct directory entries.
+Check the documentation in INSTALL for questions on build options.
 
-If configure fails, check that you have the required software (see above)
-available on your system; especially Qt3 and Qt3's development files.
-Next check where Qt's files are located and specify the locations.
-For instance:
+If configure fails, check that you have the required software (see
+above) available on your system; especially Qt3 and Qt3's development
+files.  Next check where Qt's files are located and specify the
+locations.  For instance:
 
 ./configure --with-Qt-dir=/usr/lib/qt3 --with-Qt-includes=/usr/lib/qt3/include
-
-Calling
-./configure --help
-gives valid options.
 
 -- 
 73 and have fun :)
 
-Christof
+Christof, DH1CS

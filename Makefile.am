@@ -35,11 +35,15 @@ hamfax_CXXFLAGS = @QT_CXXFLAGS@
 moc_%.cpp: %.hpp
 	$(QT_MOC) $< -o $@
 
-if INTERNATIONAL
+AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\"
+
+if USE_LRELEASE
 TRANSLATION = po/hamfax_de.qm
 endif
 
 pkgdata_DATA = doc/HamFax.html $(TRANSLATION)
+
+EXTRA_DIST = po/hamfax_de.qm
 
 po/hamfax_de.qm: po/hamfax_de.ts
 	cd po/; $(LRELEASE) hamfax.pro
