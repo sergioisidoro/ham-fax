@@ -26,14 +26,15 @@ LIBS=@QT_LIBS@ -laudiofile
 QT_MOC=@QT_MOC@
 INSTALL=@INSTALL@
 
-.PHONY: all clean install uninstall
+.PHONY: all clean distclean install uninstall
 
 all: hamfax
 
 clean:
-	rm -rfv *~ *.o moc_*.cpp hamfax\
-        config.cache config.log config.status moc_bnv_qt_test.C\
-        doc/*~
+	rm -rfv *.o moc_*.cpp hamfax moc_bnv_qt_test.C
+
+distclean: clean
+	rm -rfv Makefile config.cache config.log config.status *~ doc/*~
 
 install: hamfax
 	$(INSTALL) -o root -g root -m 0755 -d $(bindir)

@@ -19,6 +19,7 @@
 #define FAXDEMODULATOR_HPP
 
 #include <qobject.h>
+#include "FirFilter.hpp"
 
 class FaxDemodulator : public QObject {
 	Q_OBJECT
@@ -34,18 +35,12 @@ private:
 	double* sine;
 	double* sin_phase;
 	double* cos_phase;
-	static const int fir_size=17;
-	double* ifir;
-	double* ifir_end;
-	double* icurrent;
+	FirFilter<double> iFir;
+	FirFilter<double> qFir;
 	double ifirold;
-	double* qfir;
-	double* qfir_end;
-	double* qcurrent;
 	double qfirold;
 	static const int asine_size=256;
 	double* asine;
-	int filter;
 signals:
 	void data(int* buffer, int n);
 public slots:

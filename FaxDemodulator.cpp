@@ -27,17 +27,15 @@ static const double lpf[3][17]={
 
 FaxDemodulator::FaxDemodulator(QObject* parent)
 	: QObject(parent),
-	  carrier(0), rate(0), deviation(0), fm(true),  filter(1)
+	  carrier(0), rate(0), deviation(0), fm(true), iFir(17), qFir(17)
 {
 	sine=new double[sine_size];
 	for(int i=0; i<sine_size; i++) {
 		sine[i]=sin(2.0*M_PI*i/sine_size);
 	}
 	
-	ifir=new double[fir_size](0);
-	ifir_end=ifir+fir_size;
-	qfir=new double[fir_size](0);
-	qfir_end=qfir+fir_size;
+	iFir.setCoefficients(lpf[1]);
+	qFir.setCoefficients(lpf[1]);
 
 	asine=new double[asine_size];
 	for(int i=0; i<asine_size; i++) {
@@ -48,8 +46,7 @@ FaxDemodulator::FaxDemodulator(QObject* parent)
 
 FaxDemodulator::~FaxDemodulator(void)
 {
-	delete[] ifir;
-	delete[] qfir;
+	delete[] asine;
 	delete[] sine;
 }
 
@@ -57,8 +54,6 @@ void FaxDemodulator::init(void)
 {
 	sin_phase=sine;
 	cos_phase=sine+sine_size/4;
-	icurrent=ifir;
-	qcurrent=qfir;
 	ifirold=qfirold=0;
 }
 
@@ -86,25 +81,8 @@ void FaxDemodulator::newSamples(short* audio, int n)
 {
 	int demod[n];
 	for(int i=0; i<n; i++) {
-		*icurrent=audio[i]* *cos_phase;
-		*qcurrent=audio[i]* *sin_phase;
-
-		double ifirout=0;
-		double qfirout=0;
-
-		double* pi=icurrent;
-		double* pq=qcurrent;
-		for(int k=0; k<fir_size; k++) {
-			ifirout+= *pi * lpf[filter][k];
-			qfirout+= *pq * lpf[filter][k];
-			if(++pi>=ifir_end) {
-				pi=ifir;
-			}
-			if(++pq>=qfir_end) {
-				pq=qfir;
-			}
-		}
-
+		double ifirout=iFir.filterSample(audio[i]* *cos_phase);
+		double qfirout=qFir.filterSample(audio[i]* *sin_phase);
 		if(fm) {
 			double abs=sqrt(qfirout*qfirout+ifirout*ifirout);
 			ifirout/=abs;
@@ -132,12 +110,7 @@ void FaxDemodulator::newSamples(short* audio, int n)
 
 		ifirold=ifirout;
 		qfirold=qfirout;
-		if(++icurrent>=ifir_end) {
-			icurrent=ifir;
-		}
-		if(++qcurrent>=qfir_end) {
-			qcurrent=qfir;
-		}
+
 		if((sin_phase+=sine_size*carrier/rate) >= sine+sine_size) {
 			sin_phase-=sine_size;
 		}
@@ -150,5 +123,6 @@ void FaxDemodulator::newSamples(short* audio, int n)
 
 void FaxDemodulator::setFilter(int n)
 {
-	filter=n;
+	iFir.setCoefficients(lpf[static_cast<size_t>(n)]);
+	qFir.setCoefficients(lpf[static_cast<size_t>(n)]);
 }

@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002 
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,7 +23,7 @@ FaxModulator::FaxModulator(QObject* parent)
 	: QObject(parent), sampleRate(0), carrier(0), dev(0)
 {
 	sine=new short[size_sine];
-	for(int i=0; i<size_sine; i++) {
+	for(size_t i=0; i<size_sine; i++) {
 		sine[i]=static_cast<short>(32767*sin(2.0*M_PI*i/size_sine));
 	}
 }
@@ -37,10 +38,10 @@ void FaxModulator::init(void)
 	phase=0;
 }
 
-void FaxModulator::modulate(double* buffer, int number)
+void FaxModulator::modulate(double* buffer, size_t number)
 {
 	short sample[number];
-	for(int i=0; i<number; i++) {
+	for(size_t i=0; i<number; i++) {
 		if(fm) {
 			sample[i]=sine[phase];
 			int f=static_cast<int>(carrier+2.*(buffer[i]-0.5)*dev);

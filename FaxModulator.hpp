@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,22 +27,22 @@ public:
 	FaxModulator(QObject* parent);
 	~FaxModulator(void);
 private:
-	static const int size_sine=8192;
+	static const size_t size_sine=8192;
 	short* sine;        // lookup table for sine
-	int phase;          // current phase of sine
+	size_t phase;       // current phase of sine
 	int sampleRate;
 	bool fm;
 	int carrier;
 	int dev;
 signals:
-	void data(short*, int);
+	void data(short*, size_t);
 public slots:
         void init(void);
 	void setSampleRate(int sr);
         void setCarrier(int carrier);
 	void setDeviation(int dev);
 	void setFM(bool fm);
-	void modulate(double* buffer, int n);
+	void modulate(double* buffer, size_t n);
 };
 
 #endif
