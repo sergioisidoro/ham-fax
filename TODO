@@ -9,3 +9,4 @@ to do:
 - move correct dialog, etc. to FaxImage (?)
 - correct beginning of line out of stored samples
    (necessary for correction of color facsimile)
+- add slider to dialogs for selecting ioc
