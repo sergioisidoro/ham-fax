@@ -24,9 +24,7 @@ TransmitDialog::TransmitDialog(QWidget* parent)
 	QVBoxLayout* layout=new QVBoxLayout(this);
 	layout->setSpacing(20);
 	layout->setMargin(20);
-	
 	status=new QLabel(this);
-	status->setMinimumWidth(150);
 	layout->addWidget(status);
 	cancel=new QPushButton(tr("&Cancel"),this);
 	layout->addWidget(cancel);
@@ -36,6 +34,7 @@ TransmitDialog::TransmitDialog(QWidget* parent)
 void TransmitDialog::showText(const QString& s)
 {
 	status->setText(s);
+	adjustSize();
 }
 
 void TransmitDialog::closeEvent(QCloseEvent* close)

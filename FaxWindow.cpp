@@ -32,10 +32,8 @@ FaxWindow::FaxWindow(const QString& version)
 	faxImage=new FaxImage(this);
 	FaxView* faxView=new FaxView(this,faxImage);
 	faxControl=new FaxControl(this);
-
 	faxTransmitter=new FaxTransmitter(this,faxImage);
 	faxReceiver=new FaxReceiver(this);
-	
 	sound=new Sound(this);
 	file=new File(this);
 	ptt=new PTT(this);
@@ -48,18 +46,10 @@ FaxWindow::FaxWindow(const QString& version)
 
 	buildMenuBar();
 
-	QGridLayout* layout=new QGridLayout(this,2,2);
-	layout->setRowStretch(1,0);
-	layout->setRowStretch(2,1);
-	layout->setColStretch(1,0);
-	layout->setColStretch(2,1);
+	QHBoxLayout* layout=new QHBoxLayout(this);
 	layout->setMenuBar(menuBar);
-	layout->addWidget(faxControl,1,1);
-	layout->addMultiCellWidget(faxView,1,2,2,2);
-
-	QFrame* dummyWidget=new QFrame(this);
-	dummyWidget->setFrameStyle(QFrame::Panel|QFrame::Raised);
-	layout->addWidget(dummyWidget,2,1);
+	layout->addWidget(faxControl);
+	layout->addWidget(faxView);
 
 	// FaxControl -- FaxTransmitter -- FaxReceiver
 	connect(faxControl,SIGNAL(newLPM(int)),
@@ -129,9 +119,6 @@ FaxWindow::FaxWindow(const QString& version)
 	faxModulator->setCarrier(1900);
 	faxModulator->setDeviation(400);
 
-	ptt->setUse(false);
-	ptt->setDeviceName("/dev/ttyS1");
-
 	// FaxWindow -- FaxImage -- FaxView
 	connect(this,SIGNAL(loadFile(QString)),faxImage,SLOT(load(QString)));
 	connect(this,SIGNAL(saveFile(QString)),faxImage,SLOT(save(QString)));
@@ -147,6 +134,7 @@ FaxWindow::FaxWindow(const QString& version)
 		faxView,SLOT(ensureVisible(int,int)));
 	faxImage->create(904,904);
 
+	// FaxReceiver -- FaxImage
 	connect(faxReceiver,
 		SIGNAL(newImageHeight(unsigned int, unsigned int)),
 		faxImage,SLOT(resizeHeight(unsigned int, unsigned int)));
@@ -154,8 +142,12 @@ FaxWindow::FaxWindow(const QString& version)
 		SIGNAL(newGrayPixel(unsigned int,unsigned int,unsigned int)),
 		faxImage,
 		SLOT(setPixelGray(unsigned int,unsigned int,unsigned int)));
+
+	// FaxTransmitter -- TransmitDialog
 	connect(faxTransmitter,SIGNAL(statusText(const QString&)),
 		transmitDialog,SLOT(showText(const QString&)));
+	connect(transmitDialog,SIGNAL(cancelClicked()),
+		this,SLOT(endTransmission()));
 
 	// FaxReceiver -- ReceiveDialog
 	connect(faxReceiver,SIGNAL(aptFound(unsigned int)),
@@ -170,16 +162,15 @@ FaxWindow::FaxWindow(const QString& version)
 		faxReceiver,SLOT(startPhasing()));
 	connect(faxReceiver,SIGNAL(imageRow(unsigned int)),
 		receiveDialog,SLOT(imageRow(unsigned int)));
-
-	connect(faxReceiver,SIGNAL(aptStopDetected()),
-		this,SLOT(endReception()));
 	connect(receiveDialog,SIGNAL(cancelClicked()),
+		faxReceiver,SLOT(endReception()));
+	connect(faxReceiver,SIGNAL(receptionEnded()),
 		this,SLOT(endReception()));
-	connect(transmitDialog,SIGNAL(cancelClicked()),
-		this,SLOT(endTransmission()));
 
 	ptc->setDeviceName("/dev/ttyS0");
 	sound->setDSPDevice("/dev/dsp");
+	ptt->setUse(false);
+	ptt->setDeviceName("/dev/ttyS1");
 }
 
 void FaxWindow::buildMenuBar(void)
@@ -237,12 +228,11 @@ void FaxWindow::about(void)
 {
 	QMessageBox::information(this,this->caption(),
 				 tr("HamFax is a QT application for "
-				    "transmitting and receiving \n"
-				    "ham radio facsimiles\n"
+				    "transmitting and receiving "
+				    "ham radio facsimiles.\n"
 				    "Author: Christof Schmitt, DH1CS\n"
 				    "License: GPL\n"
-				    "Version: %1")
-		.arg(version));
+				    "Version: %1").arg(version));
 }
 
 void FaxWindow::aboutQT(void)

@@ -23,11 +23,13 @@
 #include <math.h>
 
 FaxControl::FaxControl(QWidget* parent)
-	: QVBox(parent)
+	: QWidget(parent)
 {
+	QVBoxLayout* layout=new QVBoxLayout(this);
 	QFrame* mod=new QFrame(this);
+	layout->addWidget(mod);
 	mod->setFrameStyle(QFrame::Panel|QFrame::Raised);
-	QGridLayout* modLayout=new QGridLayout(mod,4,3,10,10);
+	QGridLayout* modLayout=new QGridLayout(mod,4,3,10);
 	modLayout->addWidget(new QLabel(tr("carrier"),mod),1,1);
 	modLayout->addWidget(carrier=new QSpinBox(1500,2400,100,mod),1,2);
 	modLayout->addMultiCellWidget(new QLabel(tr("Hz"),mod),1,1,3,4);
@@ -42,6 +44,7 @@ FaxControl::FaxControl(QWidget* parent)
 	modulation->insertItem(tr("FM"));
 
 	QFrame* a1=new QFrame(this);
+	layout->addWidget(a1);
 	a1->setFrameStyle(QFrame::Panel|QFrame::Raised);
 	QGridLayout* a1Layout=new QGridLayout(a1,2,4,10,10);
 	a1Layout->addMultiCellWidget(new QLabel(tr("APT start"),a1),1,1,1,4);
@@ -51,6 +54,7 @@ FaxControl::FaxControl(QWidget* parent)
 	a1Layout->addWidget(new QLabel(tr("s"),a1),2,4);
 
 	QFrame* a2=new QFrame(this);
+	layout->addWidget(a2);
 	a2->setFrameStyle(QFrame::Panel|QFrame::Raised);
 	QGridLayout* a2Layout=new QGridLayout(a2,2,4,10,10);
 	a2Layout->addMultiCellWidget(new QLabel(tr("APT stop"),a2),1,1,1,4);
@@ -60,6 +64,7 @@ FaxControl::FaxControl(QWidget* parent)
 	a2Layout->addWidget(new QLabel(tr("s"),a2),2,4);
 	
 	QFrame* phs=new QFrame(this);
+	layout->addWidget(phs);
 	phs->setFrameStyle(QFrame::Panel|QFrame::Raised);
 	QGridLayout* phsLayout=new QGridLayout(phs,2,2,10,10);
 	phsLayout->addMultiCellWidget(
@@ -70,6 +75,7 @@ FaxControl::FaxControl(QWidget* parent)
 	phasePol->insertItem(tr("inverted"));
 
 	QFrame* size=new QFrame(this);
+	layout->addWidget(size);
 	size->setFrameStyle(QFrame::Panel|QFrame::Raised);
 	QGridLayout* sizeLayout=new QGridLayout(size,3,2,10,10);
 	sizeLayout->addWidget(new QLabel(tr("IOC"),size),1,1);
@@ -78,6 +84,10 @@ FaxControl::FaxControl(QWidget* parent)
 	sizeLayout->addWidget(width=new QLabel(size),2,2);
 	sizeLayout->addWidget(new QLabel(tr("height"),size),3,1);
 	sizeLayout->addWidget(height=new QLabel(size),3,2);
+	
+	QFrame* dummy=new QFrame(this);
+	dummy->setFrameStyle(QFrame::Panel|QFrame::Raised);
+	layout->addWidget(dummy,1);
 
 	connect(modulation,SIGNAL(activated(int)),
 		this,SLOT(newModSelect(int)));

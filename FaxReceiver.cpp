@@ -38,7 +38,7 @@ void FaxReceiver::init(void)
 	aptCount=aptTrans=0;
 	aptStop=false;
 	currPhaseLength=currPhaseHigh=0;
-	phaseLines=0;
+	phaseLines=noPhaseLines=0;
 	lpm=lpmSum=0;
 	imageSample=0;
 	emit searchingAptStart();
@@ -78,11 +78,7 @@ void FaxReceiver::decodeApt(unsigned int& x)
 		} else {
 			if(f>=aptStopFreq-2 && f<=aptStopFreq+2) {
 				if(aptStop) {
-					emit newImageHeight(0,lastRow-
-							    (unsigned int)
-							    (lpm/60.0)+1);
-					state=DONE;
-					emit aptStopDetected();
+					endReception();
 				} else {
 					aptStop=true;
 				}
@@ -91,22 +87,29 @@ void FaxReceiver::decodeApt(unsigned int& x)
 	}
 }
 
+// Phasing lines consist of 2.5% white at the beginning, 95% black and again
+// 2.5% white at the end (or inverted). In normal phasing lines we try to
+// count the length between the white-black transitions. If the line has
+// a reasonable amount of black (4.9%--5.1%) and the length fits in the 
+// range of 60--360lpm (plus some tolerance) it is considered a valid
+// phasing line. Then the start of a line and the lpm is calculated.
+
 void FaxReceiver::decodePhasing(unsigned int& x)
 {
 	currPhaseLength++;
 	if(x>128) {
 		currPhaseHigh++;
 	}
-	if(( phasePol && x>230 && !phaseHigh) ||
-	   (!phasePol && x<22  && phaseHigh)) {
-		phaseHigh=phasePol?true:false;
-	} else if(( phasePol && x<=128 && phaseHigh) ||
-		  (!phasePol && x>=128 && !phaseHigh)) {
-		phaseHigh=phasePol?false:true;
-		if((double)currPhaseHigh >=
-		   (phasePol?0.049:0.949)*currPhaseLength &&
+	if(( phaseNormal && x>230 && !phaseHigh) ||
+	   (!phaseNormal && x<22  && phaseHigh)) {
+		phaseHigh=phaseNormal?true:false;
+	} else if(( phaseNormal && x<=128 && phaseHigh) ||
+		  (!phaseNormal && x>=128 && !phaseHigh)) {
+		phaseHigh=phaseNormal?false:true;
+		if((double)currPhaseHigh >= 
+		   (phaseNormal?0.049:0.949)*currPhaseLength &&
 		   (double)currPhaseHigh <=
-		   (phasePol?0.051:0.951)*currPhaseLength &&
+		   (phaseNormal?0.051:0.951)*currPhaseLength &&
 		   (double)currPhaseLength/sampleRate<=1.1 &&
 		   (double)currPhaseLength/sampleRate>=0.09) {
 			double l=60.0*(double)sampleRate
@@ -115,11 +118,12 @@ void FaxReceiver::decodePhasing(unsigned int& x)
 			lpmSum+=l;
 			++phaseLines;
 			lpm=lpmSum/(double)phaseLines;
-			imageSample=(int)
-				(-2.975*60.0/lpm*(double)sampleRate);
+			imageSample=(int)(-2.975*60.0/lpm*(double)sampleRate);
 		} else if(phaseLines>0) {
-			state=IMAGE;
-			emit imageRow(0);
+			if(++noPhaseLines>=3) {
+				state=IMAGE;
+				emit imageRow(0);
+			}
 		}
 		currPhaseLength=currPhaseHigh=0;
 	}
@@ -171,7 +175,7 @@ void FaxReceiver::setWidth(unsigned int width)
 
 void FaxReceiver::setPhasePol(bool pol)
 {
-	this->phasePol=pol;
+	this->phaseNormal=pol;
 }
 
 void FaxReceiver::startPhasing(void)
@@ -181,4 +185,13 @@ void FaxReceiver::startPhasing(void)
 		phaseHigh = currentValue>=128 ? true : false;
 		emit startingPhasing();
 	}
+}
+
+void FaxReceiver::endReception(void)
+{
+	emit newImageHeight(0,lastRow-
+			    (unsigned int)
+			    (lpm/60.0)+1);
+	state=DONE;
+	emit receptionEnded();
 }

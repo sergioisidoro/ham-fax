@@ -21,9 +21,9 @@
 #include <qspinbox.h>
 #include <qcombobox.h>
 #include <qlabel.h>
-#include <qvbox.h>
+#include <qwidget.h>
 
-class FaxControl : public QVBox {
+class FaxControl : public QWidget {
 	Q_OBJECT
 public:
 	FaxControl(QWidget* parent);

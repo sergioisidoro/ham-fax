@@ -5,15 +5,12 @@ to do:
 
 to fix:
 - cleanup FaxTransmitter->TransmitDialog, like rx
-- resize image also when reception was cancelled
-- fix input overruns while receiving from PTC
 - set options for PTC too (carrier, dev)
-- size of receive (and transmit?) dialog
 - smarter handling of init, tr/rx, end
 - read sound device without blocking , Qtimer=1 (?)
-- cleanup relation between FaxView and FaxImage
 - better handling of phasing (tr AND rcp)
 - have a look at image resize at various lpms
+- fix input overruns while receiving from PTC
 
 features:
 - save and load options
