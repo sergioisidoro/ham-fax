@@ -18,7 +18,7 @@
 #include "Spectrum.hpp"
 #include <qpainter.h>
 #include <qpixmap.h>
-#include <math.h>
+#include <cmath>
 
 Spectrum::Spectrum(QWidget* parent)
 	: QFrame(parent)
@@ -56,7 +56,7 @@ void Spectrum::samples(int* buffer, int n)
 	}
 	for(int i=0; i<64; i++) {
 		data[i]=data[i]*128.0/n+1;
-		data[i]=log(data[i])*32.0;
+		data[i]=std::log(data[i])*32.0;
 		if(data[i]>127) {
 			data[i]=127;
 		}

@@ -17,7 +17,7 @@
 
 #include "Config.hpp"
 #include "FaxTransmitter.hpp"
-#include <math.h>
+#include <cmath>
 
 FaxTransmitter::FaxTransmitter(QObject* parent, FaxImage* faxImage)
 	: QObject(parent), 
@@ -67,7 +67,7 @@ void FaxTransmitter::doNext(int n)
 		}
 		if(state==PHASING) {
 			if(sampleNr<lineSamples*phasingLines) {
-				double pos=fmod(sampleNr,lineSamples)
+				double pos=std::fmod(sampleNr,lineSamples)
 					/lineSamples;
 				buf[i] = (pos<0.025||pos>=0.975 )
 					? (phaseInvers?0.0:1.0) 
@@ -91,7 +91,7 @@ void FaxTransmitter::doNext(int n)
 		if(state==IMAGE) {
 			if(sampleNr<(color?3:1)*lineSamples*rows) {
 				int c;
-				c=static_cast<int>(fmod(sampleNr,lineSamples)
+				c=static_cast<int>(std::fmod(sampleNr,lineSamples)
 						   /lineSamples*cols);
 				int r=static_cast<int>(sampleNr/lineSamples);
 				if(row!=r) {

@@ -17,7 +17,7 @@
 
 #include "Config.hpp"
 #include "FaxDemodulator.hpp"
-#include <math.h>
+#include <cmath>
 
 // Narrow, middle and wide fir low pass filter from ACfax
 static const double lowPassFilter[3][17]={
@@ -35,13 +35,13 @@ FaxDemodulator::FaxDemodulator(QObject* parent)
 	iFir.setCoefficients(lowPassFilter[1]);
 	qFir.setCoefficients(lowPassFilter[1]);
 	for(size_t i=0; i<sine.size(); i++) {
-		sine[i]=sin(2.0*M_PI*i/sine.size());
+		sine[i]=std::sin(2.0*M_PI*i/sine.size());
 	}
 	for(size_t i=0; i<cosine.size(); i++) {
-		cosine[i]=cos(2.0*M_PI*i/cosine.size());
+		cosine[i]=std::cos(2.0*M_PI*i/cosine.size());
 	}
 	for(size_t i=0; i<arcSine.size(); i++) {
-		arcSine[i]=asin(2.0*i/arcSine.size()-1.0)/2.0/M_PI;
+		arcSine[i]=std::asin(2.0*i/arcSine.size()-1.0)/2.0/M_PI;
 	}
 	Config* config=&Config::instance();
 	connect(config,SIGNAL(carrier(int)),SLOT(setCarrier(int)));
@@ -90,7 +90,7 @@ void FaxDemodulator::newSamples(short* audio, int n)
 		double ifirout=iFir.filterSample(audio[i]*cosine.nextValue());
 		double qfirout=qFir.filterSample(audio[i]*sine.nextValue());
 		if(fm) {
-			double abs=sqrt(qfirout*qfirout+ifirout*ifirout);
+			double abs=std::sqrt(qfirout*qfirout+ifirout*ifirout);
 			ifirout/=abs;
 			qfirout/=abs;
 			if(abs>10000) {
@@ -111,7 +111,7 @@ void FaxDemodulator::newSamples(short* audio, int n)
 			ifirout/=96000;
 			qfirout/=96000;
 			demod[i]=static_cast<int>
-				(sqrt(ifirout*ifirout+qfirout*qfirout));
+				(std::sqrt(ifirout*ifirout+qfirout*qfirout));
 		}
 
 		ifirold=ifirout;

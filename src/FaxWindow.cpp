@@ -31,7 +31,7 @@
 #include <qspinbox.h>
 #include <qstatusbar.h>
 #include <qtooltip.h>
-#include <math.h>
+#include <cmath>
 #include "Config.hpp"
 #include "Error.hpp"
 #include "HelpDialog.hpp"

@@ -22,9 +22,17 @@
 #include <qobject.h>
 #include "LookUpTable.hpp"
 
+/**
+ * FaxModulator is the place for creating the modulated signal.
+ */
+
 class FaxModulator : public QObject {
 	Q_OBJECT
 public:
+	/**
+	 * Constructor
+	 * \param parent is either a pointer to the Qt parent window or 0
+	 */
 	FaxModulator(QObject* parent);
 private:
 	int sampleRate;
@@ -33,13 +41,38 @@ private:
 	int dev;
 	LookUpTable<short> sine;
 signals:
+	/**
+	 * The signal is emitted with an array holding the modulated signal 
+	 * and the array's length.
+	 */
 	void data(short*, int);
 public slots:
+        /**
+	 * Initialize everything to get ready for transmission.
+	 */
         void init(void);
+	/**
+	 * Set the sample rate of the signal to create.
+	 */
 	void setSampleRate(int sr);
+	/**
+	 * Set the carrier frequency of the signal to create.
+	 */
         void setCarrier(int carrier);
+	/**
+	 * Set the deviation of the signal to create.
+	 * Of course, this only applies to FM.
+	 */
 	void setDeviation(int dev);
+	/**
+	 * Set FM or AM.
+	 */
 	void setFM(bool fm);
+	/**
+	 * \param buffer holds an array with 
+	 * \param n values ranging from 
+	 * 0.0=black til 1.0=white and emit signal data with modulated signal
+	 */
 	void modulate(double* buffer, int n);
 };
 

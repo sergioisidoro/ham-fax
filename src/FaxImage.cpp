@@ -17,7 +17,6 @@
 
 #include "FaxImage.hpp"
 #include "Config.hpp"
-#include <math.h>
 
 FaxImage::FaxImage(QWidget* parent)
 	: QScrollView(parent,0,WResizeNoErase|WNorthWestGravity),

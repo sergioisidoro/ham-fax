@@ -17,7 +17,7 @@
 
 #include "Config.hpp"
 #include "FaxReceiver.hpp"
-#include <math.h>
+#include <cmath>
 
 FaxReceiver::FaxReceiver(QObject* parent)
 	: QObject(parent), sampleRate(0), aptStartFreq(0), aptStopFreq(0), 
@@ -131,7 +131,7 @@ void FaxReceiver::decodePhasing(const int& x)
 			noPhaseLines=0;
 		} else if(phaseLines>0 && ++noPhaseLines>=5) {
 			state=IMAGE;
-			double pos=fmod(imageSample,sampleRate*60/lpm);
+			double pos=std::fmod(imageSample,sampleRate*60/lpm);
 			pos/=sampleRate*60.0/lpm;
 			lastCol=static_cast<int>(pos*width);
 			pixel=pixelSamples=0;
@@ -146,7 +146,7 @@ void FaxReceiver::decodePhasing(const int& x)
 
 void FaxReceiver::decodeImage(const int& x)
 {
-	int col=static_cast<int>(width*fmod(imageSample,sampleRate*60/lpm)
+	int col=static_cast<int>(width*std::fmod(imageSample,sampleRate*60/lpm)
 				 /sampleRate/60.0*lpm);
 	int currRow=static_cast<int>(imageSample*lpm/60.0/sampleRate);
 	rawData[imageSample]=x;
@@ -219,7 +219,7 @@ void FaxReceiver::skip(void)
 		lpm=txLPM;
 		state=IMAGE;
 		emit imageStarts();
-		double pos=fmod(imageSample,sampleRate*60/lpm);
+		double pos=std::fmod(imageSample,sampleRate*60/lpm);
 		pos/=sampleRate*60.0/lpm;
 		lastCol=static_cast<int>(pos*width);
 		pixel=pixelSamples=imageSample=0;

@@ -1,22 +1,26 @@
+Little fixes and easy features:
+- use correct types (size_t, ssize_t, ...)
+- possibility for selecting available input/output
+- menu for some "standard modes"
+- add slider to dialogs for selecting ioc
+- frequency / brightness scale for spectrum
+- switch for deciding whether to wait for apt start (and stop?)
+
 to do:
+- documentation
 - test AM
 - real "on air test"
-- CW id before and after transmission
-- menu for some "standard modes"
 - switch for deciding whether to determine the lpm from phasing
    lines or use a fixed value; adding a control for rx lpm
 - possibility for changing lpm after reception to specific value
    (slant correction does this implicitly)
-- switch for deciding whether to wait for apt start (and stop?)
-- move correct dialog, etc. to FaxImage (?)
 - correct beginning of line out of stored samples
    (necessary for correction of color facsimile)
-- add slider to dialogs for selecting ioc
 - possibility for permanent slant correction
-- frequency / brightness scale for spectrum
+- automatic generation of dependencies (automake, gcc -M or ?)
+
+Features for the far future: (HamFax2; is anyone interested?)
+- CW id before and after transmission
 - automatic reception (perhaps a background/daemon process doing the work)
 - setting the frequency on the transceiver, perhaps having a daemon process
    (have a look at hamlib)
-- automatic generation of dependencies (automake, gcc -M or ?)
-- possibility for selecting available input/output
-- use correct types (size_t, ssize_t, ...)

@@ -18,13 +18,13 @@
 
 #include "Config.hpp"
 #include "FaxModulator.hpp"
-#include <math.h>
+#include <cmath>
 
 FaxModulator::FaxModulator(QObject* parent)
 	: QObject(parent), sampleRate(0), carrier(0), dev(0), sine(8192)
 {
 	for(size_t i=0; i<sine.size(); i++) {
-		sine[i]=static_cast<short>(32767*sin(2.0*M_PI*i/sine.size()));
+		sine[i]=static_cast<short>(32767*std::sin(2.0*M_PI*i/sine.size()));
 	}
 	Config* config=&Config::instance();
 	connect(config,SIGNAL(carrier(int)),SLOT(setCarrier(int)));
