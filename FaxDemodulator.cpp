@@ -19,52 +19,55 @@
 #include <math.h>
 
 // Narrow, middle and wide fir low pass filter from ACfax
-static const double lpf[3][17]={
+static const double lowPassFilter[3][17]={
 	{ -7,-18,-15, 11, 56,116,177,223,240,223,177,116, 56, 11,-15,-18, -7},
 	{  0,-18,-38,-39,  0, 83,191,284,320,284,191, 83,  0,-39,-38,-18,  0},
 	{  6, 20,  7,-42,-74,-12,159,353,440,353,159,-12,-74,-42,  7, 20,  6}
 };
 
+
 FaxDemodulator::FaxDemodulator(QObject* parent)
 	: QObject(parent),
-	  carrier(0), rate(0), deviation(0), fm(true), iFir(17), qFir(17)
+	  carrier(0), rate(1), deviation(0), fm(true), 
+	  iFir(17), qFir(17), sine(8192), cosine(8192), arcSine(256)
 {
-	sine=new double[sine_size];
-	for(int i=0; i<sine_size; i++) {
-		sine[i]=sin(2.0*M_PI*i/sine_size);
+	iFir.setCoefficients(lowPassFilter[1]);
+	qFir.setCoefficients(lowPassFilter[1]);
+	for(size_t i=0; i<sine.size(); i++) {
+		sine[i]=sin(2.0*M_PI*i/sine.size());
 	}
-	
-	iFir.setCoefficients(lpf[1]);
-	qFir.setCoefficients(lpf[1]);
-
-	asine=new double[asine_size];
-	for(int i=0; i<asine_size; i++) {
-		asine[i]=asin(2.0*i/asine_size-1.0)/2.0/M_PI;
+	for(size_t i=0; i<cosine.size(); i++) {
+		cosine[i]=cos(2.0*M_PI*i/cosine.size());
+	}
+	for(size_t i=0; i<arcSine.size(); i++) {
+		arcSine[i]=asin(2.0*i/arcSine.size()-1.0)/2.0/M_PI;
 	}
 	init();
 };
 
 FaxDemodulator::~FaxDemodulator(void)
 {
-	delete[] asine;
-	delete[] sine;
 }
 
 void FaxDemodulator::init(void)
 {
-	sin_phase=sine;
-	cos_phase=sine+sine_size/4;
+	sine.reset();
+	cosine.reset();
 	ifirold=qfirold=0;
 }
 
 void FaxDemodulator::setCarrier(int carrier)
 {
 	this->carrier=carrier;
+	sine.setIncrement(sine.size()*carrier/rate);
+	cosine.setIncrement(cosine.size()*carrier/rate);
 }
 
 void FaxDemodulator::setSampleRate(int sampleRate)
 {
 	rate=sampleRate;
+	sine.setIncrement(sine.size()*carrier/rate);
+	cosine.setIncrement(cosine.size()*carrier/rate);
 }
 
 void FaxDemodulator::setDeviation(int dev)
@@ -81,17 +84,17 @@ void FaxDemodulator::newSamples(short* audio, int n)
 {
 	int demod[n];
 	for(int i=0; i<n; i++) {
-		double ifirout=iFir.filterSample(audio[i]* *cos_phase);
-		double qfirout=qFir.filterSample(audio[i]* *sin_phase);
+		double ifirout=iFir.filterSample(audio[i]*cosine.nextValue());
+		double qfirout=qFir.filterSample(audio[i]*sine.nextValue());
 		if(fm) {
 			double abs=sqrt(qfirout*qfirout+ifirout*ifirout);
 			ifirout/=abs;
 			qfirout/=abs;
 			if(abs>10000) {
 				double y=qfirold*ifirout-ifirold*qfirout;
-				y=(y+1.0)/2.0*asine_size;
+				y=(y+1.0)/2.0*arcSine.size();
 				double x=static_cast<double>(rate)/deviation;
-				x*=asine[static_cast<int>(y)];
+				x*=arcSine[static_cast<size_t>(y)];
 				if(x<-1.0) {
 					x=-1.0;
 				} else if(x>1.0) {
@@ -110,19 +113,12 @@ void FaxDemodulator::newSamples(short* audio, int n)
 
 		ifirold=ifirout;
 		qfirold=qfirout;
-
-		if((sin_phase+=sine_size*carrier/rate) >= sine+sine_size) {
-			sin_phase-=sine_size;
-		}
-		if((cos_phase+=sine_size*carrier/rate) >= sine+sine_size) {
-			cos_phase-=sine_size;
-		}
 	}
 	emit data(demod,n);
 }
 
 void FaxDemodulator::setFilter(int n)
 {
-	iFir.setCoefficients(lpf[static_cast<size_t>(n)]);
-	qFir.setCoefficients(lpf[static_cast<size_t>(n)]);
+	iFir.setCoefficients(lowPassFilter[static_cast<size_t>(n)]);
+	qFir.setCoefficients(lowPassFilter[static_cast<size_t>(n)]);
 }

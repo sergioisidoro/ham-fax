@@ -20,6 +20,7 @@
 
 #include <qobject.h>
 #include "FirFilter.hpp"
+#include "LookUpTable.hpp"
 
 class FaxDemodulator : public QObject {
 	Q_OBJECT
@@ -31,16 +32,13 @@ private:
 	int rate;
 	int deviation;
 	bool fm;
-	static const int sine_size=8192;
-	double* sine;
-	double* sin_phase;
-	double* cos_phase;
 	FirFilter<double> iFir;
 	FirFilter<double> qFir;
+	LookUpTable<double> sine;
+	LookUpTable<double> cosine;
+	LookUpTable<double> arcSine;
 	double ifirold;
 	double qfirold;
-	static const int asine_size=256;
-	double* asine;
 signals:
 	void data(int* buffer, int n);
 public slots:
