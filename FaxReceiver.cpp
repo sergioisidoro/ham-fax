@@ -40,9 +40,7 @@ void FaxReceiver::init(void)
 	currPhaseLength=currPhaseHigh=0;
 	phaseLines=noPhaseLines=0;
 	lpm=lpmSum=0;
-	imageSample=0;
-	lastCol=lastRow=currRow=0;
-	pixelSamples=pixel=0;
+	emit searchingAptStart();
 }
 
 void FaxReceiver::decode(unsigned int* buf, unsigned int n)
@@ -72,11 +70,11 @@ void FaxReceiver::decodeApt(unsigned int& x)
 		aptCount=aptTrans=0;
 		emit aptFound(f);
 		if(state==APTSTART) {
-			if(f>=aptStartFreq-1 && f<=aptStartFreq+1) {
+			if(f==aptStartFreq) {
 				startPhasing();
 			}
 		} else {
-			if(f>=aptStopFreq-2 && f<=aptStopFreq+2) {
+			if(f==aptStopFreq) {
 				if(aptStop) {
 					endReception();
 				} else {
@@ -119,12 +117,15 @@ void FaxReceiver::decodePhasing(unsigned int& x)
 			++phaseLines;
 			lpm=lpmSum/(double)phaseLines;
 			imageSample=(int)(0.025*60.0/lpm*(double)sampleRate);
+			
 			noPhaseLines=0;
-		} else if(phaseLines>0) {
-			if(++noPhaseLines>=5) {
-				state=IMAGE;
-				emit imageRow(0);
-			}
+		} else if(phaseLines>0 && ++noPhaseLines>=5) {
+			state=IMAGE;
+			double pos=fmod(imageSample,sampleRate*60/lpm);
+			pos/=(double)sampleRate*60.0/(double)lpm;
+			lastCol=(unsigned int)(pos*width);
+			pixel=pixelSamples=0;
+			lastRow=99; // just !=0 which is the first row
 		}
 		currPhaseLength=currPhaseHigh=0;
 	}
@@ -145,7 +146,7 @@ void FaxReceiver::decodeImage(unsigned int& x)
 			if(pixelSamples>0 && imageSample>0) {
 				pixel/=pixelSamples;
 				emit newGrayPixel(lastCol,currRow,pixel);
-				if(lastRow!=currRow) {
+				if(lastRow!=currRow && state==IMAGE) {
 					emit imageRow(lastRow=currRow);
 				}
 			}
@@ -192,7 +193,10 @@ void FaxReceiver::startPhasing(void)
 
 void FaxReceiver::endReception(void)
 {
-	emit newImageHeight(2,currRow-(unsigned int)(lpm/60.0)-1);
+	int h=currRow-(int)(lpm/60.0)-1;
+	if(h>0) {
+		emit newImageHeight(2,h);
+	}
 	state=DONE;
 	emit receptionEnded();
 }

@@ -8,7 +8,9 @@ to fix:
 - read sound device without blocking , Qtimer=1 (?), QSocketNotifier
 - better handling of phasing (tr AND rcp)
 - fix input overruns while using PTC (better handling of serial data)
-- prevent image width of getting zero (this is current ioc information)
+- better recognition of apt
+- look at messages displayed while receiving apt, phasing, image
+- noise in FM reception gives apt frequency of about 300Hz...
 
 features:
 - CW id before and after transmission

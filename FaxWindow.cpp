@@ -520,9 +520,6 @@ void FaxWindow::receiveNext(void)
 	case FILE:
 		file->read(samples,n);
 		faxDemodulator->demodulate(buffer,samples,n);
-		if(n==0) {
-			endReception();
-		}
 		break;
 	case DSP:
 		sound->read(samples,n);
@@ -533,7 +530,11 @@ void FaxWindow::receiveNext(void)
 		ptc->receive(buffer,n);
 		break;
 	}
-	faxReceiver->decode(buffer,n);
+	if(n==0) {
+		faxReceiver->endReception();
+	} else {
+		faxReceiver->decode(buffer,n);
+	}
 }
 
 void FaxWindow::endReception(void)

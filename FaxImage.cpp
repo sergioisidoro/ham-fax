@@ -141,7 +141,7 @@ void FaxImage::resize(unsigned int x, unsigned int y,
 
 void FaxImage::resizeHeight(unsigned int y, unsigned int h)
 {
-	resize(0,y,image.width(),h);
+		resize(0,y,image.width(),h);
 }
 
 void FaxImage::scaleToIOC(unsigned int ioc)
