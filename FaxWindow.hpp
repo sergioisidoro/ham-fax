@@ -82,7 +82,9 @@ signals:
 	void saveFile(QString fileName);
 	void newWidth(int);
 	void scaleToWidth(int);
+	void usePTT(bool);
 public slots:
+        void setUsePTT(bool);
 	void setBeginEnd(void);
 	void setColor(bool b);
 	void setImageAdjust(bool b);

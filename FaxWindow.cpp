@@ -167,7 +167,6 @@ FaxWindow::FaxWindow(const QString& version)
 	pttID=optionsMenu->
 		insertItem(tr("key PTT while transmitting with DSP"),
 			   this,SLOT(changePTT()));
-	optionsMenu->setItemChecked(pttID,config->getKeyPTT());
 	scrollID=optionsMenu->
 		insertItem(tr("automatic scroll to last received line"),
 			   this,SLOT(changeScroll()));
@@ -298,6 +297,10 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(optionsDialog,SIGNAL(ptt(const QString&)),
 		config,SLOT(setPTT(const QString&)));
 
+	connect(config,SIGNAL(keyPTT(bool)),ptt,SLOT(setUse(bool)));
+	connect(config,SIGNAL(keyPTT(bool)),SLOT(setUsePTT(bool)));
+	connect(this,SIGNAL(usePTT(bool)),config,SLOT(setKeyPTT(bool)));
+
 	connect(this,SIGNAL(loadFile(QString)),faxImage,SLOT(load(QString)));
 	connect(this,SIGNAL(saveFile(QString)),faxImage,SLOT(save(QString)));
 
@@ -337,7 +340,7 @@ FaxWindow::FaxWindow(const QString& version)
 	
 	// transmission
 	connect(faxTransmitter,SIGNAL(start()),transmitDialog,SLOT(start()));
-	connect(faxTransmitter,SIGNAL(start()),	ptt,SLOT(set()));
+	connect(sound,SIGNAL(openForWriting()),ptt,SLOT(set()));
 	connect(faxTransmitter,SIGNAL(start()),SLOT(disableControls()));
 	connect(faxTransmitter,SIGNAL(phasing()),
 		transmitDialog,SLOT(phasing()));
@@ -452,24 +455,21 @@ void FaxWindow::save(void)
 
 void FaxWindow::changePTT(void)
 {
-	if(optionsMenu->isItemChecked(pttID)) {
-		optionsMenu->setItemChecked(pttID,false);
-		config->setKeyPTT(false);
-	} else {
-		optionsMenu->setItemChecked(pttID,true);
-		config->setKeyPTT(true);
-	}
+	bool b = optionsMenu->isItemChecked(pttID) ? false : true;
+	optionsMenu->setItemChecked(pttID,b);
+	emit usePTT(b);
+}
+
+void FaxWindow::setUsePTT(bool b)
+{
+	optionsMenu->setItemChecked(pttID,b);
 }
 
 void FaxWindow::changeScroll(void)
 {
-	if(optionsMenu->isItemChecked(scrollID)) {
-		optionsMenu->setItemChecked(scrollID,false);
-		config->setAutoScroll(false);
-	} else {
-		optionsMenu->setItemChecked(scrollID,true);
-		config->setAutoScroll(true);
-	}
+	bool b = optionsMenu->isItemChecked(scrollID) ? false : true;
+	optionsMenu->setItemChecked(scrollID,b);
+	config->setAutoScroll(b);
 }
 
 void FaxWindow::setAutoScroll(bool b)

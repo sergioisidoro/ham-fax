@@ -66,6 +66,7 @@ void Sound::startOutput(void)
 		connect(notifier,SIGNAL(activated(int)),
 			this,SLOT(checkSpace(int)));
 		emit newSampleRate(sampleRate);
+		emit openForWriting();
 	} catch(Error) {
 		close();
 		throw;

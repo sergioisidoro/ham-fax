@@ -37,6 +37,7 @@ private:
 	QSocketNotifier* notifier;
 signals:
         void data(short*, int);
+	void openForWriting(void);
 	void deviceClosed(void);
 	void spaceLeft(int);
 	void newSampleRate(int);

@@ -3,7 +3,7 @@ HamFax 0.3
  * some tool tips explaining controls
  * color fax like JVFAX does as JVCOLOR
  * several routines to correct received picture
- * sound card and serial interface are now accessed non blocking
+ * sound card and serial interface are now accessed without blocking
  * help dialog
 
 HamFax 0.2
