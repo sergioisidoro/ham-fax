@@ -25,7 +25,5 @@ clean:
 distclean:
 	rm -rfv Makefile
 
-translations: hamfax_de.qm
-
-%.qm: %.po
-	msg2qm $< $@
+translations:
+	lrelease hamfax.pro
