@@ -26,17 +26,19 @@ class ReceiveDialog : public QDialog {
 	Q_OBJECT
 public:
 	ReceiveDialog(QWidget* parent);
-	virtual void show(void);
 private:
 	virtual void closeEvent(QCloseEvent* close);
+        void showText(const QString& s);
 	QLabel* status;
 	QLabel* aptText;
 	QPushButton* skip;
 	QPushButton* cancel;
 public slots:
-        void showText(const QString& s);
-	void showApt(const QString& s);
-        void disableSkipButton(void);
+	void apt(unsigned int f);
+	void aptStart(void);
+	void phasing(void);
+	void phasingLine(double lpm);
+	void imageRow(unsigned int row);
 signals:
         void cancelClicked(void);
 	void skipClicked(void);

@@ -20,6 +20,7 @@
 
 FaxReceiver::FaxReceiver(QObject* parent)
 	: QObject(parent), state(APTSTART), sampleRate(0),
+	  currentValue(0),
 	  aptHigh(false), aptTrans(0), aptCount(0),
 	  aptStartFreq(0), aptStopFreq(0), aptStop(false),
 	  phaseHigh(false), currPhaseLength(0)
@@ -40,13 +41,14 @@ void FaxReceiver::init(void)
 	phaseLines=0;
 	lpm=lpmSum=0;
 	imageSample=0;
-	emit statusText(tr("searching APT start tone"));
+	emit searchingAptStart();
 	pixelSamples=pixel=0;
 }
 
 void FaxReceiver::decode(unsigned int* buf, unsigned int n)
 {
 	for(unsigned int i=0; i<n; i++) {
+		currentValue=buf[i];
 		decodeApt(buf[i]);
 		if(state==PHASING) {
 			decodePhasing(buf[i]);
@@ -68,12 +70,10 @@ void FaxReceiver::decodeApt(unsigned int& x)
 	if(++aptCount >= sampleRate/2) {
 		unsigned int f=sampleRate*aptTrans/aptCount;
 		aptCount=aptTrans=0;
-		emit aptText(QString(tr("Apt frequency: %1 Hz")).arg(f));
+		emit aptFound(f);
 		if(state==APTSTART) {
 			if(f>=aptStartFreq-1 && f<=aptStartFreq+1) {
-				state=PHASING;
-				emit statusText(tr("decoding phasing"));
-				phaseHigh = x>=128 ? true : false;
+				startPhasing();
 			}
 		} else {
 			if(f>=aptStopFreq-2 && f<=aptStopFreq+2) {
@@ -94,11 +94,11 @@ void FaxReceiver::decodeApt(unsigned int& x)
 void FaxReceiver::decodePhasing(unsigned int& x)
 {
 	currPhaseLength++;
-	if(x>=128) {
+	if(x>128) {
 		currPhaseHigh++;
 	}
-	if(( phasePol && x>=128 && !phaseHigh) ||
-	   (!phasePol && x<=128 && phaseHigh)) {
+	if(( phasePol && x>230 && !phaseHigh) ||
+	   (!phasePol && x<22  && phaseHigh)) {
 		phaseHigh=phasePol?true:false;
 	} else if(( phasePol && x<=128 && phaseHigh) ||
 		  (!phasePol && x>=128 && !phaseHigh)) {
@@ -111,8 +111,7 @@ void FaxReceiver::decodePhasing(unsigned int& x)
 		   (double)currPhaseLength/sampleRate>=0.09) {
 			double l=60.0*(double)sampleRate
 				/(double)currPhaseLength;
-			emit statusText(QString(
-				tr("phasing line, lpm %1")).arg(l,0,'f',1));
+			emit phasingLine(l);
 			lpmSum+=l;
 			++phaseLines;
 			lpm=lpmSum/(double)phaseLines;
@@ -120,7 +119,7 @@ void FaxReceiver::decodePhasing(unsigned int& x)
 				(-2.975*60.0/lpm*(double)sampleRate);
 		} else if(phaseLines>0) {
 			state=IMAGE;
-			emit statusText(tr("receiving line 0"));
+			emit imageRow(0);
 		}
 		currPhaseLength=currPhaseHigh=0;
 	}
@@ -142,11 +141,9 @@ void FaxReceiver::decodeImage(unsigned int& x)
 					((double)imageSample
 					 /(double)sampleRate *lpm/60.0);
 				pixel/=pixelSamples;
-				emit newGrayPixelValue(lastCol,row,pixel);
+				emit newGrayPixel(lastCol,row,pixel);
 				if(lastRow!=row) {
-					emit statusText(
-						tr("receiving line %1")
-						.arg(lastRow=row));
+					emit imageRow(lastRow=row);
 				}
 			}
 			lastCol=col;
@@ -177,9 +174,11 @@ void FaxReceiver::setPhasePol(bool pol)
 	this->phasePol=pol;
 }
 
-void FaxReceiver::skipAptStart(void)
+void FaxReceiver::startPhasing(void)
 {
 	if(state==APTSTART) {
 		state=PHASING;
+		phaseHigh = currentValue>=128 ? true : false;
+		emit startingPhasing();
 	}
 }

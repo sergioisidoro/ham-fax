@@ -57,6 +57,10 @@ FaxWindow::FaxWindow(const QString& version)
 	layout->addWidget(faxControl,1,1);
 	layout->addMultiCellWidget(faxView,1,2,2,2);
 
+	QFrame* dummyWidget=new QFrame(this);
+	dummyWidget->setFrameStyle(QFrame::Panel|QFrame::Raised);
+	layout->addWidget(dummyWidget,2,1);
+
 	// FaxControl -- FaxTransmitter -- FaxReceiver
 	connect(faxControl,SIGNAL(newLPM(int)),
 		faxTransmitter,SLOT(setLPM(int)));
@@ -143,23 +147,32 @@ FaxWindow::FaxWindow(const QString& version)
 		faxView,SLOT(ensureVisible(int,int)));
 	faxImage->create(904,904);
 
-	connect(faxReceiver,SIGNAL(newImageHeight(unsigned int, unsigned int)),
+	connect(faxReceiver,
+		SIGNAL(newImageHeight(unsigned int, unsigned int)),
 		faxImage,SLOT(resizeHeight(unsigned int, unsigned int)));
 	connect(faxReceiver,
-		SIGNAL(newGrayPixelValue(unsigned int,unsigned int,unsigned int)),
+		SIGNAL(newGrayPixel(unsigned int,unsigned int,unsigned int)),
 		faxImage,
 		SLOT(setPixelGray(unsigned int,unsigned int,unsigned int)));
 	connect(faxTransmitter,SIGNAL(statusText(const QString&)),
 		transmitDialog,SLOT(showText(const QString&)));
-	connect(faxReceiver,SIGNAL(statusText(const QString&)),
-		receiveDialog,SLOT(showText(const QString&)));
-	connect(faxReceiver,SIGNAL(aptText(const QString&)),
-		receiveDialog,SLOT(showApt(const QString&)));
+
+	// FaxReceiver -- ReceiveDialog
+	connect(faxReceiver,SIGNAL(aptFound(unsigned int)),
+		receiveDialog,SLOT(apt(unsigned int)));
+	connect(faxReceiver,SIGNAL(searchingAptStart()),
+		receiveDialog,SLOT(aptStart()));
+	connect(faxReceiver,SIGNAL(startingPhasing()),
+		receiveDialog,SLOT(phasing()));
+	connect(faxReceiver,SIGNAL(phasingLine(double)),
+		receiveDialog,SLOT(phasingLine(double)));
+	connect(receiveDialog,SIGNAL(skipClicked()),
+		faxReceiver,SLOT(startPhasing()));
+	connect(faxReceiver,SIGNAL(imageRow(unsigned int)),
+		receiveDialog,SLOT(imageRow(unsigned int)));
+
 	connect(faxReceiver,SIGNAL(aptStopDetected()),
 		this,SLOT(endReception()));
-	connect(receiveDialog,SIGNAL(skipClicked()),
-		faxReceiver,SLOT(skipAptStart()));
-
 	connect(receiveDialog,SIGNAL(cancelClicked()),
 		this,SLOT(endReception()));
 	connect(transmitDialog,SIGNAL(cancelClicked()),
@@ -212,6 +225,7 @@ void FaxWindow::buildMenuBar(void)
 	menuBar->insertItem(tr("&Options"),optionsMenu);
 	menuBar->insertSeparator();
 	menuBar->insertItem(tr("&Help"),helpMenu);
+	menuBar->setFrameStyle(QFrame::Panel|QFrame::Raised);
 
 	connect(transmitMenu,SIGNAL(activated(int)),
 		this,SLOT(initTransmit(int)));

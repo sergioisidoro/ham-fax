@@ -28,15 +28,8 @@ ReceiveDialog::ReceiveDialog(QWidget* parent)
 	layout->addWidget(skip=new QPushButton(tr("&Skip apt start"),
 					       this),3,1);
 	connect(skip,SIGNAL(clicked()),this,SIGNAL(skipClicked()));
-	connect(skip,SIGNAL(clicked()),this,SLOT(disableSkipButton()));
 	layout->addWidget(cancel=new QPushButton(tr("&Cancel"),this),4,1);
 	connect(cancel,SIGNAL(clicked()),this,SIGNAL(cancelClicked()));
-}
-
-void ReceiveDialog::show(void)
-{
-	skip->setDisabled(false);
-	QDialog::show();
 }
 
 void ReceiveDialog::showText(const QString& s)
@@ -44,9 +37,9 @@ void ReceiveDialog::showText(const QString& s)
 	status->setText(s);
 }
 
-void ReceiveDialog::showApt(const QString& s)
+void ReceiveDialog::apt(unsigned int f)
 {
-	aptText->setText(s);
+	aptText->setText(QString(tr("Apt frequency: %1 Hz")).arg(f));
 }
 
 void ReceiveDialog::closeEvent(QCloseEvent* close)
@@ -55,7 +48,24 @@ void ReceiveDialog::closeEvent(QCloseEvent* close)
 	emit cancelClicked();
 }
 
-void ReceiveDialog::disableSkipButton(void)
+void ReceiveDialog::aptStart(void)
+{
+	showText(tr("searching APT start tone"));
+	skip->setDisabled(false);
+}
+
+void ReceiveDialog::phasing(void)
 {
 	skip->setDisabled(true);
+	showText(tr("decoding phasing"));
+}
+
+void ReceiveDialog::phasingLine(double lpm)
+{
+	showText(QString(tr("phasing line, lpm %1")).arg(lpm,0,'f',1));
+}
+
+void ReceiveDialog::imageRow(unsigned int row)
+{
+	showText(tr("receiving line %1").arg(row));
 }

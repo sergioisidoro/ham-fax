@@ -34,6 +34,7 @@ private:
 	void decodeImage(unsigned int& x);
 	enum { APTSTART, PHASING, IMAGE, DONE } state;
 	unsigned int sampleRate;
+	unsigned int currentValue;
 	bool aptHigh;
 	unsigned int aptTrans;    // APT low-high transitions
 	unsigned int aptCount;    // samples counted for aptTrans
@@ -54,18 +55,20 @@ private:
 	unsigned int pixel;
 	unsigned int pixelSamples;
 signals:
-	void statusText(const QString& s);
-	void aptText(const QString& s);
+	void aptFound(unsigned int f);
 	void aptStopDetected(void);
 	void newImageHeight(unsigned int y, unsigned int h);
-	void newGrayPixelValue(unsigned int x, unsigned int y,
-			       unsigned int c);
+	void newGrayPixel(unsigned int x, unsigned int y,  unsigned int c);
+	void searchingAptStart(void);
+	void startingPhasing(void);
+	void phasingLine(double lpm);
+	void imageRow(unsigned int row);
 public slots:
         void setAptStartFreq(int f);
 	void setAptStopFreq(int f);
 	void setWidth(unsigned int width);
 	void setPhasePol(bool pol);
-	void skipAptStart(void);
+	void startPhasing(void);
 };
 
 #endif
