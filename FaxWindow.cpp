@@ -332,7 +332,9 @@ FaxWindow::FaxWindow(const QString& version)
 		SLOT(newImageSize(int, int)));
 	connect(faxImage,SIGNAL(sizeUpdated(int,int)),
 		faxReceiver,SLOT(setWidth(int)));
-	connect(faxReceiver,SIGNAL(newPixel(int, int, int, int)),
+	connect(faxImage,SIGNAL(sizeUpdated(int,int)),
+		faxTransmitter,SLOT(setImageSize(int,int)));
+	connect(faxReceiver,SIGNAL(setPixel(int, int, int, int)),
 		faxImage,SLOT(setPixel(int, int, int,int)));
 	connect(this,SIGNAL(scaleToWidth(int)),
 		faxImage,SLOT(scale(int)));
@@ -406,7 +408,7 @@ FaxWindow::FaxWindow(const QString& version)
 		receiveDialog,SLOT(phasingLine(double)));
 	connect(faxReceiver,SIGNAL(imageStarts()),
 		receiveDialog,SLOT(disableSkip()));
-	connect(faxReceiver,SIGNAL(imageRow(int)),
+	connect(faxReceiver,SIGNAL(row(int)),
 		receiveDialog,SLOT(imageRow(int)));
 	connect(faxReceiver,SIGNAL(end()),SLOT(endReception()));
 	connect(faxReceiver,SIGNAL(end()),SLOT(enableControls()));
@@ -445,14 +447,15 @@ void FaxWindow::help(void)
 
 void FaxWindow::about(void)
 {
-	QMessageBox::information(this,caption(),
-				 tr("HamFax is a QT application for "
-				    "transmitting and receiving "
-				    "ham radio facsimiles.\n"
-				    "Author: Christof Schmitt, DH1CS "
-				    "<cschmit@suse.de>\n"
-				    "License: GNU General Public License\n"
-				    "Version: %1").arg(version));
+	QMessageBox::information(
+		this,caption(),
+		tr("HamFax is a Qt application for transmitting and receiving"
+		   "\nham radio facsimiles and weather broadcasts."
+		   "\n\nAuthor: Christof Schmitt, DH1CS <cschmit@suse.de>"
+		   "\n\nThe demodulator is taken from ACfax"
+		   " by Andreas Czechanowski, DL4SDC"
+		   "\n\nLicense: GNU General Public License"
+		   "\nVersion: %1").arg(version));
 }
 
 void FaxWindow::aboutQT(void)

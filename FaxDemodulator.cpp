@@ -18,6 +18,7 @@
 #include "FaxDemodulator.hpp"
 #include <math.h>
 
+// Narrow, middle and wide fir low pass filter from ACfax
 static const double lpf[3][17]={
 	{ -7,-18,-15, 11, 56,116,177,223,240,223,177,116, 56, 11,-15,-18, -7},
 	{  0,-18,-38,-39,  0, 83,191,284,320,284,191, 83,  0,-39,-38,-18,  0},
@@ -25,9 +26,8 @@ static const double lpf[3][17]={
 };
 
 FaxDemodulator::FaxDemodulator(QObject* parent)
-	: QObject(parent), 
-	carrier(0), rate(0), deviation(0), fm(true), ifirold(0), qfirold(0),
-	filter(1)
+	: QObject(parent), carrier(0), rate(0), 
+	deviation(0), fm(true), ifirold(0), qfirold(0), filter(1)
 {
 	sine=new double[sine_size];
 	for(int i=0; i<sine_size; i++) {

@@ -29,9 +29,9 @@ public:
 	FaxReceiver(QObject* parent);
 	void init(void);
 private:
-	void decodeApt(int& x);
-	void decodePhasing(int& x);
-	void decodeImage(int& x);
+	void decodeApt(const int& x);
+	void decodePhasing(const int& x);
+	void decodeImage(const int& x);
 	enum { APTSTART, PHASING, IMAGE, DONE } state;
 	int sampleRate;
 	int currentValue;
@@ -54,7 +54,6 @@ private:
 	int imageSample;
 	int lastCol;
 	int lastRow;
-	int currRow;
 	int pixel;
 	int pixelSamples;
 	bool color;
@@ -62,17 +61,17 @@ private:
 	QArray<unsigned char> rawData;
 	QArray<unsigned char>::Iterator rawIt;
 signals:
-	void aptFound(int f);
+	void aptFound(int);
 	void aptStopDetected(void);
-	void newPixel(int c, int h, int v, int rgbg);
+	void setPixel(int, int, int, int);
 	void startReception(void);
 	void end(void);
 	void startingPhasing(void);
-	void phasingLine(double lpm);
-	void imageRow(int row);
+	void phasingLine(double);
+	void row(int);
 	void bufferNotEmpty(bool);
-	void imageWidth(int w);
-	void newSize(int x, int y, int w, int h);
+	void imageWidth(int);
+	void newSize(int, int, int, int);
 	void imageStarts(void);
 	void redrawStarts(void);
 public slots:

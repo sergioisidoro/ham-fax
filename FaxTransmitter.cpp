@@ -20,7 +20,7 @@
 
 FaxTransmitter::FaxTransmitter(QObject* parent, FaxImage* faxImage)
 	: QObject(parent), 
-	faxImage(faxImage),
+	image(faxImage),
 	state(IDLE),
 	sampleNr(0),
 	lpm(0),
@@ -44,11 +44,6 @@ void FaxTransmitter::doNext(int n)
 {
 	double buf[n];
 	for(int i=0; i<n; i++) {
-		if(state==IDLE) {
-			i=0;
-			n=0;
-			break;
-		}
 		if(state==APTSTART) {
 			if(sampleNr<sampleRate*startLength) {
 				buf[i]=(sampleNr*2*startFreq/sampleRate)%2;
@@ -61,8 +56,8 @@ void FaxTransmitter::doNext(int n)
 		}
 		if(state==PHASING) {
 			if(sampleNr<sampleRate*phasingLines*60/lpm) {
-				double pos=fmod(sampleNr,sampleRate*60/lpm);
-				pos/=sampleRate*60.0/lpm;
+				double pos=fmod(sampleNr,sampleRate*60/lpm)
+					/sampleRate/60.0*lpm;
 				buf[i] = pos<0.025||pos>=0.975 
 					? phaseInvers?0.0:1.0 
 					: phaseInvers?1.0:0.0;
@@ -79,35 +74,20 @@ void FaxTransmitter::doNext(int n)
 			} else {
 				state=IMAGE;
 				sampleNr=0;
+				row=0;
 			}
 		}
 		if(state==IMAGE) {
-			if(sampleNr<
-			   color?3:1 *sampleRate*faxImage->getRows()*60/lpm) {
+			if(sampleNr<(color?3:1)*sampleRate*rows*60/lpm) {
 				double pos=fmod(sampleNr,sampleRate*60/lpm)
-					/sampleRate*60.0/lpm;
-				int c=static_cast<int>
-					(pos*faxImage->getCols());
+					/sampleRate/60.0*lpm;
+				int c=static_cast<int>(pos*cols);
 				int r=sampleNr*lpm/60/sampleRate;
-				if(color) {
-					switch(r%3) {
-					case 0:
-						buf[i]=faxImage->
-							getPixelRed(c,r/3);
-						break;
-					case 1:
-						buf[i]=faxImage->
-							getPixelGreen(c,r/3);
-						break;
-					case 2:
-						buf[i]=faxImage->
-							getPixelBlue(c,r/3);
-						break;
-					}
-				} else {
-					buf[i]=faxImage->getPixelGray(c,r);
+				if(row!=r) {
+					emit imageLine((row=r)/(color?3:1));
 				}
-				buf[i]=buf[i]/255.0;
+				buf[i]=image->getPixel(c, color? r/3:r,
+						       color? r%3:3)/255.0;
 				sampleNr++;
 			} else {
 				state=APTSTOP;
@@ -126,11 +106,10 @@ void FaxTransmitter::doNext(int n)
 				break;
 			}
 		}
-	}
-	if(state==IMAGE) {
-		emit imageLine(color ?
-			       sampleNr*lpm/60/sampleRate/3 :
-			       sampleNr*lpm/60/sampleRate);
+		if(state==IDLE) {
+			n=0;
+			break;
+		}
 	}
 	emit data(buf,n);
 }
@@ -178,6 +157,12 @@ void FaxTransmitter::setSampleRate(int rate)
 void FaxTransmitter::setColor(bool b)
 {
 	color=b;
+}
+
+void FaxTransmitter::setImageSize(int cols, int rows)
+{
+	this->rows=rows;
+	this->cols=cols;
 }
 
 void FaxTransmitter::doAptStop(void)

@@ -21,7 +21,6 @@
 FaxModulator::FaxModulator(QObject* parent)
 	: QObject(parent), sampleRate(0), carrier(0), dev(0)
 {
-	// put complete period of sine in lookup table
 	sine=new short[size_sine];
 	for(int i=0; i<size_sine; i++) {
 		sine[i]=static_cast<short>(32767*sin(2.0*M_PI*i/size_sine));
@@ -39,12 +38,10 @@ void FaxModulator::modulate(double* buffer, int number)
 	for(int i=0; i<number; i++) {
 		if(fm) {
 			sample[i]=sine[phase];
-			int f=static_cast<int>
-				(carrier+2.0*(buffer[i]-0.5)*dev);
+			int f=static_cast<int>(carrier+2.*(buffer[i]-0.5)*dev);
 			phase+=size_sine*f/sampleRate;
 		} else {
-			sample[i]=static_cast<short>
-				(0.04+0.96*buffer[i]*sine[phase]);
+			sample[i]=static_cast<short>(buffer[i]*sine[phase]);
 			phase+=size_sine*carrier/sampleRate;
 		}
 		phase%=size_sine;

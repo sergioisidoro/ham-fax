@@ -23,7 +23,7 @@
 
 int main(int argc, char* argv[])
 {
-	const QString version="0.3";
+	const QString version="0.4";
 	QApplication app(argc, argv);
 	QTranslator translator(0);
 	translator.load(QString("hamfax.")+setlocale(LC_MESSAGES,0),".");

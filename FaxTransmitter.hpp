@@ -27,7 +27,7 @@ public:
 	FaxTransmitter(QObject* parent, FaxImage* faxImage);
 	void startTransmission(void);
 private:
-	FaxImage* faxImage;
+	FaxImage* image;
 	enum { APTSTART, PHASING, ENDPHASING, IMAGE, APTSTOP, IDLE } state;
 	int sampleNr;
 	int sampleRate;
@@ -35,12 +35,15 @@ private:
 	int carrier;
 	int deviation;
 	int startLength;
+	int row;
 	int startFreq;
 	int phasingLines;
 	bool phaseInvers;
 	int stopLength;
 	int stopFreq;
 	bool color;
+	int cols;
+	int rows;
 public slots:
         void setLPM(int lpm);
 	void setAptStartFreq(int f);
@@ -51,6 +54,7 @@ public slots:
 	void setPhasePol(bool pol);
 	void setSampleRate(int rate);
 	void setColor(bool b);
+	void setImageSize(int cols, int rows);
 	void doNext(int n);
 	void doAptStop(void);
 signals:

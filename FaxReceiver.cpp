@@ -19,12 +19,8 @@
 #include <math.h>
 
 FaxReceiver::FaxReceiver(QObject* parent)
-	: QObject(parent), state(APTSTART), sampleRate(0),
-	  currentValue(0),
-	  aptHigh(false), aptTrans(0), aptCount(0),
-	  aptStartFreq(0), aptStopFreq(0), aptStop(false),
-	  phaseHigh(false), currPhaseLength(0), color(false),
-	  rawData(0)
+	: QObject(parent), sampleRate(0), aptStartFreq(0), aptStopFreq(0), 
+	color(false), rawData(0)
 {
 	timer=new QTimer(this);
 	connect(timer,SIGNAL(timeout()),this,SLOT(adjustNext()));
@@ -39,10 +35,7 @@ void FaxReceiver::init(void)
 {
 	state=APTSTART;
 	aptCount=aptTrans=0;
-	aptStop=false;
-	currPhaseLength=currPhaseHigh=0;
-	phaseLines=noPhaseLines=0;
-	lpm=lpmSum=0;
+	aptStop=aptHigh=false;
 	rawData.resize(8388608);
 	emit startReception();
 }
@@ -55,8 +48,11 @@ void FaxReceiver::decode(int* buf, int n)
 		decodeApt(buf[i]);
 		if(state==PHASING) {
 			decodePhasing(buf[i]);
-			decodeImage(buf[i]);
-		} else if(state==IMAGE) {
+		}
+		if((state==PHASING||state==IMAGE)&&lpm>0) {
+			if(static_cast<int>(rawData.size())<=imageSample) {
+				rawData.resize(rawData.size()+1024*1024);
+			}
 			decodeImage(buf[i]);
 		}
 	}
@@ -67,7 +63,7 @@ void FaxReceiver::decode(int* buf, int n)
 // the state skips to the detection of phasing lines, if it matches the apt
 // stop frequency two times, the reception is ended.
 
-void FaxReceiver::decodeApt(int& x)
+void FaxReceiver::decodeApt(const int& x)
 {
 	if(x>229 && !aptHigh) {
 		aptHigh=true;
@@ -102,7 +98,7 @@ void FaxReceiver::decodeApt(int& x)
 // range of 60--360lpm (plus some tolerance) it is considered a valid
 // phasing line. Then the start of a line and the lpm is calculated.
 
-void FaxReceiver::decodePhasing(int& x)
+void FaxReceiver::decodePhasing(const int& x)
 {
 	currPhaseLength++;
 	if(x>128) {
@@ -116,8 +112,8 @@ void FaxReceiver::decodePhasing(int& x)
 		phaseHigh=phaseInvers?true:false;
 		if(currPhaseHigh>=(phaseInvers?0.948:0.048)*currPhaseLength &&
 		   currPhaseHigh<=(phaseInvers?0.952:0.052)*currPhaseLength &&
-		   static_cast<double>(currPhaseLength)/sampleRate<=1.1 &&
-		   static_cast<double>(currPhaseLength)/sampleRate>=0.09) {
+		   static_cast<double>(currPhaseLength)<=1.1*sampleRate &&
+		   static_cast<double>(currPhaseLength)>=0.15*sampleRate) {
 			double l=60.0*sampleRate/currPhaseLength;
 			emit phasingLine(l);
 			lpmSum+=l;
@@ -133,45 +129,34 @@ void FaxReceiver::decodePhasing(int& x)
 			pixel=pixelSamples=0;
 			lastRow=99; // just !=0 which is the first row
 			emit imageStarts();
+		} else if(currPhaseLength>5*sampleRate) {
+			currPhaseLength=0;
 		}
 		currPhaseLength=currPhaseHigh=0;
 	}
 }
 
-void FaxReceiver::decodeImage(int& x)
+void FaxReceiver::decodeImage(const int& x)
 {
-	if(lpm>0) {
-		double pos=fmod(imageSample,sampleRate*60/lpm);
-		pos/=sampleRate*60.0/lpm;
-		int col=static_cast<int>(pos*width);
-		currRow=static_cast<int>
-			(static_cast<double>(imageSample)/sampleRate*lpm/60.0);
-		int rawSize=rawData.size();
-		if(rawSize<=imageSample) {
-			rawData.resize(rawSize+1024*1024);
-		}
-		rawData[imageSample]=x;
-		if(col==lastCol) {
-			pixel+=x;
-			pixelSamples++;
-		} else  {
-			if(pixelSamples>0) {
-				pixel/=pixelSamples;
-				if(color) {
-					emit newPixel(lastCol,currRow/3,
-						      pixel,currRow%3);
-				} else {
-					emit newPixel(lastCol,currRow,pixel,3);
-				}
-				if(lastRow!=currRow && state==IMAGE) {
-					lastRow=currRow;
-					emit imageRow(color?currRow/3:currRow);
-				}
+	int col=static_cast<int>(width*fmod(imageSample,sampleRate*60/lpm)
+				 /sampleRate/60.0*lpm);
+	int currRow=static_cast<int>(imageSample*lpm/60.0/sampleRate);
+	rawData[imageSample]=x;
+	if(col==lastCol) {
+		pixel+=x;
+		pixelSamples++;
+	} else {
+		if(pixelSamples>0) {
+			pixel/=pixelSamples;
+			emit setPixel(lastCol, color?currRow/3:currRow, 
+				      pixel,color?currRow%3:3);
+			if(lastRow!=currRow) {
+				emit row((lastRow=currRow)/(color?3:1));
 			}
-			lastCol=col;
-			pixel=x;
-			pixelSamples=1;
 		}
+		lastCol=col;
+		pixel=x;
+		pixelSamples=1;
 	}
 	imageSample++;
 }
@@ -206,37 +191,64 @@ void FaxReceiver::adjustNext(void)
 	for(int i=0; i<512; i++) {
 		if(rawIt++>=rawData.end()) {
 			timer->stop();
-			int h=currRow-static_cast<int>(lpm/60.0)-1;
-			emit newSize(0,2,0,color ? h/3 : h);
-			emit end();
+			endReception();
 			break;
 		}
-		double pos=fmod(imageSample,sampleRate*60.0/lpm);
-		pos/=sampleRate*60.0/lpm;
-		int col=static_cast<int>(pos*width);
-		currRow=static_cast<int>(imageSample*lpm/60.0/sampleRate);
-		if(col==lastCol) {
-			pixel+=*rawIt;
-			pixelSamples++;
-		} else  {
-			if(pixelSamples>0 && imageSample>0) {
-				pixel/=pixelSamples;
-				if(color) {
-					emit newPixel(lastCol,
-						      currRow/3,
-						      pixel,
-						      currRow%3);
-				} else {
-					emit newPixel(lastCol,currRow,
-						      pixel,3);
-				}
-			}
-			lastCol=col;
-			pixel=*rawIt;
-			pixelSamples=1;
-		}
-		imageSample++;
+		decodeImage(*rawIt);
 	}
+}
+
+void FaxReceiver::skip(void)
+{
+	if(state==APTSTART) {
+		state=PHASING;
+		phaseHigh = currentValue>=128 ? true : false;
+		currPhaseLength=currPhaseHigh=0;
+		phaseLines=noPhaseLines=0;
+		lpm=lpmSum=0;
+		emit startingPhasing();
+	} else if(state==PHASING) {
+		lpm=txLPM;
+		state=IMAGE;
+		emit imageStarts();
+		double pos=fmod(imageSample,sampleRate*60/lpm);
+		pos/=sampleRate*60.0/lpm;
+		lastCol=static_cast<int>(pos*width);
+		pixel=pixelSamples=imageSample=0;
+		lastRow=99; // just !=0 which is the first row
+	}
+}
+
+// Here we want to remove the last detected phasing line and the following
+// non phasing line from the beginning of the image and one second of apt stop
+// from the end
+
+void FaxReceiver::endReception(void)
+{
+	int h=lastRow-static_cast<int>(lpm/60.0)-1;
+	rawData.resize(imageSample);
+	if(h>0) {
+		emit newSize(0,2,0,color ? h/3 : h);
+		emit bufferNotEmpty(true);
+	}
+	state=DONE;
+	emit end();
+}
+
+void FaxReceiver::releaseBuffer(void)
+{
+	rawData.resize(0);
+	emit bufferNotEmpty(false);
+}
+
+void FaxReceiver::setColor(bool b)
+{
+	color=b;
+}
+
+void FaxReceiver::setTxLPM(int lpm)
+{
+	txLPM=lpm;
 }
 
 void FaxReceiver::setAptStartFreq(int f)
@@ -257,54 +269,4 @@ void FaxReceiver::setWidth(int width)
 void FaxReceiver::setPhasePol(bool pol)
 {
 	phaseInvers=pol;
-}
-
-void FaxReceiver::skip(void)
-{
-	if(state==APTSTART) {
-		state=PHASING;
-		phaseHigh = currentValue>=128 ? true : false;
-		emit startingPhasing();
-	} else if(state==PHASING) {
-		lpm=txLPM;
-		state=IMAGE;
-		emit imageStarts();
-		double pos=fmod(imageSample,sampleRate*60/lpm);
-		pos/=sampleRate*60.0/lpm;
-		lastCol=static_cast<int>(pos*width);
-		pixel=pixelSamples=imageSample=0;
-		lastRow=99; // just !=0 which is the first row
-	}
-}
-
-// Here we want to remove the last detected phasing line and the following
-// non phasing line from the beginning of the image and one second of apt stop
-// from the end
-
-void FaxReceiver::endReception(void)
-{
-	int h=currRow-static_cast<int>(lpm/60.0)-1;
-	rawData.resize(imageSample);
-	if(h>0) {
-		emit newSize(0,2,0,color ? h/3 : h);
-		emit bufferNotEmpty(true);
-	}
-	state=DONE;
-	emit end();
-}
-
-void FaxReceiver::setColor(bool b)
-{
-	color=b;
-}
-
-void FaxReceiver::releaseBuffer(void)
-{
-	rawData.resize(0);
-	emit bufferNotEmpty(false);
-}
-
-void FaxReceiver::setTxLPM(int lpm)
-{
-	txLPM=lpm;
 }

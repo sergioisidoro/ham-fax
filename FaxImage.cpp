@@ -36,24 +36,25 @@ int FaxImage::getCols(void)
 	return image.width();
 }
 
-int FaxImage::getPixelGray(int col, int row)
+int FaxImage::getPixel(int col, int row, int rgbg)
 {
-	return qGray(image.pixel(col,row));
-}
-
-int FaxImage::getPixelRed(int col, int row)
-{
-	return qRed(image.pixel(col,row));
-}
-
-int FaxImage::getPixelGreen(int col, int row)
-{
-	return qGreen(image.pixel(col,row));
-}
-
-int FaxImage::getPixelBlue(int col, int row)
-{
-	return qBlue(image.pixel(col,row));
+	QRgb pixel=image.pixel(col,row);
+	int value;
+	switch(rgbg) {
+	case 0: 
+		value=qRed(pixel);
+		break;
+	case 1: 
+		value=qGreen(pixel);
+		break;
+	case 2: 
+		value=qBlue(pixel);
+		break;
+	default:
+		value=qGray(pixel);
+		break;
+	};
+	return value;
 }
 
 bool FaxImage::setPixel(int col, int row, int value, int rgbg)
@@ -64,26 +65,23 @@ bool FaxImage::setPixel(int col, int row, int value, int rgbg)
 	if(row>=image.height()) {
 		resizeHeight(50);
 	}
+	QRgb oldColor=image.pixel(col,row);
+	QRgb color;
 	switch(rgbg) {
 	case 0:
-		image.setPixel(col,row,qRgb(value,
-					    getPixelGreen(col,row),
-					    getPixelBlue(col,row)));
+		color=qRgb(value,qGreen(oldColor),qBlue(oldColor));
 		break;
 	case 1:
-		image.setPixel(col,row,qRgb(getPixelRed(col,row),
-					    value,
-					    getPixelBlue(col,row)));
+		color=qRgb(qRed(oldColor),value,qBlue(oldColor));
 		break;
 	case 2:
-		image.setPixel(col,row,qRgb(getPixelRed(col,row),
-					    getPixelGreen(col,row),
-					    value));
+		color=qRgb(qRed(oldColor),qGreen(oldColor),value);
 		break;
-	case 3:
-		image.setPixel(col,row,qRgb(value,value,value));
+	default:
+		color=qRgb(value,value,value);
 		break;
 	};
+	image.setPixel(col,row,color);
 	updateContents(col,row,1,1);
 	if(autoScroll) {
 		ensureVisible(0,row,0,0);

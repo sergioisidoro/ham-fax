@@ -30,7 +30,6 @@ public:
 	ReceiveDialog(QWidget* parent);
 private:
 	virtual void closeEvent(QCloseEvent* close);
-        void showText(const QString& s);
 	QLabel* status;
 	QLabel* aptText;
 	QPushButton* skip;

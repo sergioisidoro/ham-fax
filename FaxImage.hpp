@@ -29,10 +29,7 @@ public:
 	FaxImage(QWidget* parent);
 	int getRows(void);
 	int getCols(void);
-	int getPixelGray(int col, int row);
-	int getPixelRed(int col, int row);
-	int getPixelGreen(int col, int row);
-	int getPixelBlue(int col, int row);
+	int getPixel(int col, int row, int rgbg);
 private:
 	void drawContents(QPainter* p, int x,int y,int w,int h);
 	virtual void contentsMousePressEvent(QMouseEvent* m);

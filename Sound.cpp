@@ -47,11 +47,11 @@ void Sound::startOutput(void)
 		if((devDSP=open(devDSPName,O_WRONLY|O_NONBLOCK))==-1) {
 			throw Error(tr("could not open dsp device"));
 		}
-		int format=AFMT_S16_LE;
+		int format=AFMT_S16_NE;
 		if(ioctl(devDSP,SNDCTL_DSP_SETFMT,&format)==-1
-		   ||format!=AFMT_S16_LE) {
+		   ||format!=AFMT_S16_NE) {
 			throw Error(
-				tr("could not set audio format to S16_LE"));
+				tr("could not set audio format to S16_NE"));
 		}
 		int channels=1;
 		if(ioctl(devDSP,SNDCTL_DSP_CHANNELS,&channels)==-1
