@@ -1,3 +1,5 @@
+ * fixed segmentation fault on exit (closing of audio file)
+
 HamFax 0.5
  * fixed disconnect bug while writing to file
  * fixed line length while transmitting at high speed (>300lpm)

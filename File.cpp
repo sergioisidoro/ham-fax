@@ -19,7 +19,7 @@
 #include "Error.hpp"
 
 File::File(QObject* parent)
-	: QObject(parent)
+	: QObject(parent), aFile(0)
 {
 	afSetErrorHandler(0);
 	timer=new QTimer(this);
@@ -27,10 +27,7 @@ File::File(QObject* parent)
 
 File::~File(void)
 {
-	if(aFile!=0) {
-		afCloseFile(aFile);
-		aFile=0;
-	}
+	end();
 }
 
 void File::startOutput(const QString& fileName)
