@@ -26,13 +26,17 @@ class ScaleDialog : public QDialog {
 	Q_OBJECT
 public:
 	ScaleDialog(QWidget* parent);
-	void init(void);
+private:
 	unsigned int width;
 	unsigned int height;
-private:
 	QSpinBox* ioc;
 	QLabel* widthLabel;
 	QLabel* heightLabel;
+signals:
+	void imageWidth(int);
+public slots:
+        void setSize(int w, int h);
+	void doDialog(void);
 private slots:
         void newIOC(int ioc);
 	void okClicked(void);

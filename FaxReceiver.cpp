@@ -194,23 +194,13 @@ void FaxReceiver::correctWidth(int w)
 	lastCol=99;
 	width=w;
 	if(rawData.isNull()) {
-		emit scaleImage(w,0);
+		emit imageWidth(w);
 	} else {
 		rawIt=rawData.begin();
 		timer->start(0);
 		emit newSize(0,0,w,0);
 		emit redrawStarts();
 	}
-}
-
-void FaxReceiver::correctToIOC288(void)
-{
-	correctWidth(905);
-}
-
-void FaxReceiver::correctToIOC576(void)
-{
-	correctWidth(1810);
 }
 
 void FaxReceiver::adjustNext(void)

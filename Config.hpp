@@ -37,9 +37,9 @@ private:
 	ValueMap value;
 	QString fileName;
 signals:
-	void PTCDevice(QString s);
-	void PTTDevice(QString s);
-	void DSPDevice(QString s);
+	void PTCDevice(const QString& s);
+	void PTTDevice(const QString& s);
+	void DSPDevice(const QString& s);
 	void keyPTT(bool b);
 	void carrier(int c);
 	void deviation(int d);
@@ -55,9 +55,9 @@ signals:
 	void color(bool b);
 	void toolTip(bool b);
 public slots:
-        void setPTC(QString s);
-	void setPTT(QString s);
-	void setDSP(QString s);
+        void setPTC(const QString& s);
+	void setPTT(const QString& s);
+	void setDSP(const QString& s);
 	void setKeyPTT(bool b);
 	void setCarrier(int c);
 	void setDeviation(int d);

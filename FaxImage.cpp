@@ -140,13 +140,16 @@ void FaxImage::save(QString fileName)
 
 void FaxImage::scale(int width, int height)
 {
-	if(height==0) {
-		height=width*image.height()/image.width();
-	}
 	image=image.smoothScale(width,height);
 	resizeContents(width,height);
 	updateContents(0,0,width,height);
 	emit sizeUpdated(width,height);
+	emit newImage();
+}
+
+void FaxImage::scale(int width)
+{
+	scale(width,width*image.height()/image.width());
 }
 
 void FaxImage::resize(int x, int y, int w, int h)
@@ -161,6 +164,11 @@ void FaxImage::resize(int x, int y, int w, int h)
 	resizeContents(w,h);
 	updateContents(0,0,w,h);
 	emit sizeUpdated(w,h);
+}
+
+void FaxImage::setWidth(int w)
+{
+	scale(w,image.height());
 }
 
 void FaxImage::setAutoScroll(bool b)

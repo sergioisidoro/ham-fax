@@ -52,8 +52,10 @@ public slots:
         void create(int cols, int rows);
 	void load(QString fileName);
 	void save(QString fileName);
-	void scale(int width, int height=0);
+	void scale(int width, int height);
+	void scale(int width);
 	void resize(int x, int y, int w, int h=0);
+	void setWidth(int w);
 	void setAutoScroll(bool b);
 	void correctSlant(void);
 	void shiftCol1(void);

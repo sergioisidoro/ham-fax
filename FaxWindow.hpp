@@ -39,6 +39,7 @@ class FaxWindow : public QMainWindow {
 public:
 	FaxWindow(const QString& version);
 private:
+	unsigned int ioc;
 	QString getFileName(QString caption, QString filter);
 	virtual void closeEvent(QCloseEvent* close);
 	QString version;
@@ -77,9 +78,10 @@ private:
 signals:
 	void correctBegin(void);
 	void correctSlant(void);
-	void imageWidth(int w);
 	void loadFile(QString fileName);
 	void saveFile(QString fileName);
+	void newWidth(int);
+	void scaleToWidth(int);
 public slots:
 	void setBeginEnd(void);
 	void setColor(bool b);
@@ -93,18 +95,17 @@ public slots:
 	void enableControls(void);
 	void disableControls(void);
 private slots:
-
+        void scaleToIOC(void);
+        void adjustIOC(void);
         void load(void);
         void save(void);
 	void quickSave(void);
 	void initTransmit(int item);
 	void initReception(int item);
-	void doScaleDialog(void);
 	void redrawColor(void);
 	void redrawMono(void);
 	void setBegin(void);
 	void slantWaitFirst(void);
-	void doOptionsDialog(void);
 	void changePTT(void);
 	void changeScroll(void);
 	void setAutoScroll(bool b);

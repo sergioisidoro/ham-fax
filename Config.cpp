@@ -131,7 +131,7 @@ bool Config::getKeyPTT(void)
 	return value["keyPTT"]=="1";
 }
 
-void Config::setPTC(QString s)
+void Config::setPTC(const QString& s)
 {
 	if(value["PTC"]!=s) {
 		value["PTC"]=s;
@@ -139,7 +139,7 @@ void Config::setPTC(QString s)
 	}
 }
 
-void Config::setPTT(QString s)
+void Config::setPTT(const QString& s)
 {
 	if(value["PTT"]!=s) {
 		value["PTT"]=s;
@@ -147,7 +147,7 @@ void Config::setPTT(QString s)
 	}
 }
 
-void Config::setDSP(QString s)
+void Config::setDSP(const QString& s)
 {
 	if(value["DSP"]!=s) {
 		value["DSP"]=s;

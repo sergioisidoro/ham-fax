@@ -26,13 +26,13 @@ class PTT : public QObject {
 public:
 	PTT(QObject* parent);
 	~PTT(void);
-	void setDeviceName(QString s);
 	QString& getDeviceName(void);
 private:
 	int device;
 	bool usePTT;
 	QString deviceName;
 public slots:
+	void setDeviceName(const QString& s);
         void setUse(bool use);
 	void set(void);
 	void release(void);

@@ -34,7 +34,7 @@ Sound::~Sound(void)
 	this->close();
 }
 
-void Sound::setDSPDevice(QString s)
+void Sound::setDSPDevice(const QString& s)
 {
 	devDSPName=s;
 }

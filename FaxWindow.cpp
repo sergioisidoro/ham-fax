@@ -22,21 +22,23 @@
 #include <qlayout.h>
 #include <qdatetime.h>
 #include <qimage.h>
+#include <qinputdialog.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
+#include <qspinbox.h>
 #include <qstatusbar.h>
 #include <qtooltip.h>
 #include <math.h>
 #include "Error.hpp"
 #include "HelpDialog.hpp"
 #include "OptionsDialog.hpp"
-#include "ScaleDialog.hpp"
 #include "ReceiveDialog.hpp"
 #include "PTT.hpp"
 
 FaxWindow::FaxWindow(const QString& version)
 	: version(version)
 {
+	// create child objects
 	config=new Config(this);
 	setCentralWidget(faxImage=new FaxImage(this));
 	faxReceiver=new FaxReceiver(this);
@@ -50,13 +52,16 @@ FaxWindow::FaxWindow(const QString& version)
 	transmitDialog=new TransmitDialog(this);
 	ReceiveDialog* receiveDialog=new ReceiveDialog(this);
 	correctDialog=new CorrectDialog(this);
+	OptionsDialog* optionsDialog=new OptionsDialog(this);
 
+	// create items in status bar
 	statusBar()->setSizeGripEnabled(false);
 	statusBar()->addWidget(sizeText=new QLabel(statusBar()),0,true);
 	statusBar()->addWidget(iocText=new QLabel(statusBar()),0,true);
 	QToolTip::add(iocText,tr("Index Of Cooperation:\n"
 				 "image width in pixels divided by PI"));
 	
+	// build tool bars
 	modTool=new QToolBar(tr("modulation settings"),this);
 	new QLabel(tr("carrier"),modTool);
 	QSpinBox* carrier=new QSpinBox(1500,2400,100,modTool);
@@ -121,7 +126,68 @@ FaxWindow::FaxWindow(const QString& version)
 			 "is split in three lines:\n"
 			 "red, green and blue."));
 
-	// configuration values
+	// build menu bar
+	QPopupMenu* fileMenu=new QPopupMenu(this);
+	fileMenu->insertItem(tr("&Open"),this,SLOT(load()));
+	fileMenu->insertItem(tr("&Save"),this,SLOT(save()));
+	fileMenu->insertItem(tr("&Quick save as PNG"),this,SLOT(quickSave()));
+	fileMenu->insertSeparator();
+	fileMenu->insertItem(tr("&Exit"),this,SLOT(close()));
+	QPopupMenu* transmitMenu=new QPopupMenu(this);
+	transmitMenu->insertItem(tr("Transmit using &dsp"),DSP);
+	transmitMenu->insertItem(tr("Transmit to &file"),FILE);
+	transmitMenu->insertItem(tr("Transmit using &PTC"),SCSPTC);
+	QPopupMenu* receiveMenu=new QPopupMenu(this);
+	receiveMenu->insertItem(tr("Receive from d&sp"),DSP);
+	receiveMenu->insertItem(tr("Receive from f&ile"),FILE);
+	receiveMenu->insertItem(tr("Receive from P&TC"),SCSPTC);
+	imageMenu=new QPopupMenu(this);
+	imageMenu->insertItem(tr("&Adjust IOC"),this,SLOT(adjustIOC()));
+	imageMenu->insertItem(tr("&Scale to IOC"),
+			      this,SLOT(scaleToIOC()));
+	imageMenu->insertSeparator();
+	slantID=imageMenu->insertItem(tr("slant correction"),
+				      this,SLOT(slantWaitFirst()));
+	colDrawID=imageMenu->insertItem(tr("redraw as color facsimile")
+					,this,SLOT(redrawColor()));
+	monoDrawID=imageMenu->insertItem(tr("redraw as mono facsimile"),
+					 this,SLOT(redrawMono()));
+	imageMenu->insertSeparator();
+	imageMenu->insertItem(tr("shift colors (R->G,G->B,B->R)"),
+			      faxImage,SLOT(shiftCol1()));
+	imageMenu->insertItem(tr("shift colors (R->B,G->R,B->G)"),
+			      faxImage,SLOT(shiftCol2()));
+	imageMenu->insertItem(tr("set beginning of line"),
+			      this,SLOT(setBegin()));
+	optionsMenu=new QPopupMenu(this);
+	optionsMenu->insertItem(tr("device settings"),
+				optionsDialog,SLOT(doDialog()));
+	optionsMenu->insertSeparator();
+	pttID=optionsMenu->
+		insertItem(tr("key PTT while transmitting with DSP"),
+			   this,SLOT(changePTT()));
+	optionsMenu->setItemChecked(pttID,config->getKeyPTT());
+	scrollID=optionsMenu->
+		insertItem(tr("automatic scroll to last received line"),
+			   this,SLOT(changeScroll()));
+	toolTipID=optionsMenu->
+		insertItem(tr("show tool tips"),
+			   this,SLOT(changeToolTip()));
+	QPopupMenu* helpMenu=new QPopupMenu(this);
+	helpMenu->insertItem(tr("&Help"),this,SLOT(help()));
+	helpMenu->insertSeparator();
+	helpMenu->insertItem(tr("&About HamFax"),this,SLOT(about()));
+	helpMenu->insertItem(tr("About &QT"),this,SLOT(aboutQT()));
+
+	menuBar()->insertItem(tr("&File"),fileMenu);
+	menuBar()->insertItem(tr("&Transmit"),transmitMenu);
+	menuBar()->insertItem(tr("&Receive"),receiveMenu);
+	menuBar()->insertItem(tr("&Image"),imageMenu);
+	menuBar()->insertItem(tr("&Options"),optionsMenu);
+	menuBar()->insertSeparator();
+	menuBar()->insertItem(tr("&Help"),helpMenu);
+
+	// how configuration values get to the correct places
 	connect(config,SIGNAL(carrier(int)),carrier,SLOT(setValue(int)));
 	connect(carrier,SIGNAL(valueChanged(int)),
 		config,SLOT(setCarrier(int)));
@@ -209,7 +275,28 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(config,SIGNAL(autoScroll(bool)), SLOT(setAutoScroll(bool)));
 
 	connect(config,SIGNAL(toolTip(bool)), SLOT(setToolTip(bool)));
-	
+
+	connect(config,SIGNAL(DSPDevice(const QString&)),
+		sound,SLOT(setDSPDevice(const QString&)));
+	connect(config,SIGNAL(DSPDevice(const QString&)),
+		optionsDialog,SLOT(setDSP(const QString&)));
+	connect(optionsDialog,SIGNAL(dsp(const QString&)),
+		config,SLOT(setDSP(const QString&)));
+
+	connect(config,SIGNAL(PTCDevice(const QString&)),
+		ptc,SLOT(setDeviceName(const QString&)));
+	connect(config,SIGNAL(PTCDevice(const QString&)),
+		optionsDialog,SLOT(setPTC(const QString&)));
+	connect(optionsDialog,SIGNAL(ptc(const QString&)),
+		config,SLOT(setPTC(const QString&)));
+
+	connect(config,SIGNAL(PTTDevice(const QString&)),
+		ptt,SLOT(setDeviceName(const QString&)));
+	connect(config,SIGNAL(PTTDevice(const QString&)),
+		optionsDialog,SLOT(setPTT(const QString&)));
+	connect(optionsDialog,SIGNAL(ptt(const QString&)),
+		config,SLOT(setPTT(const QString&)));
+
 	connect(this,SIGNAL(loadFile(QString)),faxImage,SLOT(load(QString)));
 	connect(this,SIGNAL(saveFile(QString)),faxImage,SLOT(save(QString)));
 
@@ -219,10 +306,8 @@ FaxWindow::FaxWindow(const QString& version)
 		faxReceiver,SLOT(setWidth(int)));
 	connect(faxReceiver,SIGNAL(newPixel(int, int, int, int)),
 		faxImage,SLOT(setPixel(int, int, int,int)));
-	connect(this,SIGNAL(imageWidth(int)),
-		faxReceiver,SLOT(correctWidth(int)));
-	connect(faxReceiver,SIGNAL(scaleImage(int, int)),
-		faxImage,SLOT(scale(int, int)));
+	connect(this,SIGNAL(scaleToWidth(int)),
+		faxImage,SLOT(scale(int)));
 	connect(faxReceiver, SIGNAL(newSize(int, int, int, int)),
 		faxImage, SLOT(resize(int, int, int, int)));
 
@@ -296,8 +381,7 @@ FaxWindow::FaxWindow(const QString& version)
 	// correction
 	connect(faxReceiver,SIGNAL(bufferNotEmpty(bool)),
 		SLOT(setImageAdjust(bool)));
-	connect(faxImage,SIGNAL(newImage()), 
-		faxReceiver,SLOT(releaseBuffer()));
+	connect(faxImage,SIGNAL(newImage()),faxReceiver,SLOT(releaseBuffer()));
 	connect(faxReceiver,SIGNAL(redrawStarts()),SLOT(disableControls()));
 
 	connect(this,SIGNAL(correctSlant()),faxImage,SLOT(correctSlant()));
@@ -305,69 +389,10 @@ FaxWindow::FaxWindow(const QString& version)
 		faxReceiver,SLOT(correctLPM(double)));
 	connect(this,SIGNAL(correctBegin()),faxImage,SLOT(correctBegin()));
 	connect(correctDialog,SIGNAL(cancelClicked()),SLOT(enableControls()));
-
-	QPopupMenu* fileMenu=new QPopupMenu(this);
-	fileMenu->insertItem(tr("&Open"),this,SLOT(load()));
-	fileMenu->insertItem(tr("&Save"),this,SLOT(save()));
-	fileMenu->insertItem(tr("&Quick save as PNG"),this,SLOT(quickSave()));
-	fileMenu->insertSeparator();
-	fileMenu->insertItem(tr("&Exit"),this,SLOT(close()));
-	QPopupMenu* transmitMenu=new QPopupMenu(this);
-	transmitMenu->insertItem(tr("Transmit using &dsp"),DSP);
-	transmitMenu->insertItem(tr("Transmit to &file"),FILE);
-	transmitMenu->insertItem(tr("Transmit using &PTC"),SCSPTC);
-	QPopupMenu* receiveMenu=new QPopupMenu(this);
-	receiveMenu->insertItem(tr("Receive from d&sp"),DSP);
-	receiveMenu->insertItem(tr("Receive from f&ile"),FILE);
-	receiveMenu->insertItem(tr("Receive from P&TC"),SCSPTC);
-	imageMenu=new QPopupMenu(this);
-	imageMenu->insertItem(tr("&Adjust IOC"),
-			      this,SLOT(doScaleDialog()));
-	imageMenu->insertItem(tr("Adjust IOC tp &288"),
-			      faxReceiver,SLOT(correctToIOC288()));
-	imageMenu->insertItem(tr("Adjust IOC to &576"),
-			      faxReceiver,SLOT(correctToIOC576()));
-	imageMenu->insertSeparator();
-	slantID=imageMenu->insertItem(tr("slant correction"),
-				      this,SLOT(slantWaitFirst()));
-	colDrawID=imageMenu->insertItem(tr("redraw as color facsimile")
-					,this,SLOT(redrawColor()));
-	monoDrawID=imageMenu->insertItem(tr("redraw as mono facsimile"),
-					 this,SLOT(redrawMono()));
-	imageMenu->insertSeparator();
-	imageMenu->insertItem(tr("shift colors (R->G,G->B,B->R)"),
-			      faxImage,SLOT(shiftCol1()));
-	imageMenu->insertItem(tr("shift colors (R->B,G->R,B->G)"),
-			      faxImage,SLOT(shiftCol2()));
-	imageMenu->insertItem(tr("set beginning of line"),
-			      this,SLOT(setBegin()));
-	optionsMenu=new QPopupMenu(this);
-	optionsMenu->insertItem(tr("device settings"),
-				this,SLOT(doOptionsDialog()));
-	optionsMenu->insertSeparator();
-	pttID=optionsMenu->
-		insertItem(tr("key PTT while transmitting with DSP"),
-			   this,SLOT(changePTT()));
-	optionsMenu->setItemChecked(pttID,config->getKeyPTT());
-	scrollID=optionsMenu->
-		insertItem(tr("automatic scroll to last received line"),
-			   this,SLOT(changeScroll()));
-	toolTipID=optionsMenu->
-		insertItem(tr("show tool tips"),
-			   this,SLOT(changeToolTip()));
-	QPopupMenu* helpMenu=new QPopupMenu(this);
-	helpMenu->insertItem(tr("&Help"),this,SLOT(help()));
-	helpMenu->insertSeparator();
-	helpMenu->insertItem(tr("&About HamFax"),this,SLOT(about()));
-	helpMenu->insertItem(tr("About &QT"),this,SLOT(aboutQT()));
-
-	menuBar()->insertItem(tr("&File"),fileMenu);
-	menuBar()->insertItem(tr("&Transmit"),transmitMenu);
-	menuBar()->insertItem(tr("&Receive"),receiveMenu);
-	menuBar()->insertItem(tr("&Image"),imageMenu);
-	menuBar()->insertItem(tr("&Options"),optionsMenu);
-	menuBar()->insertSeparator();
-	menuBar()->insertItem(tr("&Help"),helpMenu);
+	connect(this,SIGNAL(newWidth(int)),
+		faxReceiver,SLOT(correctWidth(int)));
+	connect(faxReceiver,SIGNAL(imageWidth(int)),
+		faxImage,SLOT(setWidth(int)));
 
 	connect(transmitMenu,SIGNAL(activated(int)),SLOT(initTransmit(int)));
 	connect(receiveMenu,SIGNAL(activated(int)),SLOT(initReception(int)));
@@ -391,8 +416,9 @@ void FaxWindow::about(void)
 				 tr("HamFax is a QT application for "
 				    "transmitting and receiving "
 				    "ham radio facsimiles.\n"
-				    "Author: Christof Schmitt, DH1CS\n"
-				    "License: GPL\n"
+				    "Author: Christof Schmitt, DH1CS "
+				    "<cschmit@suse.de>\n"
+				    "License: GNU General Public License\n"
 				    "Version: %1").arg(version));
 }
 
@@ -419,33 +445,6 @@ void FaxWindow::save(void)
 	if(!fileName.isEmpty()) {
 		emit saveFile(fileName);
 	}
-}
-
-void FaxWindow::doOptionsDialog(void)
-{
-	OptionsDialog* d=new OptionsDialog(this);
-	d->devDSPName=config->getDSPDevice();
-	d->devPTTName=config->getPTTDevice();
-	d->devPTCName=config->getPTCDevice();
-	d->init();
-	if(d->exec()) {
-		config->setDSP(d->devDSPName);
-		config->setPTT(d->devPTTName);
-		config->setPTC(d->devPTCName);
-	}
-	delete d;
-}
-
-void FaxWindow::doScaleDialog(void)
-{
-	ScaleDialog* d=new ScaleDialog(this);
-	d->width=faxImage->getCols();
-	d->height=faxImage->getRows();
-	d->init();
-	if(d->exec()) {
-		emit imageWidth(d->width);
-	}
-	delete d;
 }
 
 void FaxWindow::changePTT(void)
@@ -684,7 +683,7 @@ void FaxWindow::quickSave(void)
 void FaxWindow::newImageSize(int w, int h)
 {
 	sizeText->setText(QString(tr("image size: %1x%2")).arg(w).arg(h));
-	unsigned int ioc=(unsigned int)((double)w/M_PI+0.5);
+	ioc=static_cast<unsigned int>(0.5+w/M_PI);
 	iocText->setText(QString(tr("IOC: %1").arg(ioc)));
 }
 
@@ -786,4 +785,24 @@ void FaxWindow::setToolTip(bool b)
 	optionsMenu->setItemChecked(toolTipID,b);
 	QToolTip::setEnabled(b);
 	config->setToolTip(b);
+}
+
+void FaxWindow::adjustIOC(void)
+{
+	bool ok;
+	int iocNew=QInputDialog::getInteger(caption(),tr("Please enter IOC"),
+					    ioc, 204, 576, 1, &ok, this );
+	if(ok) {
+		emit newWidth(M_PI*iocNew);
+	}
+}
+
+void FaxWindow::scaleToIOC(void)
+{
+	bool ok;
+	int newIOC=QInputDialog::getInteger(caption(),tr("Please enter IOC"),
+					    ioc, 204, 576, 1, &ok, this );
+	if(ok) {
+		emit scaleToWidth(M_PI*newIOC);
+	}
 }

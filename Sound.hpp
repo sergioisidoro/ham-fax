@@ -27,7 +27,6 @@ class Sound : public QObject {
 public:
 	Sound(QObject* parent);
 	~Sound(void);
-	void setDSPDevice(QString s);
 	void startOutput(void);
 	void startInput(void);
 	bool outputBufferEmpty(void);
@@ -42,6 +41,7 @@ signals:
 	void spaceLeft(unsigned int);
 	void newSampleRate(int);
 public slots:
+        void setDSPDevice(const QString& s);
 	void closeNow(void);
 	void end(void);
 	void write(signed short* samples, unsigned int number);

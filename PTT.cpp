@@ -32,7 +32,7 @@ PTT::~PTT(void)
 {
 }
 
-void PTT::setDeviceName(QString s)
+void PTT::setDeviceName(const QString& s)
 {
 	deviceName=s;
 }

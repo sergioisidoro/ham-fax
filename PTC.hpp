@@ -27,8 +27,6 @@ class PTC : public QObject {
 public:
 	PTC(QObject* parent);
 	~PTC(void);
-	void setDeviceName(QString s);
-	QString& getDeviceName(void);
 	void startInput(void);
 	void startOutput(void);
 	void end(void);
@@ -47,6 +45,7 @@ signals:
 	void spaceLeft(unsigned int);
 	void deviceClosed();
 public slots:
+        void setDeviceName(const QString& s);
         void setDeviation(int dev);
 	void setFM(bool fm);
 	void transmit(double* samples, unsigned int count);

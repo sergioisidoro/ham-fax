@@ -42,26 +42,16 @@ OptionsDialog::OptionsDialog(QWidget* parent)
 	buttons->addWidget(ok);
 	buttons->addWidget(cancel);
 
-	connect(devDSP,SIGNAL(textChanged(const QString&)),
-		this,SLOT(dspChanged(const QString&)));
-	connect(devPTT,SIGNAL(textChanged(const QString&)),
-		this,SLOT(pttChanged(const QString&)));
-	connect(devPTC,SIGNAL(textChanged(const QString&)),
-		this,SLOT(ptcChanged(const QString&)));
 	connect(ok,SIGNAL(clicked()),this,SLOT(okClicked()));
 	connect(cancel,SIGNAL(clicked()),this,SLOT(cancelClicked()));
-}
-
-void OptionsDialog::init(void)
-{
-	devDSP->setText(devDSPName);
-	devPTT->setText(devPTTName);
-	devPTC->setText(devPTCName);
 }
 
 void OptionsDialog::okClicked(void)
 {
 	done(1);
+	emit dsp(devDSP->text());
+	emit ptt(devPTT->text());
+	emit ptc(devPTC->text());
 }
 
 void OptionsDialog::cancelClicked(void)
@@ -69,17 +59,22 @@ void OptionsDialog::cancelClicked(void)
 	done(0);
 }
 
-void OptionsDialog::dspChanged(const QString& s)
+void OptionsDialog::setDSP(const QString& s)
 {
-	devDSPName=s;
+	devDSP->setText(s);
 }
 
-void OptionsDialog::pttChanged(const QString& s)
+void OptionsDialog::setPTT(const QString& s)
 {
-	devPTTName=s;
+	devPTT->setText(s);
 }
 
-void OptionsDialog::ptcChanged(const QString& s)
+void OptionsDialog::setPTC(const QString& s)
 {
-	devPTCName=s;
+	devPTC->setText(s);
+}
+
+void OptionsDialog::doDialog(void)
+{
+	exec();
 }

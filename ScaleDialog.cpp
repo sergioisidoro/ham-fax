@@ -50,12 +50,6 @@ ScaleDialog::ScaleDialog(QWidget* parent)
 	connect(cancel,SIGNAL(clicked()),this,SLOT(cancelClicked()));
 }
 
-void ScaleDialog::init(void)
-{
-	ioc->setValue((unsigned int)(fabs((double)width/M_PI+0.5)));
-	newIOC(ioc->value());
-}
-
 void ScaleDialog::newIOC(int ioc)
 {
 	unsigned int newWidth=(unsigned int)((double)ioc*M_PI);
@@ -69,10 +63,24 @@ void ScaleDialog::okClicked(void)
 {
 	width=widthLabel->text().toUInt();
 	height=heightLabel->text().toUInt();
+	emit imageWidth(width);
 	done(1);
 }
 
 void ScaleDialog::cancelClicked(void)
 {
 	done(0);
+}
+
+void ScaleDialog::setSize(int w, int h)
+{
+	width=w;
+	height=h;
+}
+
+void ScaleDialog::doDialog(void)
+{
+	ioc->setValue((unsigned int)(fabs((double)width/M_PI+0.5)));
+	newIOC(ioc->value());
+	exec();
 }

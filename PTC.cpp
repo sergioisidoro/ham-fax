@@ -34,14 +34,9 @@ PTC::~PTC(void)
 	close();
 }
 
-void PTC::setDeviceName(QString s)
+void PTC::setDeviceName(const QString& s)
 {
 	deviceName=s;
-}
-
-QString& PTC::getDeviceName(void)
-{
-	return deviceName;
 }
 
 void PTC::open(void)

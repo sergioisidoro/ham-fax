@@ -26,18 +26,20 @@ class OptionsDialog : public QDialog {
 	Q_OBJECT
 public:
 	OptionsDialog(QWidget* parent);
-	void init(void);
-	QString devDSPName;
-	QString devPTTName;
-	QString devPTCName;
 private:
 	QLineEdit* devDSP;
 	QLineEdit* devPTT;
 	QLineEdit* devPTC;
+signals:
+	void dsp(const QString&);
+	void ptt(const QString&);
+	void ptc(const QString&);
+public slots:
+        void setDSP(const QString& s);
+	void setPTT(const QString& s);
+	void setPTC(const QString& s);
+	void doDialog(void);
 private slots:
-        void dspChanged(const QString& s);
-	void pttChanged(const QString& s);
-	void ptcChanged(const QString& s);
         void okClicked(void);
 	void cancelClicked(void);
 };

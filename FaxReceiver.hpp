@@ -71,7 +71,7 @@ signals:
 	void phasingLine(double lpm);
 	void imageRow(int row);
 	void bufferNotEmpty(bool);
-	void scaleImage(int w, int h);
+	void imageWidth(int w);
 	void newSize(int x, int y, int w, int h);
 	void imageStarts(void);
 	void redrawStarts(void);
@@ -89,8 +89,6 @@ public slots:
 	void correctWidth(int w);
 	void releaseBuffer(void);
 	void setTxLPM(int lpm);
-	void correctToIOC288(void);
-	void correctToIOC576(void);
 private slots:
         void adjustNext(void);
 };
