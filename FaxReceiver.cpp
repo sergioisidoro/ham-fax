@@ -47,10 +47,10 @@ void FaxReceiver::init(void)
 	emit startReception();
 }
 
-void FaxReceiver::decode(unsigned int* buf, unsigned int n)
+void FaxReceiver::decode(int* buf, int n)
 {
 	if(n==0) endReception();
-	for(unsigned int i=0; i<n; i++) {
+	for(int i=0; i<n; i++) {
 		currentValue=buf[i];
 		decodeApt(buf[i]);
 		if(state==PHASING) {
@@ -62,7 +62,7 @@ void FaxReceiver::decode(unsigned int* buf, unsigned int n)
 	}
 }
 
-void FaxReceiver::decodeApt(unsigned int& x)
+void FaxReceiver::decodeApt(int& x)
 {
 	if(x>220 && !aptHigh) {
 		aptHigh=true;
@@ -71,7 +71,7 @@ void FaxReceiver::decodeApt(unsigned int& x)
 		aptHigh=false;
 	}
 	if(++aptCount >= sampleRate/2) {
-		unsigned int f=sampleRate*aptTrans/aptCount;
+		int f=sampleRate*aptTrans/aptCount;
 		aptCount=aptTrans=0;
 		emit aptFound(f);
 		if(state==APTSTART) {
@@ -97,7 +97,7 @@ void FaxReceiver::decodeApt(unsigned int& x)
 // range of 60--360lpm (plus some tolerance) it is considered a valid
 // phasing line. Then the start of a line and the lpm is calculated.
 
-void FaxReceiver::decodePhasing(unsigned int& x)
+void FaxReceiver::decodePhasing(int& x)
 {
 	currPhaseLength++;
 	if(x>128) {
@@ -109,27 +109,23 @@ void FaxReceiver::decodePhasing(unsigned int& x)
 	} else if((!phaseInvers && x<=128 && phaseHigh) ||
 		  ( phaseInvers && x>=128 && !phaseHigh)) {
 		phaseHigh=phaseInvers?true:false;
-		if((double)currPhaseHigh >= 
-		   (phaseInvers?0.948:0.048)*currPhaseLength &&
-		   (double)currPhaseHigh <=
-		   (phaseInvers?0.952:0.052)*currPhaseLength &&
-		   (double)currPhaseLength/sampleRate<=1.1 &&
-		   (double)currPhaseLength/sampleRate>=0.09) {
-			double l=60.0*(double)sampleRate
-				/(double)currPhaseLength;
+		if(currPhaseHigh>=(phaseInvers?0.948:0.048)*currPhaseLength &&
+		   currPhaseHigh<=(phaseInvers?0.952:0.052)*currPhaseLength &&
+		   static_cast<double>(currPhaseLength)/sampleRate<=1.1 &&
+		   static_cast<double>(currPhaseLength)/sampleRate>=0.09) {
+			double l=60.0*sampleRate/currPhaseLength;
 			emit phasingLine(l);
 			lpmSum+=l;
 			++phaseLines;
-			lpm=lpmSum/(double)phaseLines;
+			lpm=lpmSum/phaseLines;
 			imageSample=static_cast<int>
 				(1.025*60.0/lpm*sampleRate);
-			
 			noPhaseLines=0;
 		} else if(phaseLines>0 && ++noPhaseLines>=5) {
 			state=IMAGE;
 			double pos=fmod(imageSample,sampleRate*60/lpm);
-			pos/=(double)sampleRate*60.0/(double)lpm;
-			lastCol=static_cast<unsigned int>(pos*width);
+			pos/=sampleRate*60.0/lpm;
+			lastCol=static_cast<int>(pos*width);
 			pixel=pixelSamples=0;
 			lastRow=99; // just !=0 which is the first row
 			emit imageStarts();
@@ -138,13 +134,13 @@ void FaxReceiver::decodePhasing(unsigned int& x)
 	}
 }
 
-void FaxReceiver::decodeImage(unsigned int& x)
+void FaxReceiver::decodeImage(int& x)
 {
 	if(lpm>0) {
 		double pos=fmod(imageSample,sampleRate*60/lpm);
 		pos/=sampleRate*60.0/lpm;
-		unsigned int col=static_cast<unsigned int>(pos*width);
-		currRow=static_cast<unsigned int>
+		int col=static_cast<int>(pos*width);
+		currRow=static_cast<int>
 			(static_cast<double>(imageSample)/sampleRate*lpm/60.0);
 		int rawSize=rawData.size();
 		if(rawSize<=imageSample) {
@@ -187,6 +183,7 @@ void FaxReceiver::correctLPM(double d)
 	lpm*= (color ? (d-1.0)/3.0+1.0 : d);
 	rawIt=rawData.begin();
 	timer->start(0);
+	emit redrawStarts();
 }
 
 void FaxReceiver::correctWidth(int w)
@@ -206,7 +203,7 @@ void FaxReceiver::correctWidth(int w)
 
 void FaxReceiver::adjustNext(void)
 {
-	for(unsigned int i=0; i<512; i++) {
+	for(int i=0; i<512; i++) {
 		if(rawIt++>=rawData.end()) {
 			timer->stop();
 			int h=currRow-static_cast<int>(lpm/60.0)-1;
@@ -216,9 +213,8 @@ void FaxReceiver::adjustNext(void)
 		}
 		double pos=fmod(imageSample,sampleRate*60.0/lpm);
 		pos/=sampleRate*60.0/lpm;
-		unsigned int col=static_cast<unsigned int>(pos*width);
-		currRow=static_cast<unsigned int>
-			(imageSample*lpm/60.0/sampleRate);
+		int col=static_cast<int>(pos*width);
+		currRow=static_cast<int>(imageSample*lpm/60.0/sampleRate);
 		if(col==lastCol) {
 			pixel+=*rawIt;
 			pixelSamples++;
@@ -274,8 +270,8 @@ void FaxReceiver::skip(void)
 		state=IMAGE;
 		emit imageStarts();
 		double pos=fmod(imageSample,sampleRate*60/lpm);
-		pos/=(double)sampleRate*60.0/(double)lpm;
-		lastCol=static_cast<unsigned int>(pos*width);
+		pos/=sampleRate*60.0/lpm;
+		lastCol=static_cast<int>(pos*width);
 		pixel=pixelSamples=imageSample=0;
 		lastRow=99; // just !=0 which is the first row
 	}

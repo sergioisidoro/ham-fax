@@ -18,25 +18,23 @@
 #include <qobject.h>
 
 // these coefficents are taken from ACfax
-const double lpf[]={   0, -18, -38, -39,   0,  83, 191, 284, 320,
-			      284, 191, 83, 0, -39, -38, -18, 0};
+const double lpf[]={0,-18,-38,-39,0,83,191,284,320,284,191,83,0,-39,-38,-18,0};
 
 class FaxDemodulator : public QObject {
 	Q_OBJECT
 public:
 	FaxDemodulator(QObject* parent);
 	~FaxDemodulator(void);
-	void demodulate(unsigned int* demod,short* audio, unsigned int n);
 private:
-	unsigned int carrier;
-	unsigned int rate;
-	unsigned int deviation;
+	int carrier;
+	int rate;
+	int deviation;
 	bool fm;
-	static const unsigned int sine_size=8192;
+	static const int sine_size=8192;
 	double* sine;
 	double* sin_phase;
 	double* cos_phase;
-	static const unsigned int fir_size=17;
+	static const int fir_size=17;
 	double* ifir;
 	double* ifir_end;
 	double* icurrent;
@@ -45,14 +43,14 @@ private:
 	double* qfir_end;
 	double* qcurrent;
 	double qfirold;
-	static const unsigned int asine_size=256;
+	static const int asine_size=256;
 	double* asine;
 signals:
-	void data(unsigned int* buffer, unsigned int n);
+	void data(int* buffer, int n);
 public slots:
         void setCarrier(int carrier);
 	void setSampleRate(int sampleRate);
 	void setDeviation(int dev);
 	void setFM(bool fm);
-	void newSamples(signed short* audio, unsigned int n);
+	void newSamples(short* audio, int n);
 };

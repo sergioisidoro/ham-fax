@@ -82,7 +82,7 @@ void ReceiveDialog::imageRow(int row)
 	showText(tr("receiving line %1").arg(row));
 }
 
-void ReceiveDialog::samples(signed short* buffer, unsigned int n)
+void ReceiveDialog::samples(short* buffer, int n)
 {
 	level->samples(buffer,n);
 }

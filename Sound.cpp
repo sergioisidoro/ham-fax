@@ -118,21 +118,20 @@ void Sound::end(void)
 			int i;
 			ioctl(devDSP,SNDCTL_DSP_GETODELAY,&i);
 			QTimer::singleShot(1000*i
-					   /sampleRate/sizeof(signed short),
+					   /sampleRate/sizeof(short),
 					   this,SLOT(close()));
 		}
 		delete notifier;
 	}
 }
 
-void Sound::write(signed short* samples, unsigned int number)
+void Sound::write(short* samples, int number)
 {
 	try {
 		if(devDSP!=-1) {
 			notifier->setEnabled(false);
-			if((::write(devDSP,samples,
-				    number*sizeof(signed short)))
-			   !=static_cast<int>(number*sizeof(signed short))) {
+			if((::write(devDSP,samples, number*sizeof(short)))
+			   !=static_cast<int>(number*sizeof(short))) {
 				throw Error(tr("could not write to DSP"));
 			}
 			notifier->setEnabled(true);
@@ -155,9 +154,9 @@ bool Sound::outputBufferEmpty(void)
 
 void Sound::read(int fd)
 {
-	unsigned int n=512;
-	signed short buffer[n];
-	n=::read(fd,buffer,n*sizeof(signed short))/sizeof(signed short);
+	int n=512;
+	short buffer[n];
+	n=::read(fd,buffer,n*sizeof(short))/sizeof(short);
 	emit data(buffer,n);
 }
 
@@ -165,7 +164,7 @@ void Sound::checkSpace(int fd)
 {
 	audio_buf_info info;
 	ioctl(fd,SNDCTL_DSP_GETOSPACE,&info);
-	emit spaceLeft(info.bytes/sizeof(signed short));
+	emit spaceLeft(info.bytes/sizeof(short));
 }
 
 void Sound::close(void)

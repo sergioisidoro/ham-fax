@@ -348,6 +348,8 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(faxTransmitter,SIGNAL(end()),SLOT(endTransmission()));
 	connect(sound,SIGNAL(deviceClosed()),transmitDialog,SLOT(hide()));
 	connect(ptc,SIGNAL(deviceClosed()),transmitDialog,SLOT(hide()));
+	connect(file,SIGNAL(deviceClosed()),transmitDialog,SLOT(hide()));
+	connect(file,SIGNAL(deviceClosed()),SLOT(enableControls()));
 	connect(sound,SIGNAL(deviceClosed()),SLOT(enableControls()));
 	connect(ptc,SIGNAL(deviceClosed()),SLOT(enableControls()));
 	connect(sound,SIGNAL(deviceClosed()),ptt,SLOT(release()));
@@ -360,8 +362,8 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(faxReceiver,SIGNAL(startReception()),SLOT(disableControls()));
 	connect(faxReceiver,SIGNAL(startReception()),
 		receiveDialog,SLOT(show()));
-	connect(sound, SIGNAL(data(signed short*,unsigned int)),
-		receiveDialog, SLOT(samples(signed short*,unsigned int)));
+	connect(sound, SIGNAL(data(short*,int)),
+		receiveDialog, SLOT(samples(short*,int)));
 	connect(faxReceiver,SIGNAL(aptFound(int)),
 		receiveDialog,SLOT(apt(int)));
 	connect(faxReceiver,SIGNAL(startingPhasing()),
@@ -500,37 +502,28 @@ void FaxWindow::initTransmit(int item)
 				return;
 			}
 			file->startOutput(fileName);
-			connect(file,SIGNAL(next(unsigned int)),
-				faxTransmitter,SLOT(doNext(unsigned int)));
-			connect(faxTransmitter,
-				SIGNAL(data(double*, unsigned int)),
-				faxModulator,
-				SLOT(modulate(double*, unsigned int)));
-			connect(faxModulator,
-				SIGNAL(data(signed short*, unsigned int)),
-				file,
-				SLOT(write(signed short*, unsigned int)));
+			connect(file,SIGNAL(next(int)),
+				faxTransmitter,SLOT(doNext(int)));
+			connect(faxTransmitter,	SIGNAL(data(double*, int)),
+				faxModulator, SLOT(modulate(double*, int)));
+			connect(faxModulator, SIGNAL(data(short*, int)),
+				file, SLOT(write(short*, int)));
 			break;
 		case DSP:
 			sound->startOutput();
-			connect(sound,SIGNAL(spaceLeft(unsigned int)),
-				faxTransmitter,SLOT(doNext(unsigned int)));
-			connect(faxTransmitter,
-				SIGNAL(data(double*, unsigned int)),
-				faxModulator,
-				SLOT(modulate(double*, unsigned int)));
-			connect(faxModulator,
-				SIGNAL(data(signed short*, unsigned int)),
-				sound,
-				SLOT(write(signed short*, unsigned int)));
+			connect(sound,SIGNAL(spaceLeft(int)),
+				faxTransmitter,SLOT(doNext(int)));
+			connect(faxTransmitter,	SIGNAL(data(double*, int)),
+				faxModulator, SLOT(modulate(double*, int)));
+			connect(faxModulator, SIGNAL(data(short*, int)),
+				sound, SLOT(write(short*, int)));
 			break;
 		case SCSPTC:
 			ptc->startOutput();
-			connect(ptc,SIGNAL(spaceLeft(unsigned int)),
-				faxTransmitter,SLOT(doNext(unsigned int)));
-			connect(faxTransmitter,
-				SIGNAL(data(double*, unsigned int)),
-				ptc,SLOT(transmit(double*, unsigned int)));
+			connect(ptc,SIGNAL(spaceLeft(int)),
+				faxTransmitter,SLOT(doNext(int)));
+			connect(faxTransmitter,SIGNAL(data(double*, int)),
+				ptc,SLOT(transmit(double*, int)));
 			break;
 		}
 		faxTransmitter->startTransmission();
@@ -544,37 +537,28 @@ void FaxWindow::endTransmission(void)
 	switch(interface) {
 	case FILE:
 		file->end();
-		disconnect(sound,SIGNAL(spaceLeft(unsigned int)),
-			   faxTransmitter,SLOT(doNext(unsigned int)));
-		disconnect(faxTransmitter,
-			   SIGNAL(data(double*, unsigned int)),
-			   faxModulator,
-			   SLOT(modulate(double*, unsigned int)));
-		disconnect(faxModulator,
-			   SIGNAL(data(signed short*, unsigned int)),
-			   sound,
-			   SLOT(write(signed short*, unsigned int)));
+		disconnect(sound,SIGNAL(spaceLeft(int)),
+			   faxTransmitter,SLOT(doNext(int)));
+		disconnect(faxTransmitter, SIGNAL(data(double*, int)),
+			   faxModulator, SLOT(modulate(double*, int)));
+		disconnect(faxModulator, SIGNAL(data(short*, int)),
+			   sound, SLOT(write(short*, int)));
 		break;
 	case DSP:
 		sound->end();
-		disconnect(sound,SIGNAL(spaceLeft(unsigned int)),
-			faxTransmitter,SLOT(doNext(unsigned int)));
-		disconnect(faxTransmitter,
-			SIGNAL(data(double*,unsigned int)),
-			faxModulator,
-			SLOT(modulate(double*,unsigned int)));
-		disconnect(faxModulator,
-			SIGNAL(data(signed short*,unsigned int)),
-			sound,
-			SLOT(write(signed short*,unsigned int)));
+		disconnect(sound,SIGNAL(spaceLeft(int)),
+			   faxTransmitter,SLOT(doNext(int)));
+		disconnect(faxTransmitter, SIGNAL(data(double*,int)),
+			faxModulator, SLOT(modulate(double*,int)));
+		disconnect(faxModulator, SIGNAL(data(short*,int)),
+			sound, SLOT(write(short*,int)));
 		break;
 	case SCSPTC:
 		ptc->end();
-		disconnect(ptc,SIGNAL(spaceLeft(unsigned int)),
-			   faxTransmitter,SLOT(doNext(unsigned int)));
-		disconnect(faxTransmitter,
-			   SIGNAL(data(double*, unsigned int)),
-			   ptc,SLOT(transmit(double*, unsigned int)));
+		disconnect(ptc,SIGNAL(spaceLeft(int)),
+			   faxTransmitter,SLOT(doNext(int)));
+		disconnect(faxTransmitter, SIGNAL(data(double*, int)),
+			   ptc,SLOT(transmit(double*, int)));
 	}
 }
 
@@ -589,31 +573,22 @@ void FaxWindow::initReception(int item)
 				return;
 			}
 			file->startInput(fileName);
-			connect(file,
-				SIGNAL(data(signed short*,unsigned int)),
-				faxDemodulator,
-				SLOT(newSamples(signed short*,unsigned int)));
-			connect(faxDemodulator,
-				SIGNAL(data(unsigned int*,unsigned int)),
-				faxReceiver,
-				SLOT(decode(unsigned int*,unsigned int)));
+			connect(file, SIGNAL(data(short*,int)),
+				faxDemodulator, SLOT(newSamples(short*,int)));
+			connect(faxDemodulator, SIGNAL(data(int*,int)),
+				faxReceiver, SLOT(decode(int*,int)));
 			break;
 		case DSP:
 			sound->startInput();
-			connect(sound,
-				SIGNAL(data(signed short*,unsigned int)),
-				faxDemodulator,
-				SLOT(newSamples(signed short*,unsigned int)));
-			connect(faxDemodulator,
-				SIGNAL(data(unsigned int*,unsigned int)),
-				faxReceiver,
-				SLOT(decode(unsigned int*,unsigned int)));
+			connect(sound,SIGNAL(data(short*,int)),
+				faxDemodulator,	SLOT(newSamples(short*,int)));
+			connect(faxDemodulator,	SIGNAL(data(int*,int)),
+				faxReceiver, SLOT(decode(int*,int)));
 			break;
 		case SCSPTC:
 			ptc->startInput();
-			connect(ptc,SIGNAL(data(unsigned int*,unsigned int)),
-				faxReceiver,
-				SLOT(decode(unsigned int*, unsigned int)));
+			connect(ptc,SIGNAL(data(int*,int)),
+				faxReceiver, SLOT(decode(int*, int)));
 			break;
 		}
 		faxReceiver->init();
@@ -627,31 +602,22 @@ void FaxWindow::endReception(void)
 	switch(interface) {
 	case FILE:
 		file->end();
-		disconnect(file,
-			SIGNAL(data(signed short*, unsigned int)),
-			faxDemodulator,
-			SLOT(newSamples(signed short*, unsigned int)));
-		disconnect(faxDemodulator,
-			SIGNAL(data(unsigned int*, unsigned int)),
-			faxReceiver,
-			SLOT(decode(unsigned int*, unsigned int)));
+		disconnect(file, SIGNAL(data(short*, int)),
+			faxDemodulator, SLOT(newSamples(short*, int)));
+		disconnect(faxDemodulator, SIGNAL(data(int*, int)),
+			faxReceiver, SLOT(decode(int*, int)));
 		break;
 	case DSP:
 		sound->end();
-		disconnect(sound,
-			SIGNAL(data(signed short*, unsigned int)),
-			faxDemodulator,
-			SLOT(newSamples(signed short*, unsigned int)));
-		disconnect(faxDemodulator,
-			SIGNAL(data(unsigned int*, unsigned int)),
-			faxReceiver,
-			SLOT(decode(unsigned int*, unsigned int)));
+		disconnect(sound, SIGNAL(data(short*, int)),
+			faxDemodulator,	SLOT(newSamples(short*, int)));
+		disconnect(faxDemodulator, SIGNAL(data(int*, int)),
+			faxReceiver, SLOT(decode(int*, int)));
 		break;
 	case SCSPTC:
 		ptc->end();
-		disconnect(ptc,SIGNAL(data(unsigned int*, unsigned int)),
-			   faxReceiver,
-			   SLOT(decode(unsigned int*, unsigned int)));
+		disconnect(ptc,SIGNAL(data(int*, int)),
+			   faxReceiver, SLOT(decode(int*, int)));
 		break;
 	}
 }
@@ -684,7 +650,7 @@ void FaxWindow::quickSave(void)
 void FaxWindow::newImageSize(int w, int h)
 {
 	sizeText->setText(QString(tr("image size: %1x%2")).arg(w).arg(h));
-	ioc=static_cast<unsigned int>(0.5+w/M_PI);
+	ioc=static_cast<int>(0.5+w/M_PI);
 	iocText->setText(QString(tr("IOC: %1").arg(ioc)));
 }
 

@@ -36,15 +36,15 @@ private:
 	QString devDSPName;
 	QSocketNotifier* notifier;
 signals:
-        void data(signed short*, unsigned int);
+        void data(short*, int);
 	void deviceClosed(void);
-	void spaceLeft(unsigned int);
+	void spaceLeft(int);
 	void newSampleRate(int);
 public slots:
         void setDSPDevice(const QString& s);
 	void closeNow(void);
 	void end(void);
-	void write(signed short* samples, unsigned int number);
+	void write(short* samples, int number);
 private slots:
         void read(int fd);
 	void checkSpace(int fd);

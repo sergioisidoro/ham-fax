@@ -46,7 +46,7 @@ public slots:
 	void phasingLine(double lpm);
 	void imageRow(int row);
 	void disableSkip(void);
-	void samples(signed short* buffer, unsigned int n);
+	void samples(short* buffer, int n);
 };
 
 #endif

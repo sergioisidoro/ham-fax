@@ -28,9 +28,6 @@ public:
 	Config(QObject* parent);
 	void readFile(void);
 	void writeFile(void);
-	QString getDSPDevice(void);
-	QString getPTTDevice(void);
-	QString getPTCDevice(void);
 	bool getKeyPTT(void);
 private:
 	typedef QMap<QString,QString> ValueMap;

@@ -29,17 +29,17 @@ public:
 private:
 	FaxImage* faxImage;
 	enum { APTSTART, PHASING, ENDPHASING, IMAGE, APTSTOP, IDLE } state;
-	unsigned int sampleNr;
-	unsigned int sampleRate;
-	unsigned int lpm;
-	unsigned int carrier;
-	unsigned int deviation;
-	unsigned int startLength;
-	unsigned int startFreq;
-	unsigned int phasingLines;
+	int sampleNr;
+	int sampleRate;
+	int lpm;
+	int carrier;
+	int deviation;
+	int startLength;
+	int startFreq;
+	int phasingLines;
 	bool phaseInvers;
-	unsigned int stopLength;
-	unsigned int stopFreq;
+	int stopLength;
+	int stopFreq;
 	bool color;
 public slots:
         void setLPM(int lpm);
@@ -51,14 +51,14 @@ public slots:
 	void setPhasePol(bool pol);
 	void setSampleRate(int rate);
 	void setColor(bool b);
-	void doNext(unsigned int n);
+	void doNext(int n);
 	void doAptStop(void);
 signals:
 	void aptStart(void);
 	void phasing(void);
 	void imageLine(int n);
 	void aptStop(void);
-	void data(double* buf, unsigned int n);
+	void data(double* buf, int n);
 	void start(void);
 	void end(void);
 };

@@ -1,10 +1,10 @@
 to do:
 - test AM
 - real "on air test"
-- write some documentation about HamFax and facsimiles
 - translation (at least to german)
+- test ptt (again)
 
 features that would be nice:
 - CW id before and after transmission
-- spectroscope
+- spectroscope (perhaps based on brightness values rather than frequencies)
 - fancy icon bar

@@ -78,10 +78,11 @@ void File::end(void)
 	if(aFile!=0) {
 		afCloseFile(aFile);
 		aFile=0;
+		emit deviceClosed();
 	}
 }
 
-void File::write(signed short* samples, unsigned int number)
+void File::write(short* samples, int number)
 {
 	try {
 		if(aFile!=0) {
@@ -96,7 +97,7 @@ void File::write(signed short* samples, unsigned int number)
 	}
 }
 
-void File::read(signed short* samples, unsigned int& number)
+void File::read(short* samples, int& number)
 {
 	try {
 		if(aFile!=0) {
@@ -113,8 +114,8 @@ void File::read(signed short* samples, unsigned int& number)
 
 void File::read(void)
 {
-	unsigned int n=512;
-	signed short buffer[n];
+	int n=512;
+	short buffer[n];
 	n=afReadFrames(aFile,AF_DEFAULT_TRACK,buffer,n);
 	emit data(buffer,n);
 }

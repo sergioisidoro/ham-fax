@@ -40,10 +40,10 @@ void FaxTransmitter::startTransmission(void)
 	emit start();
 }
 
-void FaxTransmitter::doNext(unsigned int n)
+void FaxTransmitter::doNext(int n)
 {
 	double buf[n];
-	for(unsigned int i=0; i<n; i++) {
+	for(int i=0; i<n; i++) {
 		if(state==IDLE) {
 			i=0;
 			n=0;
@@ -101,10 +101,9 @@ void FaxTransmitter::doNext(unsigned int n)
 				// get pixel determining current value
 				double pos=fmod(sampleNr,sampleRate*60/lpm);
 				pos/=(double)sampleRate*60.0/(double)lpm;
-				unsigned int c=static_cast<unsigned int>
+				int c=static_cast<int>
 					(pos*faxImage->getCols());
-				unsigned int r=sampleNr*lpm
-					/60/sampleRate;
+				int r=sampleNr*lpm/60/sampleRate;
 				if(color) {
 					switch(r%3) {
 					case 0:

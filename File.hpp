@@ -29,7 +29,7 @@ public:
 	~File(void);
 	void startOutput(const QString& fileName);
 	void startInput(const QString& fileName);
-	void read(signed short* samples, unsigned int& number);
+	void read(short* samples, int& number);
 	void end(void);
 private:
 	int sampleRate;
@@ -37,10 +37,11 @@ private:
 	QTimer* timer;
 signals:
 	void newSampleRate(int);
-	void data(signed short* buffer, unsigned int n);
-	void next(unsigned int n);
+	void data(short* buffer, int n);
+	void next(int n);
+	void deviceClosed(void);
 public slots:
-	void write(signed short* samples, unsigned int number);
+	void write(short* samples, int number);
 	void timerSignal(void);
 private slots:
         void read(void);

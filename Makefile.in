@@ -25,7 +25,7 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
 docdir=@datadir@/doc/HamFax
-defines=-DDOCDIR="\"$(docdir)\""
+defines=-DDOCDIR='"$(docdir)"'
 
 all: hamfax
 
@@ -85,8 +85,6 @@ PTT.o: PTT.cpp PTT.hpp Error.hpp
 
 ReceiveDialog.o: ReceiveDialog.cpp ReceiveDialog.hpp
 
-ScaleDialog.o: ScaleDialog.cpp ScaleDialog.hpp
-
 Sound.o: Sound.cpp Sound.hpp Error.hpp
 
 TransmitDialog.o: TransmitDialog.cpp TransmitDialog.hpp
@@ -109,7 +107,6 @@ hamfax: Config.o moc_Config.o\
         PTC.o moc_PTC.o\
         PTT.o moc_PTT.o\
         ReceiveDialog.o moc_ReceiveDialog.o\
-        ScaleDialog.o moc_ScaleDialog.o\
         Sound.o moc_Sound.o\
         TransmitDialog.o moc_TransmitDialog.o\
         hamfax.o

@@ -39,7 +39,7 @@ class FaxWindow : public QMainWindow {
 public:
 	FaxWindow(const QString& version);
 private:
-	unsigned int ioc;
+	int ioc;
 	QString getFileName(QString caption, QString filter);
 	virtual void closeEvent(QCloseEvent* close);
 	QString version;

@@ -110,22 +110,6 @@ void Config::writeFile(void)
 	}
 }
 
-QString Config::getDSPDevice(void)
-{
-	return value["DSP"];
-}
-
-QString Config::getPTTDevice(void)
-{
-	return value["PTT"];
-}
-
-
-QString Config::getPTCDevice(void)
-{
-	return value["PTC"];
-}
-
 bool Config::getKeyPTT(void)
 {
 	return value["keyPTT"]=="1";

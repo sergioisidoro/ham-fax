@@ -26,12 +26,12 @@ void DisplayLevel::setZero(void)
 	w=0;
 }
 
-void DisplayLevel::samples(signed short* buffer, unsigned int n)
+void DisplayLevel::samples(short* buffer, int n)
 {
-	signed short min=32767;
-	signed short max=-32768;
-	for(unsigned int i=0; i<n; i++) {
-		signed short s=buffer[i];
+	short min=32767;
+	short max=-32768;
+	for(int i=0; i<n; i++) {
+		short s=buffer[i];
 		if(s>max) {
 			max=s;
 		}

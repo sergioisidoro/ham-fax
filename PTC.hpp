@@ -30,25 +30,25 @@ public:
 	void startInput(void);
 	void startOutput(void);
 	void end(void);
-	void receive(unsigned int* samples, unsigned int& count);
+	void receive(int* samples, int& count);
 private:
 	int sampleRate;
 	void open(void);
 	QString deviceName;
 	int device;
 	bool fm;
-	unsigned int deviation;
+	int deviation;
 	QSocketNotifier* notifier;
 signals:
 	void newSampleRate(int);
-	void data(unsigned int*, unsigned int);
-	void spaceLeft(unsigned int);
+	void data(int*, int);
+	void spaceLeft(int);
 	void deviceClosed();
 public slots:
         void setDeviceName(const QString& s);
         void setDeviation(int dev);
 	void setFM(bool fm);
-	void transmit(double* samples, unsigned int count);
+	void transmit(double* samples, int count);
 private slots:
         void read(int fd);
 	void checkSpace(int fd);

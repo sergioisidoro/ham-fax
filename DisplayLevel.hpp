@@ -14,7 +14,7 @@ private:
 	int m;
 	int w;
 public slots:
-        void samples(signed short* buffer, unsigned int n);
+        void samples(short* buffer, int n);
 };
 
 #endif

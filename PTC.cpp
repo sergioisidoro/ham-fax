@@ -110,21 +110,21 @@ void PTC::close(void)
 	emit deviceClosed();
 }
 
-void PTC::receive(unsigned int* samples, unsigned int& count)
+void PTC::receive(int* samples, int& count)
 {
-	unsigned char buf[count];
+	char buf[count];
 	count=::read(device,buf,count);
-	for(unsigned int i=0; i<count; i++) {
+	for(int i=0; i<count; i++) {
 		samples[i]=buf[i];
 	}
 }
 
-void PTC::transmit(double* samples, unsigned int count)
+void PTC::transmit(double* samples, int count)
 {
 	notifier->setEnabled(false);
 	unsigned char buf[count];
-	for(unsigned int i=0; i<count; i++) {
-		buf[i]=(unsigned char)(samples[i]* (fm ? 240.0 : 63.0));
+	for(int i=0; i<count; i++) {
+		buf[i]=static_cast<unsigned char>(samples[i]*(fm?240.0:63.0));
 	}
 	tcflush(device,TCIFLUSH);
 	write(device,buf,count);
@@ -143,14 +143,14 @@ void PTC::setFM(bool fm)
 
 void PTC::read(int fd)
 {
-	unsigned int n=512;
-	unsigned char buf[n];
-	n=::read(device,buf,n);
-	unsigned int buf2[n];
-	for(unsigned int i=0; i<n; i++) {
-		buf2[i]=buf[i];
+	int n=512;
+	unsigned char charbuffer[n];
+	n=::read(device,charbuffer,n);
+	int intbuffer[n];
+	for(int i=0; i<n; i++) {
+		intbuffer[i]=charbuffer[i];
 	}
-	emit data(buf2,n);
+	emit data(intbuffer,n);
 }
 
 void PTC::checkSpace(int fd)

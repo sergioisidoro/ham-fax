@@ -26,21 +26,21 @@ public:
 	FaxModulator(QObject* parent);
 	~FaxModulator(void);
 private:
-	static const unsigned int size_sine=8192;
-	signed short* sine;        // lookup table for sine
-	unsigned int phase;        // current phase of sine
+	static const int size_sine=8192;
+	short* sine;        // lookup table for sine
+	int phase;          // current phase of sine
 	int sampleRate;
 	bool fm;
-	unsigned int carrier;
-	unsigned int dev;
+	int carrier;
+	int dev;
 signals:
-	void data(signed short*, unsigned int);
+	void data(short*, int);
 public slots:
 	void setSampleRate(int sr);
         void setCarrier(int carrier);
 	void setDeviation(int dev);
 	void setFM(bool fm);
-	void modulate(double* buffer, unsigned int n);
+	void modulate(double* buffer, int n);
 };
 
 #endif

@@ -29,34 +29,34 @@ public:
 	FaxReceiver(QObject* parent);
 	void init(void);
 private:
-	void decodeApt(unsigned int& x);
-	void decodePhasing(unsigned int& x);
-	void decodeImage(unsigned int& x);
+	void decodeApt(int& x);
+	void decodePhasing(int& x);
+	void decodeImage(int& x);
 	enum { APTSTART, PHASING, IMAGE, DONE } state;
 	int sampleRate;
-	unsigned int currentValue;
+	int currentValue;
 	bool aptHigh;
-	unsigned int aptTrans;    // APT low-high transitions
+	int aptTrans;    // APT low-high transitions
 	int aptCount;    // samples counted for aptTrans
-	unsigned int aptStartFreq;
-	unsigned int aptStopFreq;
+	int aptStartFreq;
+	int aptStopFreq;
 	bool aptStop;
 	bool phaseHigh;
-	unsigned int currPhaseLength;
-	unsigned int currPhaseHigh;
-	unsigned int phaseLines;
-	unsigned int noPhaseLines;
+	int currPhaseLength;
+	int currPhaseHigh;
+	int phaseLines;
+	int noPhaseLines;
 	bool phaseInvers;
 	double lpm;
 	int txLPM;
 	double lpmSum;
-	unsigned int width;
+	int width;
 	int imageSample;
-	unsigned int lastCol;
-	unsigned int lastRow;
-	unsigned int currRow;
-	unsigned int pixel;
-	unsigned int pixelSamples;
+	int lastCol;
+	int lastRow;
+	int currRow;
+	int pixel;
+	int pixelSamples;
 	bool color;
 	QTimer* timer;
 	QArray<unsigned char> rawData;
@@ -77,7 +77,7 @@ signals:
 	void redrawStarts(void);
 public slots:
         void setSampleRate(int rate);
-	void decode(unsigned int*, unsigned int n);
+	void decode(int*, int n);
         void setAptStartFreq(int f);
 	void setAptStopFreq(int f);
 	void setWidth(int width);
