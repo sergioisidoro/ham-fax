@@ -20,3 +20,4 @@ to do:
    (have a look at hamlib)
 - automatic generation of dependencies (automake, gcc -M or ?)
 - possibility for selecting available input/output
+- use correct types (size_t, ssize_t, ...)
