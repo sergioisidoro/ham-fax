@@ -22,7 +22,7 @@ Hardware:
  - a working sound card and/or a SCS-PTC (http://www.scs-ptc.com/)
 
 Software:
- - Linux (Sorry, i could not test other operating systems, they may work too.)
+ - Linux (Other operating systems may work, too.)
  - X11
  - Qt v2.2 or newer (http://www.trolltech.com/)
  - Audiofile (http://www.68k.org./~michael/audiofile/)

@@ -32,6 +32,7 @@ PTC::PTC(QObject* parent)
 PTC::~PTC(void)
 {
 	if(device!=-1) {
+           	write(device,"\377",1); // return from fax mode
 		::close(device);
 	}
 }
