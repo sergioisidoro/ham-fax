@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 	const QString version="0.5.2";
 	QApplication app(argc, argv);
 	QTranslator translator(0);
-	translator.load(QString("hamfax.")+QTextCodec::locale(),".");
+	translator.load(QString("hamfax_")+QTextCodec::locale(),".");
 	app.installTranslator(&translator);
 	FaxWindow* faxWindow=new FaxWindow(version);
 	app.setMainWidget(faxWindow);
