@@ -34,7 +34,7 @@ FaxWindow::FaxWindow(const QString& version)
 	faxControl=new FaxControl(this);
 
 	faxTransmitter=new FaxTransmitter(this,faxImage);
-	faxReceiver=new FaxReceiver(this,faxImage);
+	faxReceiver=new FaxReceiver(this);
 	
 	sound=new Sound(this);
 	file=new File(this);
@@ -139,8 +139,16 @@ FaxWindow::FaxWindow(const QString& version)
 		faxReceiver,SLOT(setWidth(unsigned int)));
 	connect(faxImage,SIGNAL(contentUpdated(int,int,int,int)),
 		faxView,SLOT(update(int,int,int,int)));
+	connect(faxImage,SIGNAL(scrollTo(int,int)),
+		faxView,SLOT(ensureVisible(int,int)));
 	faxImage->create(904,904);
 
+	connect(faxReceiver,SIGNAL(newImageHeight(unsigned int, unsigned int)),
+		faxImage,SLOT(resizeHeight(unsigned int, unsigned int)));
+	connect(faxReceiver,
+		SIGNAL(newGrayPixelValue(unsigned int,unsigned int,unsigned int)),
+		faxImage,
+		SLOT(setPixelGray(unsigned int,unsigned int,unsigned int)));
 	connect(faxTransmitter,SIGNAL(statusText(const QString&)),
 		transmitDialog,SLOT(showText(const QString&)));
 	connect(faxReceiver,SIGNAL(statusText(const QString&)),
@@ -179,11 +187,13 @@ void FaxWindow::buildMenuBar(void)
 	receiveMenu->insertItem(tr("Receive from f&ile"),FILE);
 	receiveMenu->insertItem(tr("Receive from P&TC"),SCSPTC);
 
+	QPopupMenu* imageMenu=new QPopupMenu(this);
+	imageMenu->insertItem(tr("&Scale image / adjust IOC"),
+			    this,SLOT(doScaleDialog()));
+
 	optionsMenu=new QPopupMenu(this);
 	optionsMenu->insertItem(tr("device settings"),
 				this,SLOT(doOptionsDialog()));
-	optionsMenu->insertItem(tr("&Scale image / adjust IOC"),
-			    this,SLOT(doScaleDialog()));
 	optionsMenu->insertSeparator();
 	pttID=optionsMenu->
 		insertItem(tr("key PTT while transmitting with DSP"),
@@ -198,6 +208,7 @@ void FaxWindow::buildMenuBar(void)
 	menuBar->insertItem(tr("&File"),fileMenu);
 	menuBar->insertItem(tr("&Transmit"),transmitMenu);
 	menuBar->insertItem(tr("&Receive"),receiveMenu);
+	menuBar->insertItem(tr("&Image"),imageMenu);
 	menuBar->insertItem(tr("&Options"),optionsMenu);
 	menuBar->insertSeparator();
 	menuBar->insertItem(tr("&Help"),helpMenu);
@@ -227,25 +238,17 @@ void FaxWindow::aboutQT(void)
 
 void FaxWindow::load(void)
 {
-	QFileDialog* fd=new QFileDialog(this,0,true);
-	fd->setSizeGripEnabled(false);
-	fd->setCaption(tr("open file"));
-	fd->setFilter("*.png");
-	fd->exec();
-	if(!fd->selectedFile().isEmpty()) {
-		emit loadFile(fd->selectedFile());
+	QString fileName=getFileName(tr("load image"),"*.png");
+	if(!fileName.isEmpty()) {
+		emit loadFile(fileName);
 	}
 }
 
 void FaxWindow::save(void)
 {
-	QFileDialog* fd=new QFileDialog(this,0,true);
-	fd->setSizeGripEnabled(false);
-	fd->setCaption(tr("save file"));
-	fd->setFilter("*.png");
-	fd->exec();
-	if(!fd->selectedFile().isEmpty()) {
-		emit saveFile(fd->selectedFile());
+	QString fileName=getFileName(tr("save image"),"*.png");
+	if(!fileName.isEmpty()) {
+		emit saveFile(fileName);
 	}
 }
 

@@ -53,15 +53,19 @@ unsigned int FaxImage::getPixelBlue(unsigned int col, unsigned int row)
 }
 
 bool FaxImage::setPixelGray(unsigned int col, unsigned int row,
-				   unsigned int value)
+			    unsigned int value)
 {
-	if(col<=(unsigned int)image.width() && 
-	   row<(unsigned int)image.height()) {
-		image.setPixel(col,row,qRgb(value,value,value));
-		emit contentUpdated(col,row,1,1);
-		return true;
+	if(col>=(unsigned int)image.width() ||
+	   row>=(unsigned int)image.height()+1) {
+		return false;
 	}
-	return false;
+	if(row>=(unsigned int)image.height()) {
+		resize(0,0,image.width(),image.height()+20);
+	}
+	image.setPixel(col,row,qRgb(value,value,value));
+	emit contentUpdated(col,row,1,1);
+	emit scrollTo(0,row);
+	return true;
 }
 
 void FaxImage::setPixelRed(unsigned int col, unsigned int row,
@@ -124,4 +128,9 @@ void FaxImage::resize(unsigned int x, unsigned int y,
 	image=image.copy(x,y,w,h);
 	emit sizeUpdated(image.width(),image.height());
 	emit widthUpdated(image.width());
+}
+
+void FaxImage::resizeHeight(unsigned int y, unsigned int h)
+{
+	resize(0,y,image.width(),h);
 }

@@ -48,7 +48,7 @@ FaxImage.o: FaxImage.cpp FaxImage.hpp
 
 FaxModulator.o: FaxModulator.cpp FaxModulator.hpp
 
-FaxReceiver.o: FaxReceiver.cpp FaxReceiver.hpp FaxImage.hpp
+FaxReceiver.o: FaxReceiver.cpp FaxReceiver.hpp
 
 FaxTransmitter.o: FaxTransmitter.cpp FaxTransmitter.hpp FaxImage.hpp
 

@@ -33,6 +33,14 @@ public:
 	unsigned int getPixelRed(unsigned int col, unsigned int row);
 	unsigned int getPixelGreen(unsigned int col, unsigned int row);
 	unsigned int getPixelBlue(unsigned int col, unsigned int row);
+private:
+	QImage image;
+signals:
+	void sizeUpdated(unsigned int width, unsigned int height);
+	void widthUpdated(unsigned int width);
+	void contentUpdated(int x, int y, int w, int h);
+	void scrollTo(int x, int y);
+public slots:
 	bool setPixelGray(unsigned int col, unsigned int row,
 			  unsigned int value);
 	void setPixelRed(unsigned int col, unsigned int row,
@@ -41,19 +49,13 @@ public:
 			   unsigned int value);
 	void setPixelBlue(unsigned int col, unsigned int row,
 			  unsigned int value);
-private:
-	QImage image;
-signals:
-	void sizeUpdated(unsigned int width, unsigned int height);
-	void widthUpdated(unsigned int width);
-	void contentUpdated(int x, int y, int w, int h);
-public slots:
         void create(unsigned int cols, unsigned int rows);
 	void load(QString fileName);
 	void save(QString fileName);
 	void scale(unsigned int width, unsigned int height);
 	void resize(unsigned int x, unsigned int y,
 		    unsigned int w, unsigned int h);
+	void resizeHeight(unsigned int y, unsigned int h);
 };
 
 #endif

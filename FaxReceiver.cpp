@@ -18,8 +18,8 @@
 #include "FaxReceiver.hpp"
 #include <math.h>
 
-FaxReceiver::FaxReceiver(QObject* parent, FaxImage* image)
-	: QObject(parent), state(APTSTART), image(image), sampleRate(0),
+FaxReceiver::FaxReceiver(QObject* parent)
+	: QObject(parent), state(APTSTART), sampleRate(0),
 	  aptHigh(false), aptTrans(0), aptCount(0),
 	  aptStartFreq(0), aptStopFreq(0), aptStop(false),
 	  phaseHigh(false), currPhaseLength(0)
@@ -59,10 +59,10 @@ void FaxReceiver::decode(unsigned int* buf, unsigned int n)
 
 void FaxReceiver::decodeApt(unsigned int& x)
 {
-	if(x>=128 && !aptHigh) {
+	if(x>230 && !aptHigh) {
 		aptHigh=true;
 		aptTrans++;
-	} else if(x<128 && aptHigh) {
+	} else if(x<22 && aptHigh) {
 		aptHigh=false;
 	}
 	if(++aptCount >= sampleRate/2) {
@@ -78,9 +78,9 @@ void FaxReceiver::decodeApt(unsigned int& x)
 		} else {
 			if(f>=aptStopFreq-2 && f<=aptStopFreq+2) {
 				if(aptStop) {
-					image->resize(0,0,image->getCols(),
-						      lastRow-
-						      (unsigned int)(lpm/60.0)+1);
+					emit newImageHeight(0,lastRow-
+							    (unsigned int)
+							    (lpm/60.0)+1);
 					state=DONE;
 					emit aptStopDetected();
 				} else {
@@ -142,14 +142,11 @@ void FaxReceiver::decodeImage(unsigned int& x)
 					((double)imageSample
 					 /(double)sampleRate *lpm/60.0);
 				pixel/=pixelSamples;
-				if(!image->setPixelGray(lastCol,row,pixel)) {
-					image->resize(0,0,image->getCols(),
-						      image->getRows()+20);
-					image->setPixelGray(lastCol,row,pixel);
-				}
+				emit newGrayPixelValue(lastCol,row,pixel);
 				if(lastRow!=row) {
-					emit statusText(tr("receiving line %1")
-							.arg(lastRow=row));
+					emit statusText(
+						tr("receiving line %1")
+						.arg(lastRow=row));
 				}
 			}
 			lastCol=col;

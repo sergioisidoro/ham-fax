@@ -20,12 +20,11 @@
 
 #include <qobject.h>
 #include <qstring.h>
-#include "FaxImage.hpp"
 
 class FaxReceiver : public QObject {
 	Q_OBJECT
 public:
-	FaxReceiver(QObject* parent, FaxImage* image);
+	FaxReceiver(QObject* parent);
 	void setSampleRate(unsigned int rate);
 	void init(void);
 	void decode(unsigned int*, unsigned int n);
@@ -34,7 +33,6 @@ private:
 	void decodePhasing(unsigned int& x);
 	void decodeImage(unsigned int& x);
 	enum { APTSTART, PHASING, IMAGE, DONE } state;
-	FaxImage* image;
 	unsigned int sampleRate;
 	bool aptHigh;
 	unsigned int aptTrans;    // APT low-high transitions
@@ -59,6 +57,9 @@ signals:
 	void statusText(const QString& s);
 	void aptText(const QString& s);
 	void aptStopDetected(void);
+	void newImageHeight(unsigned int y, unsigned int h);
+	void newGrayPixelValue(unsigned int x, unsigned int y,
+			       unsigned int c);
 public slots:
         void setAptStartFreq(int f);
 	void setAptStopFreq(int f);

@@ -18,5 +18,8 @@ features:
 - CW id before and after transmission
 - color fax
 - spectroscope
-- display level of line in while receiving
+- display level of line-in while receiving
 - do translation of strings
+- include phasing lines in image and delete them after reception
+- is it possible to do slant correction in QImage?
+- extra menu for scaling and resizing image
