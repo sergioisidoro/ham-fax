@@ -19,112 +19,37 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
 docdir=@datadir@/doc/HamFax
-CXX=@CXX@
-CXXFLAGS=-Wall @QT_CXXFLAGS@ @CXXFLAGS@
-CPPFLAGS=@CPPFLAGS@ -DDOCDIR='"$(docdir)"'
-LIBS=@QT_LIBS@ -laudiofile
-QT_MOC=@QT_MOC@
+qmdir=@datadir@/HamFax
 INSTALL=@INSTALL@
 
-.PHONY: all clean distclean install uninstall translations
+.PHONY: all binary clean distclean install uninstall translations
 
-all: hamfax translations
+all: binary translations
+
+binary:
+	$(MAKE) --directory src/ binary
+
+translations:
+	$(MAKE) --directory po/ translations
 
 clean:
-	rm -rfv *.o moc_*.cpp hamfax moc_bnv_qt_test.* hamfax_de.qm
+	rm -rfv moc_bnv_qt_test.*
+	$(MAKE) --directory src/ clean
+	$(MAKE) --directory po/ clean
 
 distclean: clean
-	rm -rfv Makefile config.cache config.log config.status *~ doc/*~
+	rm -rfv Makefile config.cache config.log config.status
+	$(MAKE) --directory src/ distclean
+	$(MAKE) --directory po/ distclean
 
-install: hamfax
+install: binary translations
 	$(INSTALL) -o root -g root -m 0755 -d $(bindir)
-	$(INSTALL) -o root -g root -m 0755 -s hamfax $(bindir)
+	$(INSTALL) -o root -g root -m 0755 -s src/hamfax $(bindir)
 	$(INSTALL) -o root -g root -m 0755 -d $(docdir)
 	$(INSTALL) -o root -g root -m 0644 doc/HamFax.html $(docdir)
+	$(INSTALL) -o root -g root -m 0755 -d $(qmdir)
+	$(INSTALL) -o root -g root -m 0644 po/hamfax_de.qm $(qmdir)
 
 uninstall:
-	rm -rfv $(bindir)/hamfax $(docdir)/HamFax.html
-	rmdir -p $(bindir) $(docdir)
-
-.cpp.o:
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $<
-
-moc_%.cpp: %.hpp
-	$(QT_MOC) $< -o $@
-
-%.qm: %.po
-	msg2qm $< $@
-
-translations: hamfax_de.qm
-
-Config.o: Config.cpp Config.hpp
-
-CorrectDialog.o: CorrectDialog.cpp CorrectDialog.hpp
-
-DisplayLevel.o: DisplayLevel.cpp DisplayLevel.hpp
-
-Error.o: Error.cpp Error.hpp
-
-FaxDemodulator.o: FaxDemodulator.cpp FaxDemodulator.hpp\
-                  LookUpTable.hpp FirFilter.hpp
-
-FaxImage.o: FaxImage.cpp FaxImage.hpp
-
-FaxModulator.o: FaxModulator.cpp FaxModulator.hpp
-
-FaxReceiver.o: FaxReceiver.cpp FaxReceiver.hpp
-
-FaxTransmitter.o: FaxTransmitter.cpp FaxTransmitter.hpp FaxImage.hpp
-
-FaxWindow.o: FaxWindow.cpp FaxWindow.hpp\
-	     Config.hpp CorrectDialog.hpp\
-             Error.hpp OptionsDialog.hpp\
-             FaxDemodulator.hpp FaxImage.hpp\
-             FaxModulator.hpp FaxReceiver.hpp FaxTransmitter.hpp\
-             File.hpp HelpDialog.hpp\
-             OptionsDialog.hpp\
-             PTC.hpp PTT.hpp ReceiveDialog.hpp\
-             Sound.hpp TransmitDialog.hpp
-
-File.o: File.cpp File.hpp Error.hpp
-
-HelpDialog.o: HelpDialog.cpp HelpDialog.hpp
-
-OptionsDialog.o: OptionsDialog.cpp OptionsDialog.hpp
-
-PTC.o: PTC.cpp PTC.hpp Error.hpp
-
-PTT.o: PTT.cpp PTT.hpp Error.hpp
-
-ReceiveDialog.o: ReceiveDialog.cpp ReceiveDialog.hpp\
-                 DisplayLevel.hpp Spectrum.hpp
-
-Sound.o: Sound.cpp Sound.hpp Error.hpp
-
-Spectrum.o: Spectrum.cpp Spectrum.hpp
-
-TransmitDialog.o: TransmitDialog.cpp TransmitDialog.hpp
-
-hamfax.o: hamfax.cpp FaxWindow.hpp
-
-hamfax: Config.o moc_Config.o\
-        CorrectDialog.o moc_CorrectDialog.o\
-        DisplayLevel.o moc_DisplayLevel.o\
-        Error.o\
-        FaxDemodulator.o moc_FaxDemodulator.o\
-        FaxImage.o moc_FaxImage.o\
-        FaxModulator.o moc_FaxModulator.o\
-        FaxReceiver.o moc_FaxReceiver.o\
-        FaxTransmitter.o moc_FaxTransmitter.o\
-        FaxWindow.o moc_FaxWindow.o\
-        File.o moc_File.o\
-        HelpDialog.o moc_HelpDialog.o\
-        OptionsDialog.o moc_OptionsDialog.o\
-        PTC.o moc_PTC.o\
-        PTT.o moc_PTT.o\
-        ReceiveDialog.o moc_ReceiveDialog.o\
-        Sound.o moc_Sound.o\
-        Spectrum.o moc_Spectrum.o\
-        TransmitDialog.o moc_TransmitDialog.o\
-        hamfax.o
-	$(CXX) -o $@ $(CXXFLAGS) $(LIBS) $+
+	rm -rfv $(bindir)/hamfax $(docdir)/HamFax.html $(qmdir)/hamfax_de.qm
+	rmdir -p $(bindir) $(docdir) $(qmdir)

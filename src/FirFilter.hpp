@@ -21,6 +21,11 @@
 
 #include <cstddef>
 
+/**
+ * This template class implements a FIR filter (finite impulse response). 
+ * The template parameter defines the type of input and output data.
+ */
+
 template <class T> class FirFilter {
 public:
 	FirFilter(const size_t N);
