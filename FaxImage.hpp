@@ -18,16 +18,15 @@
 #ifndef FAXIMAGE_HPP
 #define FAXIMAGE_HPP
 
-#include <qobject.h>
+#include <qscrollview.h>
 #include <qimage.h>
 #include <qstring.h>
 #include <qpoint.h>
 
-class FaxImage : public QObject {
+class FaxImage : public QScrollView {
 	Q_OBJECT
-	friend class FaxView;
 public:
-	FaxImage(QObject* parent);
+	FaxImage(QWidget* parent);
 	unsigned int getRows(void);
 	unsigned int getCols(void);
 	unsigned int getPixelGray(unsigned int col, unsigned int row);
@@ -39,10 +38,12 @@ private:
 	bool autoScroll;
 	QPoint slant1;
 	QPoint slant2;
+	void drawContents(QPainter* p,
+			  int clipx,int clipy,int clipw,int cliph);
+	virtual void contentsMousePressEvent(QMouseEvent* m);
 signals:
 	void sizeUpdated(unsigned int width, unsigned int height);
-	void contentUpdated(int x, int y, int w, int h);
-	void scrollTo(int x, int y);
+	void clicked(void);
 public slots:
         bool setPixel(unsigned int col, unsigned int row,
 		      unsigned int value, unsigned int rgbg);
@@ -61,7 +62,6 @@ public slots:
 	void rotateLeft(void);
 	void rotateRight(void);
 	void setAutoScroll(bool b);
-	void setSlantPoint(const QPoint& p);
 	void correctSlant(void);
 };
 

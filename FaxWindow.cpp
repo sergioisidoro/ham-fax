@@ -35,8 +35,7 @@ FaxWindow::FaxWindow(const QString& version)
 {
 	config=new Config(this);
 	faxImage=new FaxImage(this);
-	faxView=new FaxView(this,faxImage);
-	setCentralWidget(faxView);
+	setCentralWidget(faxImage);
 	faxTransmitter=new FaxTransmitter(this,faxImage);
 	faxReceiver=new FaxReceiver(this);
 	sound=new Sound(this);
@@ -192,19 +191,13 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(config,SIGNAL(color(bool)),
 		faxReceiver,SLOT(setColor(bool)));
 
-	// FaxWindow -- FaxImage -- FaxView
+	// FaxWindow -- FaxImage
 	connect(this,SIGNAL(loadFile(QString)),faxImage,SLOT(load(QString)));
 	connect(this,SIGNAL(saveFile(QString)),faxImage,SLOT(save(QString)));
-	connect(faxImage,SIGNAL(sizeUpdated(unsigned int, unsigned int)),
-		faxView,SLOT(updateView(unsigned int, unsigned int)));
 	connect(faxImage,SIGNAL(sizeUpdated(unsigned int, unsigned int)),
 		this,SLOT(newImageSize(unsigned int, unsigned int)));
 	connect(faxImage,SIGNAL(sizeUpdated(unsigned int,unsigned int)),
 		faxReceiver,SLOT(setWidth(unsigned int)));
-	connect(faxImage,SIGNAL(contentUpdated(int,int,int,int)),
-		faxView,SLOT(update(int,int,int,int)));
-	connect(faxImage,SIGNAL(scrollTo(int,int)),
-		faxView,SLOT(ensureVisible(int,int)));
 	faxImage->create(904,904);
 
 	// FaxReceiver -- FaxImage
@@ -228,6 +221,9 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(transmitDialog,SIGNAL(cancelClicked()),
 		this,SLOT(endTransmission()));
 
+	connect(faxTransmitter,SIGNAL(end()),
+		this,SLOT(endTransmission()));
+
 	// FaxReceiver -- ReceiveDialog
 	connect(faxReceiver,SIGNAL(aptFound(unsigned int)),
 		receiveDialog,SLOT(apt(unsigned int)));
@@ -246,8 +242,6 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(faxReceiver,SIGNAL(receptionEnded()),
 		this,SLOT(endReception()));
 
-	connect(faxView,SIGNAL(clicked(const QPoint&)),
-		faxImage,SLOT(setSlantPoint(const QPoint&)));
 	connect(this,SIGNAL(correctSlant()),faxImage,SLOT(correctSlant()));
 
 	buildMenuBar();
@@ -440,6 +434,16 @@ void FaxWindow::initTransmit(int item)
 				return;
 			}
 			file->openOutput(fileName,sampleRate);
+			connect(file,SIGNAL(next(unsigned int)),
+				faxTransmitter,SLOT(doNext(unsigned int)));
+			connect(faxTransmitter,
+				SIGNAL(data(double*, unsigned int)),
+				faxModulator,
+				SLOT(modulate(double*, unsigned int)));
+			connect(faxModulator,
+				SIGNAL(data(signed short*, unsigned int)),
+				file,
+				SLOT(write(signed short*, unsigned int)));
 			break;
 		case DSP:
 			sampleRate=8000;
@@ -486,6 +490,16 @@ void FaxWindow::endTransmission(void)
 	switch(interface) {
 	case FILE:
 		file->close();
+		disconnect(sound,SIGNAL(spaceLeft(unsigned int)),
+			   faxTransmitter,SLOT(doNext(unsigned int)));
+		disconnect(faxTransmitter,
+			   SIGNAL(data(double*, unsigned int)),
+			   faxModulator,
+			   SLOT(modulate(double*, unsigned int)));
+		disconnect(faxModulator,
+			   SIGNAL(data(signed short*, unsigned int)),
+			   sound,
+			   SLOT(write(signed short*, unsigned int)));
 		break;
 	case DSP:
 		disconnect(sound,SIGNAL(spaceLeft(unsigned int)),
@@ -530,30 +544,30 @@ void FaxWindow::initReception(int item)
 			}
 			file->openInput(fileName,sampleRate);
 			connect(file,
-				SIGNAL(data(signed short*, unsigned int)),
+				SIGNAL(data(signed short*,unsigned int)),
 				faxDemodulator,
-				SLOT(newSamples(signed short*, unsigned int)));
+				SLOT(newSamples(signed short*,unsigned int)));
 			connect(faxDemodulator,
-				SIGNAL(data(unsigned int*, unsigned int)),
+				SIGNAL(data(unsigned int*,unsigned int)),
 				faxReceiver,
-				SLOT(decode(unsigned int*, unsigned int)));
+				SLOT(decode(unsigned int*,unsigned int)));
 			break;
 		case DSP:
 			sampleRate=8000;
 			sound->openInput(sampleRate);
 			connect(sound,
-				SIGNAL(data(signed short*, unsigned int)),
+				SIGNAL(data(signed short*,unsigned int)),
 				faxDemodulator,
-				SLOT(newSamples(signed short*, unsigned int)));
+				SLOT(newSamples(signed short*,unsigned int)));
 			connect(faxDemodulator,
-				SIGNAL(data(unsigned int*, unsigned int)),
+				SIGNAL(data(unsigned int*,unsigned int)),
 				faxReceiver,
-				SLOT(decode(unsigned int*, unsigned int)));
+				SLOT(decode(unsigned int*,unsigned int)));
 			break;
 		case SCSPTC:
 			sampleRate=5760;
 			ptc->open();
-			connect(ptc,SIGNAL(data(unsigned int*, unsigned int)),
+			connect(ptc,SIGNAL(data(unsigned int*,unsigned int)),
 				faxReceiver,
 				SLOT(decode(unsigned int*, unsigned int)));
 			break;
@@ -667,20 +681,20 @@ void FaxWindow::slantWaitFirst(void)
 				    QMessageBox::NoButton,
 				    this,0,false);
 	slantDialog->show();
-	connect(faxView,SIGNAL(clicked()),this,SLOT(slantWaitSecond()));
+	connect(faxImage,SIGNAL(clicked()),this,SLOT(slantWaitSecond()));
 }
 
 void FaxWindow::slantWaitSecond(void)
 {
 	slantDialog->setText(tr("select second point of vertical line"));
-	disconnect(faxView,SIGNAL(clicked()),this,SLOT(slantWaitSecond()));
-	connect(faxView,SIGNAL(clicked()),this,SLOT(slantEnd()));
+	disconnect(faxImage,SIGNAL(clicked()),this,SLOT(slantWaitSecond()));
+	connect(faxImage,SIGNAL(clicked()),this,SLOT(slantEnd()));
 }
 
 void FaxWindow::slantEnd(void)
 {
 	slantDialog->hide();
-	disconnect(faxView,SIGNAL(clicked()),this,SLOT(slantEnd()));
+	disconnect(faxImage,SIGNAL(clicked()),this,SLOT(slantEnd()));
 	emit correctSlant();
 	delete slantDialog;
 }

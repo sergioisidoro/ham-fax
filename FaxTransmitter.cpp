@@ -135,6 +135,7 @@ void FaxTransmitter::doNext(unsigned int n)
 			if(sampleNr>=sampleRate*stopLength) {
 				state=IDLE;
 				n=i;
+				emit end();
 				break;
 			} else {
 				// black/white pattern with stopFreq

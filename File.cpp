@@ -47,6 +47,8 @@ void File::openOutput(const QString& fileName, unsigned int sampleRate)
 		throw Error(tr("could not open file"));
 	}
 	afFreeFileSetup(fs);
+	timer->start(0);
+	connect(timer,SIGNAL(timeout()),this,SLOT(timerSignal()));
 }
 
 void File::openInput(const QString& fileName, unsigned int& sampleRate)
@@ -71,7 +73,7 @@ void File::openInput(const QString& fileName, unsigned int& sampleRate)
 void File::close(void)
 {
 	timer->stop();
-	disconnect
+	disconnect(timer,SIGNAL(timeout()),this,SLOT(timerSignal()));
 	if(aFile!=0) {
 		afCloseFile(aFile);
 		aFile=0;
@@ -114,4 +116,9 @@ void File::read(void)
 	signed short buffer[n];
 	n=afReadFrames(aFile,AF_DEFAULT_TRACK,buffer,n);
 	emit data(buffer,n);
+}
+
+void File::timerSignal(void)
+{
+	emit next(512);
 }

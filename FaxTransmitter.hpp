@@ -59,6 +59,7 @@ signals:
 	void imageLine(unsigned int n);
 	void aptStop(void);
 	void data(double* buf, unsigned int n);
+	void end(void);
 };
 
 #endif

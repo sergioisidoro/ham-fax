@@ -29,7 +29,6 @@ public:
 	~File(void);
 	void openOutput(const QString& fileName,unsigned int sampleRate);
 	void openInput(const QString& fileName,unsigned int& sampleRate);
-	void write(signed short* samples, unsigned int number);
 	void read(signed short* samples, unsigned int& number);
 	void close(void);
 private:
@@ -37,6 +36,10 @@ private:
 	QTimer* timer;
 signals:
 	void data(signed short* buffer, unsigned int n);
+	void next(unsigned int n);
+public slots:
+	void write(signed short* samples, unsigned int number);
+	void timerSignal(void);
 private slots:
         void read(void);
 };

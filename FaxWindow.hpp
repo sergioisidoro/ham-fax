@@ -30,7 +30,6 @@
 #include "FaxModulator.hpp"
 #include "FaxReceiver.hpp"
 #include "FaxTransmitter.hpp"
-#include "FaxView.hpp"
 #include "File.hpp"
 #include "PTC.hpp"
 #include "PTT.hpp"
@@ -44,7 +43,6 @@ public:
 	FaxWindow(const QString& version);
 private:
 	enum { FILE, DSP, SCSPTC };
-	FaxView* faxView;
 	int interface;
 	int pttID;
 	int scrollID;

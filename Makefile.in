@@ -54,10 +54,8 @@ FaxReceiver.o: FaxReceiver.cpp FaxReceiver.hpp
 
 FaxTransmitter.o: FaxTransmitter.cpp FaxTransmitter.hpp FaxImage.hpp
 
-FaxView.o: FaxView.cpp FaxView.hpp FaxImage.hpp
-
 FaxWindow.o: FaxWindow.cpp FaxWindow.hpp\
-             Error.hpp FaxView.hpp OptionsDialog.hpp\
+             Error.hpp OptionsDialog.hpp\
              FaxDemodulator.hpp FaxImage.hpp\
              FaxModulator.hpp FaxReceiver.hpp FaxTransmitter.hpp\
              File.hpp PTC.hpp PTT.hpp ReceiveDialog.hpp\
@@ -89,7 +87,6 @@ hamfax: Config.o moc_Config.o\
         FaxModulator.o moc_FaxModulator.o\
         FaxReceiver.o moc_FaxReceiver.o\
         FaxTransmitter.o moc_FaxTransmitter.o\
-        FaxView.o moc_FaxView.o\
         FaxWindow.o moc_FaxWindow.o\
         File.o moc_File.o\
         OptionsDialog.o moc_OptionsDialog.o\
