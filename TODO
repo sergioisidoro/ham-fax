@@ -1,0 +1,22 @@
+to do:
+- test AM
+- real "on air test"
+- write some documentation about HamFax and facsimiles
+
+to fix:
+- resize image also when reception was cancelled
+- fix input overruns while receiving from PTC
+- set options for PTC too (carrier, dev)
+- size of receive (and transmit?) dialog
+- smarter handling of init, tr/rx, end
+- read sound device without blocking , Qtimer=1 (?)
+- cleanup relation between FaxView and FaxImage
+- better handling of phasing (tr AND rcp)
+
+features:
+- save and load options
+- CW id before and after transmission
+- color fax
+- spectroscope
+- display level of line in while receiving
+- do translation of strings

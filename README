@@ -1,0 +1,77 @@
+HamFax v0.0
+***********
+
+Copyright (C) 2001 Christof Schmitt <cschmit@suse.de>
+
+HamFax is a QT/X11 application for sending and receiving
+facsimiles. It is licensed under the GNU General Public License (GPL),
+see the file COPYING for the complete text.
+
+If your have questions or comments please send them to me
+(cschmit@suse.de). I want to have some feedback on this program.
+
+Requirements:
+************
+
+Hardware:
+ - computer (of course)
+ - transceiver
+ - a working sound card and/or a SCS-PTC (http://www.scs-ptc.com/)
+
+Software:
+ - Linux (Sorry, i could not test other operating systems, they may work too.)
+ - X11
+ - Qt v2.2 or newer (http://www.trolltech.com/)
+ - Audiofile (http://www.68k.org./~michael/audiofile/)
+
+
+Notes / Features:
+*****************
+
+ - The supported image format for loading and saving is PNG.
+ - Facsimiles written to a AU-file have a sample rate of 8000Hz and
+   16Bit/sample. This is the same format as used for reading and
+   writing from the sound interface.
+ - The data rate between the SCS-PTC and the computer is
+   57600bit/s. With the start of transmission or reception the PTC is
+   expected to be in the main menu. If HamFax does not put the PTC in
+   fax mode, just turn it off and on, and it should work. ;-)
+ - Transmitting:
+    - Set the appropiate devices in Options->'Device Settings'
+      (they are not saved at the moment)
+    - If you want to key your PTT using the RTS signal of the selected
+      serial port select Options->'key PTT'
+    - Load the desired image with File->Open
+    - Adjust the parameters at the left
+    - Use Options->'Scale Image' to adjust the image size to the
+      desired index of cooperation (IOC).
+    - Select the desired mode in the transmit menu
+ - Reception:
+    - Set the parameters (note: the apt and phasing length are ignored)
+    - Select the desired mode in the receive menu
+
+see file TODO for information on missing features
+
+Installation:
+*************
+
+After unpacking the archive, locate your qt directory and type (with
+the correct directories):
+
+./configure --with-Qt-dir=/usr/lib/qt2 --with-Qt-includes=/usr/lib/qt2/include
+
+Note: It is possible, that
+
+./configure
+
+is enough, on my SuSE Linux 7.2 box i have to specify the path to
+Qt. After successful creation of the Makefile type
+
+make
+
+to compile it. If you want you can install the resulting binary
+'hamfax' to /usr/local/bin/ with
+
+make install
+
+You have to be root to run this last command.
