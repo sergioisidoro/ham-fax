@@ -39,10 +39,10 @@ private:
 	LookUpTable<double> arcSine;
 	double ifirold;
 	double qfirold;
-signals:
-	void data(int* buffer, int n);
 public slots:
 	void newSamples(short* audio, int n);
+signals:
+        void data(int*, int);
 };
 
 #endif

@@ -36,7 +36,7 @@ public:
         /**
 	 * Only possible access to Singleton
 	 */
-	static Config& instance(void);
+	static Config& instance();
 private:
 	typedef std::auto_ptr<Config> ConfigPtr;
 	friend class ConfigPtr;

@@ -19,13 +19,13 @@
 #include "Config.hpp"
 #include <qdir.h>
 
-Config& Config::instance(void)
+Config& Config::instance()
 {
 	static ConfigPtr _instance(new Config);
 	return *_instance;
 }
 
-Config::Config(void)
+Config::Config()
 {
 	setDefault("/hamfax/sound/device","/dev/dsp");
 	setDefault("/hamfax/PTC/device","/dev/ttyS0");
