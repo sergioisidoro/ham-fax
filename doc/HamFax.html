@@ -13,13 +13,17 @@
       transceiver or a SCS-PTC-II. Receiving of weather facsimile broadcasts 
       is also possible.</p>
 
+    <p>The program is licensed under the terms of the GNU General Public
+      License. See http://hamfax.sourceforge.net/ for further information
+      and new releases.</p>
+
     <h2>about facsimiles</h2>
 
     <h3>general</h3>
 
     <p>Facsimiles are pictures which are transmitted line by line. The sending
-      and receiving station have to agree on the transmission speed LPM
-      (meaning lines per minute) and the IOC (index of cooperation) which
+      and receiving station have to agree on the transmission speed (LPM
+      stands for lines per minute) and the IOC (index of cooperation) which
       corresponds the line width. The information transmitted is the
       brightness of the current position.</p>
 
@@ -41,6 +45,43 @@
       means black.</p>
 
     <h2>using HamFax</h2>
+
+    <h3>interface setup</h3>
+
+    <p>You can either use a SCS PTC-II as modulator and demodulator or
+      connect a sound card to your transceiver. For the PTC refer to the
+      manual, especially the chapter about interfacing transceiver, PTC and
+      computer. When using a sound card you need to connect line-out to the
+      microphone input (or something similar) of the transceiver and line-in to
+      some output of the transceiver. The RTS signal of a serial port can be
+      used to key the PTT as it is often use for PSK31. A simple transistor is
+      often enough to do the job.</p>
+
+    <p>For both interfaces you have to switch your transceiver to USB (upper
+      side band). In HamFax set carrier to 1900kHZ and tune your transceiver
+      1900kHz below the desired frequency.</p>
+    
+    <h3>receiving facsimiles</h3>
+
+    <p>Set deviation, modulation apt start and stop frequencies, lpm, the type
+      of phasing lines (normal or inverted) and the mono/color switch to the
+      appropriate values. Then choose the desired interface in the receive menu
+      and see what happens. :)</p>
+
+    <p>If the apt start tone is not detected properly or you missed it you can
+      skip it by clicking the skip button. If you missed the phasing lines you
+      can skip the phasing detection and the value from the lpm checkbox is
+      used.</p>
+
+    <p>While receiving the raw data is stored in memory. So it is possible to
+      correct the received image with the menu items in the Image menu. The
+      image can be saved in any format supported by Qt.</p>
+
+    <h3>sending facsimiles</h3>
+
+    <p>Load the image from somewhere. Then set the control items to the desired
+      values and scale the image to the desired IOC. Just select the right item
+      from the transmit menu and you are on the way.</p>
 
     <hr>
     <address>Author: Christof Schmitt, DH1CS &lt;cschmit@suse.de&gt;</address>
