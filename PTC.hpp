@@ -38,7 +38,7 @@ private:
 	bool fm;
 	unsigned int deviation;
 public slots:
-        void setDeviation(unsigned int dev);
+        void setDeviation(int dev);
 	void setFM(bool fm);
 };
 

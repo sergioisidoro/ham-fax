@@ -46,7 +46,7 @@ private:
 	unsigned int currPhaseHigh;
 	unsigned int phaseLines;
 	unsigned int noPhaseLines;
-	bool phaseNormal;
+	bool phaseInvers;
 	double lpm;
 	double lpmSum;
 	unsigned int width;
@@ -67,8 +67,8 @@ signals:
 	void imageRow(unsigned int row);
 	void receptionEnded(void);
 public slots:
-        void setAptStartFreq(unsigned int f);
-	void setAptStopFreq(unsigned int f);
+        void setAptStartFreq(int f);
+	void setAptStopFreq(int f);
 	void setWidth(unsigned int width);
 	void setPhasePol(bool pol);
 	void startPhasing(void);

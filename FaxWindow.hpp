@@ -21,9 +21,10 @@
 #include <qmainwindow.h>
 #include <qstring.h>
 #include <qtimer.h>
+#include <qtoolbar.h>
+#include <qcombobox.h>
 
 #include "Config.hpp"
-#include "FaxControl.hpp"
 #include "FaxDemodulator.hpp"
 #include "FaxImage.hpp"
 #include "FaxModulator.hpp"
@@ -48,6 +49,11 @@ private:
 	void buildMenuBar(void);
 	QString getFileName(QString caption, QString filter);
 	virtual void closeEvent(QCloseEvent* close);
+	QToolBar* modTool;
+	QToolBar* aptTool;
+	QToolBar* faxTool;
+	QComboBox* modulation;
+	QComboBox* invertPhase;
 	QLabel* sizeText;
 	QLabel* iocText;
 	Config* config;
@@ -58,7 +64,6 @@ private:
 	FaxImage* faxImage;
 	FaxModulator* faxModulator;
 	FaxDemodulator* faxDemodulator;
-	FaxControl* faxControl;
 	Sound* sound;
 	File* file;
 	PTT* ptt;
@@ -70,6 +75,8 @@ signals:
 	void loadFile(QString fileName);
 	void saveFile(QString fileName);
 public slots:
+        void setModulation(bool b);
+	void setPhasingPol(bool b);
 	void endTransmission(void);
 	void endReception(void);
 private slots:

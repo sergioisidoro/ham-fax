@@ -48,8 +48,8 @@ private:
 	static const unsigned int asine_size=256;
 	double* asine;
 public slots:
-        void setCarrier(unsigned int carrier);
-	void setSampleRate(unsigned int sampleRate);
-	void setDeviation(unsigned int dev);
+        void setCarrier(int carrier);
+	void setSampleRate(int sampleRate);
+	void setDeviation(int dev);
 	void setFM(bool fm);
 };

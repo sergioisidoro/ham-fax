@@ -38,18 +38,18 @@ private:
 	unsigned int startLength;
 	unsigned int startFreq;
 	unsigned int phasingLines;
-	bool phasePol;
+	bool phaseInvers;
 	unsigned int stopLength;
 	unsigned int stopFreq;
 public slots:
-        void setLPM(unsigned int lpm);
-	void setAptStartFreq(unsigned int f);
-	void setAptStartLength(unsigned int t);
-	void setAptStopFreq(unsigned int f);
-	void setAptStopLength(unsigned int t);
-	void setPhasingLines(unsigned int n);
+        void setLPM(int lpm);
+	void setAptStartFreq(int f);
+	void setAptStartLength(int t);
+	void setAptStopFreq(int f);
+	void setAptStopLength(int t);
+	void setPhasingLines(int n);
 	void setPhasePol(bool pol);
-	void setSampleRate(unsigned int rate);
+	void setSampleRate(int rate);
 signals:
 	void aptStart(void);
 	void phasing(void);

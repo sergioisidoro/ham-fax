@@ -71,8 +71,8 @@ void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples)
 						sampleRate*60/lpm);
 				pos/=(double)sampleRate*60.0/(double)lpm;
 				buf[i] = pos<0.025||pos>=0.975 
-					? phasePol?1.0:0.0 
-					: phasePol?0.0:1.0;
+					? phaseInvers?0.0:1.0 
+					: phaseInvers?1.0:0.0;
 				sampleNr++;
 			}
 		}
@@ -84,7 +84,7 @@ void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples)
 				double pos=fmod(sampleNr,
 						sampleRate*60/lpm);
 				pos/=(double)sampleRate*60.0/(double)lpm;
-				buf[i]= phasePol?1.0:0.0;
+				buf[i]= phaseInvers?0.0:1.0;
 				sampleNr++;
 			}
 		}
@@ -123,42 +123,42 @@ void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples)
 	}
 }
 
-void FaxTransmitter::setLPM(unsigned int lpm)
+void FaxTransmitter::setLPM(int lpm)
 {
 	this->lpm=lpm;
 }
 
-void FaxTransmitter::setAptStartFreq(unsigned int f)
+void FaxTransmitter::setAptStartFreq(int f)
 {
 	startFreq=f;
 }
 
-void FaxTransmitter::setAptStartLength(unsigned int t)
+void FaxTransmitter::setAptStartLength(int t)
 {
 	startLength=t;
 }
 
-void FaxTransmitter::setAptStopFreq(unsigned int f)
+void FaxTransmitter::setAptStopFreq(int f)
 {
 	stopFreq=f;
 }
 
-void FaxTransmitter::setAptStopLength(unsigned int t)
+void FaxTransmitter::setAptStopLength(int t)
 {
 	stopLength=t;
 }
 
-void FaxTransmitter::setPhasingLines(unsigned int n)
+void FaxTransmitter::setPhasingLines(int n)
 {
 	phasingLines=n;
 }
 
 void FaxTransmitter::setPhasePol(bool pol)
 {
-	phasePol=pol;
+	phaseInvers=pol;
 }
 
-void FaxTransmitter::setSampleRate(unsigned int rate)
+void FaxTransmitter::setSampleRate(int rate)
 {
 	sampleRate=rate;
 }

@@ -100,7 +100,7 @@ void PTC::transmit(double* samples, unsigned int count)
 	write(device,buf,count);
 }
 
-void PTC::setDeviation(unsigned int dev)
+void PTC::setDeviation(int dev)
 {
 	deviation=dev;
 }

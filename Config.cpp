@@ -157,66 +157,66 @@ void Config::setKeyPTT(bool b)
 	}
 }
 
-void Config::setCarrier(unsigned int c)
+void Config::setCarrier(int c)
 {
 	if(value["carrier"]!=c) {
-		value["carrier"]=QString().sprintf("%u",c);
+		value["carrier"]=QString().sprintf("%d",c);
 		emit carrier(c);
 	}
 }
 
-void Config::setDeviation(unsigned int d)
+void Config::setDeviation(int d)
 {
 	if(value["deviation"]!=d) {
-		value["deviation"]=QString().sprintf("%u",d);
+		value["deviation"]=QString().sprintf("%d",d);
 		emit deviation(d);
 	}
 }
 
-void Config::setLpm(unsigned int l)
+void Config::setLpm(int l)
 {
 	if(value["lpm"]!=l) {
-		value["lpm"]=QString().sprintf("%u",l);
+		value["lpm"]=QString().sprintf("%d",l);
 		emit lpm(l);
 	}
 }
 
-void Config::setAptStartFreq(unsigned int f)
+void Config::setAptStartFreq(int f)
 {
 	if(value["aptStartFreq"]!=f) {
-		value["aptStartFreq"]=QString().sprintf("%u",f);;
+		value["aptStartFreq"]=QString().sprintf("%d",f);;
 		emit aptStartFreq(f);
 	}
 }
 
-void Config::setAptStartLength(unsigned int l)
+void Config::setAptStartLength(int l)
 {
 	if(value["aptStartLength"]!=l) {
-		value["aptStartLength"]=QString().sprintf("%u",l);
+		value["aptStartLength"]=QString().sprintf("%d",l);
 		emit aptStartLength(l);
 	}
 }
 
-void Config::setAptStopFreq(unsigned int f)
+void Config::setAptStopFreq(int f)
 {
 	if(value["aptStopFreq"]!=f) {
-		value["aptStopFreq"]=QString().sprintf("%u",f);
+		value["aptStopFreq"]=QString().sprintf("%d",f);
 		emit aptStopFreq(f);
 	}
 }
 
-void Config::setAptStopLength(unsigned int l)
+void Config::setAptStopLength(int l)
 {
 	if(value["aptStopLength"]!=l) {
-		value["aptStopLength"]=QString().sprintf("%u",l);
+		value["aptStopLength"]=QString().sprintf("%d",l);
 		emit aptStopLength(l);
 	}
 }
 
-void Config::setPhaseLines(unsigned int n)
+void Config::setPhaseLines(int n)
 {
 	if(value["phaseLines"]!=n) {
-		value["phaseLines"]=QString().sprintf("%u",n);
+		value["phaseLines"]=QString().sprintf("%d",n);
 		emit phaseLines(n);
 	}
 }
@@ -229,12 +229,22 @@ void Config::setPhaseInvert(bool b)
 	}
 }
 
+void Config::setPhaseInvert(int i)
+{
+	setPhaseInvert(i==1 ? true : false);
+}
+
 void Config::setUseFM(bool b)
 {
 	if(value["fm"]!=b) {
 		value["fm"]=QString().sprintf("%u",(int)b);
 		emit useFM(b);
 	}
+}
+
+void Config::setUseFM(int i)
+{
+	setUseFM(i==1 ? true : false);
 }
 
 void Config::setAutoScroll(bool b)

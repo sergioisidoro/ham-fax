@@ -57,12 +57,12 @@ void FaxModulator::setSampleRate(unsigned int sr)
 	sampleRate=sr;
 }
 
-void FaxModulator::setCarrier(unsigned int carrier)
+void FaxModulator::setCarrier(int carrier)
 {
 	this->carrier=carrier;
 }
 
-void FaxModulator::setDeviation(unsigned int dev)
+void FaxModulator::setDeviation(int dev)
 {
 	this->dev=dev;
 }

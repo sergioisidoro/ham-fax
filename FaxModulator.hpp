@@ -36,8 +36,8 @@ private:
 	unsigned int carrier;
 	unsigned int dev;
 public slots:
-        void setCarrier(unsigned int carrier);
-	void setDeviation(unsigned int dev);
+        void setCarrier(int carrier);
+	void setDeviation(int dev);
 	void setFM(bool fm);
 };
 

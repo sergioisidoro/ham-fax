@@ -98,16 +98,16 @@ void FaxReceiver::decodePhasing(unsigned int& x)
 	if(x>128) {
 		currPhaseHigh++;
 	}
-	if(( phaseNormal && x>230 && !phaseHigh) ||
-	   (!phaseNormal && x<22  && phaseHigh)) {
-		phaseHigh=phaseNormal?true:false;
-	} else if(( phaseNormal && x<=128 && phaseHigh) ||
-		  (!phaseNormal && x>=128 && !phaseHigh)) {
-		phaseHigh=phaseNormal?false:true;
+	if((!phaseInvers && x>230 && !phaseHigh) ||
+	   ( phaseInvers && x<22  && phaseHigh)) {
+		phaseHigh=phaseInvers?false:true;
+	} else if((!phaseInvers && x<=128 && phaseHigh) ||
+		  ( phaseInvers && x>=128 && !phaseHigh)) {
+		phaseHigh=phaseInvers?true:false;
 		if((double)currPhaseHigh >= 
-		   (phaseNormal?0.048:0.948)*currPhaseLength &&
+		   (phaseInvers?0.948:0.048)*currPhaseLength &&
 		   (double)currPhaseHigh <=
-		   (phaseNormal?0.052:0.952)*currPhaseLength &&
+		   (phaseInvers?0.952:0.052)*currPhaseLength &&
 		   (double)currPhaseLength/sampleRate<=1.1 &&
 		   (double)currPhaseLength/sampleRate>=0.09) {
 			double l=60.0*(double)sampleRate
@@ -158,12 +158,12 @@ void FaxReceiver::decodeImage(unsigned int& x)
 	imageSample++;
 }
 
-void FaxReceiver::setAptStartFreq(unsigned int f)
+void FaxReceiver::setAptStartFreq(int f)
 {
 	aptStartFreq=f;
 }
 
-void FaxReceiver::setAptStopFreq(unsigned int f)
+void FaxReceiver::setAptStopFreq(int f)
 {
 	aptStopFreq=f;
 }
@@ -175,7 +175,7 @@ void FaxReceiver::setWidth(unsigned int width)
 
 void FaxReceiver::setPhasePol(bool pol)
 {
-	phaseNormal=pol;
+	phaseInvers=pol;
 }
 
 void FaxReceiver::startPhasing(void)
