@@ -149,7 +149,6 @@ void Sound::read(int fd)
 	const int max=256;
 	short buffer[max];
 	int n=::read(fd,buffer,max*sizeof(short))/sizeof(short);
-	//n=2147483647;
 	if(n>0 && n<=max) {
 		emit data(buffer,n);
 	}
