@@ -120,7 +120,7 @@ void FaxReceiver::decodePhasing(unsigned int& x)
 			lpm=lpmSum/(double)phaseLines;
 			imageSample=(int)(-2.975*60.0/lpm*(double)sampleRate);
 		} else if(phaseLines>0) {
-			if(++noPhaseLines>=3) {
+			if(++noPhaseLines>=5) {
 				state=IMAGE;
 				emit imageRow(0);
 			}

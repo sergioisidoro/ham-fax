@@ -36,7 +36,9 @@ private:
 	QString deviceName;
 	int device;
 	bool fm;
+	unsigned int deviation;
 public slots:
+        void setDeviation(int dev);
 	void setFM(bool fm);
 };
 

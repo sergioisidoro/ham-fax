@@ -36,6 +36,7 @@ void FaxTransmitter::startTransmission(void)
 {
 	state=APTSTART;
 	sampleNr=0;
+	emit aptStart();
 }
 
 void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples) 
@@ -51,6 +52,7 @@ void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples)
 			if(sampleNr>=sampleRate*startLength) {
 				state=PHASING;
 				sampleNr=0;
+				emit phasing();
 			} else {
 				// black/white pattern with startFreq
 				buf[i]=(sampleNr*2*startFreq/sampleRate)%2;
@@ -91,6 +93,7 @@ void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples)
 			if(sampleNr>=sampleRate*faxImage->getRows()*60/lpm) {
 				state=APTSTOP;
 				sampleNr=0;
+				emit aptStop();
 			} else {
 				// get pixel determining current value
 				double pos=fmod(sampleNr,sampleRate*60/lpm);
@@ -116,22 +119,8 @@ void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples)
 			}
 		}
 	}
-	switch(state) {
-	case APTSTART:
-		emit statusText(tr("APT start"));
-		break;
-        case PHASING:
-		emit statusText(tr("phasing"));
-		break;
-	case IMAGE:
-		emit statusText(QString(tr("transmitting line %1"))
-				.arg(sampleNr*lpm/60/sampleRate));
-		break;
-	case APTSTOP:
-		emit statusText(tr("APT stop"));
-		break;
-	case IDLE:
-		break;
+	if(state==IMAGE) {
+		emit imageLine(sampleNr*lpm/60/sampleRate);
 	}
 }
 

@@ -42,10 +42,11 @@ public:
 	FaxWindow(const QString& version);
 private:
 	enum { FILE, DSP, SCSPTC };
+	enum { SC288, SC576, R576288, R288576 };
 	int interface;
 	int pttID;
 	void buildMenuBar(void);
-	QString FaxWindow::getFileName(QString caption, QString filter);
+	QString getFileName(QString caption, QString filter);
 	virtual void closeEvent(QCloseEvent* close);
 	QString version;
 	QPopupMenu* optionsMenu;
@@ -81,6 +82,7 @@ private slots:
 	void doOptionsDialog(void);
 	void doScaleDialog(void);
 	void changePTT(void);
+	void scaleImage(int item);
 };
 
 #endif

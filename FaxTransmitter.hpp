@@ -58,7 +58,10 @@ signals:
 	void newAptStopLength(int t);
 	void newPhasingLines(int n);
 	void newPhasePol(bool pol);
-	void statusText(const QString&);
+	void aptStart(void);
+	void phasing(void);
+	void imageLine(unsigned int n);
+	void aptStop(void);
 };
 
 #endif

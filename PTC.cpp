@@ -22,7 +22,7 @@
 #include "Error.hpp"
 
 PTC::PTC(QObject* parent) 
-	: QObject(parent), device(-1), fm(true)
+	: QObject(parent), device(-1), fm(true), deviation(0)
 {
 }
 
@@ -39,11 +39,6 @@ void PTC::setDeviceName(QString s)
 QString& PTC::getDeviceName(void)
 {
 	return deviceName;
-}
-
-void PTC::setFM(bool fm)
-{
-	this->fm=fm;
 }
 
 void PTC::open(void)
@@ -64,15 +59,13 @@ void PTC::open(void)
 	tcsetattr(device,TCSAFLUSH,&options);
 
 	write(device,"\r\r",2);
-	const char* s="FAX MBAUD 57600\r";
-	write(device,s,strlen(s));
-	if(fm) {
-		const char* s="FAX FMFAX\r";
-		write(device,s,strlen(s));
-	} else {
-		const char* s="FAX AMFAX\r";
-		write(device,s,strlen(s));
-	}
+	QString s;
+	s="FAX MBAUD 57600\r";
+	write(device,s,s.length());
+	s=QString("FAX DEVIATION %1\r").arg(deviation);
+	write(device,s,s.length());
+	s=QString("FAX %1\r").arg(fm ? "FMFAX" : "AMFAX");
+	write(device,s,s.length());
 	usleep(200000);
 	tcflush(device,TCIOFLUSH);
 }
@@ -103,4 +96,14 @@ void PTC::transmit(double* samples, unsigned int count)
 	}
 	tcflush(device,TCIFLUSH);
 	write(device,buf,count);
+}
+
+void PTC::setDeviation(int dev)
+{
+	deviation=(unsigned int)dev;
+}
+
+void PTC::setFM(bool fm)
+{
+	this->fm=fm;
 }

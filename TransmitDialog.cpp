@@ -42,3 +42,25 @@ void TransmitDialog::closeEvent(QCloseEvent* close)
 	close->accept();
 	emit cancelClicked();
 }
+
+void TransmitDialog::aptStart(void)
+{
+	showText("Transmitting APT start");
+}
+
+void TransmitDialog::phasing(void)
+{
+	showText("Transmitting phasing");
+}
+
+void TransmitDialog::imageLine(unsigned int n)
+{
+	showText(QString("Transmitting line %1").arg(n));
+}
+
+void TransmitDialog::aptStop(void)
+{
+	showText("Transmitting APT stop");
+}
+
+

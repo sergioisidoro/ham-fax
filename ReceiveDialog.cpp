@@ -39,7 +39,7 @@ void ReceiveDialog::showText(const QString& s)
 
 void ReceiveDialog::apt(unsigned int f)
 {
-	aptText->setText(QString(tr("Apt frequency: %1 Hz")).arg(f));
+	aptText->setText(QString(tr("Apt frequency:\n%1 Hz")).arg(f));
 	adjustSize();
 }
 

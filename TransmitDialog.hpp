@@ -28,10 +28,14 @@ public:
 	TransmitDialog(QWidget* parent);
 private:
 	virtual void closeEvent(QCloseEvent* close);
+        void showText(const QString& s);
 	QLabel* status;
 	QPushButton* cancel;
 public slots:
-        void showText(const QString& s);
+        void aptStart(void);
+	void phasing(void);
+	void imageLine(unsigned int n);
+	void aptStop(void);
 signals:
         void cancelClicked(void);
 };

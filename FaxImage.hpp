@@ -56,6 +56,7 @@ public slots:
 	void resize(unsigned int x, unsigned int y,
 		    unsigned int w, unsigned int h);
 	void resizeHeight(unsigned int y, unsigned int h);
+	void scaleToIOC(unsigned int ioc);
 };
 
 #endif

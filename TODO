@@ -4,8 +4,6 @@ to do:
 - write some documentation about HamFax and facsimiles
 
 to fix:
-- cleanup FaxTransmitter->TransmitDialog, like rx
-- set options for PTC too (carrier, dev)
 - smarter handling of init, tr/rx, end
 - read sound device without blocking , Qtimer=1 (?)
 - better handling of phasing (tr AND rcp)
@@ -13,6 +11,7 @@ to fix:
 - fix input overruns while receiving from PTC
 
 features:
+- extra menu for scaling and resizing image
 - save and load options
 - CW id before and after transmission
 - color fax
@@ -21,4 +20,5 @@ features:
 - do translation of strings
 - include phasing lines in image and delete them after reception
 - is it possible to do slant correction in QImage?
-- extra menu for scaling and resizing image
+- quick save
+- fancy icon bar

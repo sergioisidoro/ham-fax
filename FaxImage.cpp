@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "FaxImage.hpp"
+#include <math.h>
 
 FaxImage::FaxImage(QObject* parent)
 	: QObject(parent)
@@ -60,7 +61,7 @@ bool FaxImage::setPixelGray(unsigned int col, unsigned int row,
 		return false;
 	}
 	if(row>=(unsigned int)image.height()) {
-		resize(0,0,image.width(),image.height()+20);
+		resize(0,0,image.width(),image.height()+50);
 	}
 	image.setPixel(col,row,qRgb(value,value,value));
 	emit contentUpdated(col,row,1,1);
@@ -133,4 +134,12 @@ void FaxImage::resize(unsigned int x, unsigned int y,
 void FaxImage::resizeHeight(unsigned int y, unsigned int h)
 {
 	resize(0,y,image.width(),h);
+}
+
+void FaxImage::scaleToIOC(unsigned int ioc)
+{
+	scale((unsigned int)(M_PI*ioc),
+	      (unsigned int)
+	      ((double)image.height()/(double)image.width()
+	       *M_PI*ioc));
 }
