@@ -630,7 +630,7 @@ void FaxWindow::selectFont(void)
 	QFont f=QFontDialog::getFont(&ok,QApplication::font(),this);
 	if (ok) {
 		QApplication::setFont(f,true);
-		Config::instance().writeEntry("/hamfax/GUI/font",f.rawName());
+		Config::instance().writeEntry("/hamfax/GUI/font",f.toString());
 	}
 }
 
