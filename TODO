@@ -14,11 +14,5 @@ to fix:
 features:
 - CW id before and after transmission
 - spectroscope
-- include phasing lines in image and delete them after reception
 - fancy icon bar
 - do translation of strings
-
-
-- clean up
-- cancel of slant correction
-- color and slant correction

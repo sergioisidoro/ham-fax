@@ -36,6 +36,7 @@ public:
 private:
 	void drawContents(QPainter* p, int x,int y,int w,int h);
 	virtual void contentsMousePressEvent(QMouseEvent* m);
+	void resizeHeight(int h);
 	QImage image;
 	QPoint slant1;
 	QPoint slant2;

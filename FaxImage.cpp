@@ -62,7 +62,7 @@ bool FaxImage::setPixel(int col, int row, int value, int rgbg)
 		return false;
 	}
 	if(row>=image.height()) {
-		resize(0,0,image.width(),image.height()+50);
+		resizeHeight(50);
 	}
 	switch(rgbg) {
 	case 0:
@@ -89,6 +89,20 @@ bool FaxImage::setPixel(int col, int row, int value, int rgbg)
 		ensureVisible(0,row,0,0);
 	}
 	return true;
+}
+
+void FaxImage::resizeHeight(int h)
+{
+	int imageW=image.width();
+	int imageH=image.height();
+	image=image.copy(0,0,imageW,imageH+h);
+	resizeContents(imageW,imageH+h);
+	if(h>0) {
+		updateContents(0,imageH,imageW,imageH+h);
+	}
+	if(h<0) {
+		updateContents(0,imageH+h,imageW,imageH);
+	}
 }
 
 void FaxImage::create(int cols, int rows)
@@ -170,7 +184,6 @@ void FaxImage::contentsMousePressEvent(QMouseEvent* m)
 	emit clicked();
 }
 
-
 void FaxImage::shiftCol1(void)
 {
 	int w=image.width();
@@ -183,6 +196,7 @@ void FaxImage::shiftCol1(void)
 		}
 	}
 	updateContents(0,0,w,h);
+	emit newImage();
 }
 
 void FaxImage::shiftCol2(void)
@@ -197,6 +211,7 @@ void FaxImage::shiftCol2(void)
 		}
 	}
 	updateContents(0,0,w,h);
+	emit newImage();
 }
 
 void FaxImage::correctBegin(void)
@@ -218,4 +233,5 @@ void FaxImage::correctBegin(void)
 		}
 	}
 	updateContents(0,0,w,h);
+	emit newImage();
 }

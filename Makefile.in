@@ -21,6 +21,7 @@ CPPFLAGS=@CPPFLAGS@
 LIBS=@QT_LIBS@ -laudiofile
 INSTALL=@INSTALL@
 INSTALLDIR=/usr/local/bin/
+DOCDIR=/usr/local/share/doc/HamFax/
 QT_MOC=@QT_MOC@
 
 all: hamfax
@@ -31,6 +32,7 @@ clean:
 
 install: hamfax
 	$(INSTALL) -s hamfax $(INSTALLDIR)
+	$(INSTALL) HamFax.html $(DOCDIR)
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $<
@@ -39,6 +41,8 @@ moc_%.cpp: %.hpp
 	$(QT_MOC) $< -o $@
 
 Config.o: Config.cpp Config.hpp
+
+CorrectDialog.o: CorrectDialog.cpp CorrectDialog.hpp
 
 DisplayLevel.o: DisplayLevel.cpp DisplayLevel.hpp
 
@@ -55,10 +59,12 @@ FaxReceiver.o: FaxReceiver.cpp FaxReceiver.hpp
 FaxTransmitter.o: FaxTransmitter.cpp FaxTransmitter.hpp FaxImage.hpp
 
 FaxWindow.o: FaxWindow.cpp FaxWindow.hpp\
+             CorrectDialog.hpp\
              Error.hpp OptionsDialog.hpp\
              FaxDemodulator.hpp FaxImage.hpp\
              FaxModulator.hpp FaxReceiver.hpp FaxTransmitter.hpp\
-             File.hpp PTC.hpp PTT.hpp ReceiveDialog.hpp\
+             File.hpp HelpDialog.hpp\
+             PTC.hpp PTT.hpp ReceiveDialog.hpp\
              Sound.hpp TransmitDialog.hpp
 
 File.o: File.cpp File.hpp
@@ -82,6 +88,7 @@ TransmitDialog.o: TransmitDialog.cpp TransmitDialog.hpp
 hamfax.o: hamfax.cpp FaxWindow.hpp
 
 hamfax: Config.o moc_Config.o\
+        CorrectDialog.o moc_CorrectDialog.o\
         DisplayLevel.o moc_DisplayLevel.o\
         Error.o\
         FaxDemodulator.o moc_FaxDemodulator.o\

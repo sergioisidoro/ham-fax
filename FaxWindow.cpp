@@ -50,6 +50,7 @@ FaxWindow::FaxWindow(const QString& version)
 	faxDemodulator=new FaxDemodulator(this);
 	TransmitDialog* transmitDialog=new TransmitDialog(this);
 	ReceiveDialog* receiveDialog=new ReceiveDialog(this);
+	correctDialog=new CorrectDialog(this);
 
 	statusBar()->setSizeGripEnabled(false);
 	statusBar()->addWidget(sizeText=new QLabel(statusBar()),0,true);
@@ -274,12 +275,11 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(faxImage,SIGNAL(newImage()), 
 		faxReceiver,SLOT(releaseBuffer()));
 
-	connect(faxReceiver,SIGNAL(startCorrection()),
-		SLOT(disableControls()));
 	connect(this,SIGNAL(correctSlant()),faxImage,SLOT(correctSlant()));
 	connect(faxImage,SIGNAL(widthAdjust(double)),
 		faxReceiver,SLOT(correctLPM(double)));
 	connect(this,SIGNAL(correctBegin()),faxImage,SLOT(correctBegin()));
+	connect(correctDialog,SIGNAL(cancelClicked()),SLOT(enableControls()));
 
 	QPopupMenu* fileMenu=new QPopupMenu(this);
 	fileMenu->insertItem(tr("&Open"),this,SLOT(load()));
@@ -303,6 +303,8 @@ FaxWindow::FaxWindow(const QString& version)
 	imageMenu->insertItem(tr("Scale image to IOC &576"),
 			      faxReceiver,SLOT(correctToIOC576()));
 	imageMenu->insertSeparator();
+	slantID=imageMenu->insertItem(tr("slant correction"),
+				      this,SLOT(slantWaitFirst()));
 	colDrawID=imageMenu->insertItem(tr("redraw as color facsimile")
 					,this,SLOT(redrawColor()));
 	monoDrawID=imageMenu->insertItem(tr("redraw as mono facsimile"),
@@ -311,10 +313,7 @@ FaxWindow::FaxWindow(const QString& version)
 	imageMenu->insertItem(tr("shift colors (R->G,G->B,B->R)"),
 			      faxImage,SLOT(shiftCol1()));
 	imageMenu->insertItem(tr("shift colors (R->B,G->R,B->G)"),
-				       faxImage,SLOT(shiftCol2()));
-	imageMenu->insertSeparator();
-	slantID=imageMenu->insertItem(tr("slant correction"),
-				      this,SLOT(slantWaitFirst()));
+			      faxImage,SLOT(shiftCol2()));
 	imageMenu->insertItem(tr("set beginning of line"),
 			      this,SLOT(setBegin()));
 	optionsMenu=new QPopupMenu(this);
@@ -355,13 +354,14 @@ FaxWindow::FaxWindow(const QString& version)
 void FaxWindow::help(void)
 {
 	HelpDialog* helpDialog=new HelpDialog(this);
+	helpDialog->setCaption(caption());
 	helpDialog->exec();
 	delete helpDialog;
 }
 
 void FaxWindow::about(void)
 {
-	QMessageBox::information(this,this->caption(),
+	QMessageBox::information(this,caption(),
 				 tr("HamFax is a QT application for "
 				    "transmitting and receiving "
 				    "ham radio facsimiles.\n"
@@ -372,7 +372,7 @@ void FaxWindow::about(void)
 
 void FaxWindow::aboutQT(void)
 {
-	QMessageBox::aboutQt(this,this->caption());
+	QMessageBox::aboutQt(this,caption());
 }
 
 void FaxWindow::load(void)
@@ -643,7 +643,7 @@ void FaxWindow::endReception(void)
 
 void FaxWindow::closeEvent(QCloseEvent* close)
 {
-	switch(QMessageBox::information(this,this->caption(),
+	switch(QMessageBox::information(this,caption(),
 					tr("Really exit?"),
 					tr("&Exit"),tr("&Don't Exit"))) {
 	case 0:
@@ -690,32 +690,24 @@ void FaxWindow::setColor(bool b)
 
 void FaxWindow::slantWaitFirst(void)
 {
-	slantDialog=new QMessageBox(this->caption(),
-				    tr("select first point of vertical line"),
-				    QMessageBox::Information,
-				    QMessageBox::Cancel,
-				    QMessageBox::NoButton,
-				    QMessageBox::NoButton,
-				    this,0,false);
+	correctDialog->setText(tr("select first point of vertical line"));
 	disableControls();
-	slantDialog->show();
+	correctDialog->show();
 	connect(faxImage,SIGNAL(clicked()),this,SLOT(slantWaitSecond()));
 }
 
 void FaxWindow::slantWaitSecond(void)
 {
-	slantDialog->setText(tr("select second point of vertical line"));
+	correctDialog->setText(tr("select second point of vertical line"));
 	disconnect(faxImage,SIGNAL(clicked()),this,SLOT(slantWaitSecond()));
 	connect(faxImage,SIGNAL(clicked()),this,SLOT(slantEnd()));
 }
 
 void FaxWindow::slantEnd(void)
 {
-	slantDialog->hide();
+	correctDialog->hide();
 	disconnect(faxImage,SIGNAL(clicked()),this,SLOT(slantEnd()));
 	emit correctSlant();
-	enableControls();
-	delete slantDialog;
 }
 
 void FaxWindow::redrawColor(void)
@@ -755,21 +747,15 @@ void FaxWindow::setImageAdjust(bool b)
 
 void FaxWindow::setBegin(void)
 {
-	beginDialog=new QMessageBox(this->caption(),
-				    tr("select beginning of line"),
-				    QMessageBox::Information,
-				    QMessageBox::Cancel,
-				    QMessageBox::NoButton,
-				    QMessageBox::NoButton,
-				    this,0,false);
+	correctDialog->setText(tr("select beginning of line"));
 	disableControls();
-	beginDialog->show();
+	correctDialog->show();
 	connect(faxImage,SIGNAL(clicked()),this,SLOT(setBeginEnd()));
 }
 
 void FaxWindow::setBeginEnd(void)
 {
-	delete beginDialog;
+	correctDialog->hide();
 	emit correctBegin();
 	disconnect(faxImage,SIGNAL(clicked()),this,SLOT(setBeginEnd()));
 	enableControls();

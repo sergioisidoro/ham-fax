@@ -185,7 +185,6 @@ void FaxReceiver::correctLPM(double d)
 	lpm*= (color ? (d-1.0)/3.0+1.0 : d);
 	rawIt=rawData.begin();
 	timer->start(0);
-	emit startCorrection();
 }
 
 void FaxReceiver::correctWidth(int w)
@@ -199,7 +198,6 @@ void FaxReceiver::correctWidth(int w)
 		rawIt=rawData.begin();
 		timer->start(0);
 		emit newSize(0,0,w,0);
-		emit startCorrection();
 	}
 }
 

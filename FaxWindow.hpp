@@ -20,10 +20,10 @@
 
 #include <qcombobox.h>
 #include <qmainwindow.h>
-#include <qmessagebox.h>
 #include <qstring.h>
 #include <qtoolbar.h>
 #include "Config.hpp"
+#include "CorrectDialog.hpp"
 #include "FaxDemodulator.hpp"
 #include "FaxImage.hpp"
 #include "FaxModulator.hpp"
@@ -70,8 +70,7 @@ private:
 	FaxTransmitter* faxTransmitter;
 	PTC* ptc;
 	Sound* sound;
-	QMessageBox* beginDialog;
-	QMessageBox* slantDialog;
+	CorrectDialog* correctDialog;
 	enum { WAITFIRST, WAITSECOND, NOTHING } slantState;
 signals:
 	void correctBegin(void);

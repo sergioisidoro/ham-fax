@@ -26,9 +26,9 @@ HelpDialog::HelpDialog(QWidget* parent)
 	QVBoxLayout* layout=new QVBoxLayout(this,10,10);
 	QTextBrowser* browser=new QTextBrowser(this);
 	layout->addWidget(browser);
-	browser->mimeSourceFactory()->addFilePath(".");
 	browser->mimeSourceFactory()->addFilePath("/usr/share/doc/HamFax/");
-	browser->mimeSourceFactory()->addFilePath("/usr/local/share/doc/HamFax/");
+	browser->mimeSourceFactory()->
+		addFilePath("/usr/local/share/doc/HamFax/");
 	browser->setSource("HamFax.html");
 	QPushButton* button=new QPushButton(tr("&Close"),this);
 	layout->addWidget(button);

@@ -67,7 +67,6 @@ signals:
 	void aptStopDetected(void);
 	void newPixel(int c, int h, int v, int rgbg);
 	void startReception(void);
-	void startCorrection(void);
 	void end(void);
 	void startingPhasing(void);
 	void phasingLine(double lpm);
