@@ -36,16 +36,17 @@ private:
 	QPushButton* skip;
 	QPushButton* cancel;
 	DisplayLevel* level;
+signals:
+        void cancelClicked(void);
+	void skipClicked(void);
 public slots:
 	void apt(int f);
 	void aptStart(void);
 	void phasing(void);
 	void phasingLine(double lpm);
 	void imageRow(int row);
+	void disableSkip(void);
 	void samples(signed short* buffer, unsigned int n);
-signals:
-        void cancelClicked(void);
-	void skipClicked(void);
 };
 
 #endif

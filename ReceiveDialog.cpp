@@ -23,10 +23,10 @@ ReceiveDialog::ReceiveDialog(QWidget* parent)
 {
 	QGridLayout* layout=new QGridLayout(this,5,1,20,20);
 	layout->addWidget(status=new QLabel(this),1,1);
+	status->setMinimumWidth(200);
 	layout->addWidget(aptText=new QLabel(this),2,1);
 	layout->addWidget(level=new DisplayLevel(this),3,1);
-	layout->addWidget(skip=new QPushButton(tr("&Skip apt start"),
-					       this),4,1);
+	layout->addWidget(skip=new QPushButton(this),4,1);
 	connect(skip,SIGNAL(clicked()),this,SIGNAL(skipClicked()));
 	layout->addWidget(cancel=new QPushButton(tr("&Cancel"),this),5,1);
 	connect(cancel,SIGNAL(clicked()),this,SIGNAL(cancelClicked()));
@@ -40,7 +40,7 @@ void ReceiveDialog::showText(const QString& s)
 
 void ReceiveDialog::apt(int f)
 {
-	aptText->setText(QString(tr("Apt frequency:\n%1 Hz")).arg(f));
+	aptText->setText(QString(tr("Apt frequency: %1 Hz")).arg(f));
 	adjustSize();
 }
 
@@ -53,6 +53,7 @@ void ReceiveDialog::closeEvent(QCloseEvent* close)
 void ReceiveDialog::show(void)
 {
 	level->setZero();
+	skip->setText(tr("&Skip apt start"));
 	QDialog::show();
 }
 
@@ -64,7 +65,6 @@ void ReceiveDialog::aptStart(void)
 
 void ReceiveDialog::phasing(void)
 {
-	skip->setDisabled(true);
 	showText(tr("decoding phasing"));
 	skip->setText(tr("skip phasing"));
 	skip->setDisabled(false);
@@ -79,10 +79,14 @@ void ReceiveDialog::phasingLine(double lpm)
 void ReceiveDialog::imageRow(int row)
 {
 	showText(tr("receiving line %1").arg(row));
-	skip->setDisabled(true);
 }
 
 void ReceiveDialog::samples(signed short* buffer, unsigned int n)
 {
 	level->samples(buffer,n);
+}
+
+void ReceiveDialog::disableSkip(void)
+{
+	skip->setDisabled(true);
 }

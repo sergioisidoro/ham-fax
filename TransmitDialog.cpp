@@ -21,13 +21,10 @@
 TransmitDialog::TransmitDialog(QWidget* parent)
 	: QDialog(parent)
 {
-	QVBoxLayout* layout=new QVBoxLayout(this);
-	layout->setSpacing(20);
-	layout->setMargin(20);
-	status=new QLabel(this);
-	layout->addWidget(status);
-	cancel=new QPushButton(tr("&Cancel"),this);
-	layout->addWidget(cancel);
+	QVBoxLayout* layout=new QVBoxLayout(this,20,20);
+	layout->addWidget(status=new QLabel(this));
+	status->setMinimumWidth(150);
+	layout->addWidget(cancel=new QPushButton(tr("&Cancel"),this));
 	connect(cancel,SIGNAL(clicked()),this,SIGNAL(cancelClicked()));
 	connect(cancel,SIGNAL(clicked()),this,SLOT(hide()));
 }
@@ -47,22 +44,20 @@ void TransmitDialog::closeEvent(QCloseEvent* close)
 void TransmitDialog::start(void)
 {
 	show();
-	showText("Transmitting APT start");
+	showText("transmitting APT start");
 }
 
 void TransmitDialog::phasing(void)
 {
-	showText("Transmitting phasing");
+	showText("transmitting phasing");
 }
 
 void TransmitDialog::imageLine(int n)
 {
-	showText(QString("Transmitting line %1").arg(n));
+	showText(QString("transmitting line %1").arg(n));
 }
 
 void TransmitDialog::aptStop(void)
 {
-	showText("Transmitting APT stop");
+	showText("transmitting APT stop");
 }
-
-

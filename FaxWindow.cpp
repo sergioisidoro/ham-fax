@@ -260,6 +260,8 @@ FaxWindow::FaxWindow(const QString& version)
 		receiveDialog,SLOT(phasing()));
 	connect(faxReceiver,SIGNAL(phasingLine(double)),
 		receiveDialog,SLOT(phasingLine(double)));
+	connect(faxReceiver,SIGNAL(imageStarts()),
+		receiveDialog,SLOT(disableSkip()));
 	connect(faxReceiver,SIGNAL(imageRow(int)),
 		receiveDialog,SLOT(imageRow(int)));
 	connect(faxReceiver,SIGNAL(end()),SLOT(endReception()));

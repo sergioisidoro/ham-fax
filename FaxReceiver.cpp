@@ -131,6 +131,7 @@ void FaxReceiver::decodePhasing(unsigned int& x)
 			lastCol=(unsigned int)(pos*width);
 			pixel=pixelSamples=0;
 			lastRow=99; // just !=0 which is the first row
+			emit imageStarts();
 		}
 		currPhaseLength=currPhaseHigh=0;
 	}
@@ -278,6 +279,8 @@ void FaxReceiver::skip(void)
 		emit startingPhasing();
 	} else if(state==PHASING) {
 		lpm=txLPM;
+		state=IMAGE;
+		emit imageStarts();
 		double pos=fmod(imageSample,sampleRate*60/lpm);
 		pos/=(double)sampleRate*60.0/(double)lpm;
 		lastCol=(unsigned int)(pos*width);
