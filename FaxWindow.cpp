@@ -33,6 +33,7 @@
 #include "TransmitDialog.hpp"
 #include "PTT.hpp"
 
+#include <qtooltip.h>
 FaxWindow::FaxWindow(const QString& version)
 	: version(version)
 {
@@ -52,51 +53,72 @@ FaxWindow::FaxWindow(const QString& version)
 
 	sizeText=new QLabel(statusBar());
 	iocText=new QLabel(statusBar());
+	QToolTip::add(iocText,
+	   tr("Index Of Cooperation is the width in pixels divided by PI"));
 	statusBar()->setSizeGripEnabled(false);
 	statusBar()->addWidget(sizeText,0,true);
 	statusBar()->addWidget(iocText,0,true);
-	
 
 	modTool=new QToolBar(tr("modulation settings"),this);
 	new QLabel(tr("carrier"),modTool);
 	QSpinBox* carrier=new QSpinBox(1500,2400,100,modTool);
 	carrier->setSuffix(tr("Hz"));
 	modTool->addSeparator();
+	QToolTip::add(carrier,
+		      tr("signal carrier for FM and AM"));
 	new QLabel(tr("deviation"),modTool);
 	QSpinBox* deviation=new QSpinBox(400,500,10,modTool);
 	deviation->setSuffix(tr("Hz"));
+	QToolTip::add(deviation, tr("deviation for FM"));
 	modTool->addSeparator();
 	new QLabel(tr("modulation"),modTool);
 	modulation=new QComboBox(false,modTool);
 	modulation->insertItem(tr("AM"));
 	modulation->insertItem(tr("FM"));
+	QToolTip::add(modulation,
+          tr("AM is only used for getting images from weather satellites."));
 
 	aptTool=new QToolBar(tr("apt settings"),this);
 	new QLabel(tr("apt start"),aptTool);
 	QSpinBox* aptStartLength=new QSpinBox(0,20,1,aptTool);
 	aptStartLength->setSuffix(tr("s"));
+	QToolTip::add(aptStartLength,
+	      tr("Length of the black/white pattern at the beginning"));
 	QSpinBox* aptStartFreq=new QSpinBox(300,675,10,aptTool);
 	aptStartFreq->setSuffix(tr("Hz"));
+	QToolTip::add(aptStartFreq,
+	      tr("Frequency of the black/white pattern at the beginning"));
 	aptTool->addSeparator();
 	new QLabel(tr("apt stop"),aptTool);
 	QSpinBox* aptStopLength=new QSpinBox(0,20,1,aptTool);
+	QToolTip::add(aptStopLength,
+		      tr("Length of the black/white pattern at the end"));
 	aptStopLength->setSuffix(tr("s"));
 	QSpinBox* aptStopFreq=new QSpinBox(300,675,10,aptTool);
 	aptStopFreq->setSuffix(tr("Hz"));
-
+	QToolTip::add(aptStopFreq,
+		      tr("Frequency of the black/white pattern at the end"));
 	faxTool=new QToolBar(tr("facsimile settings"),this);
 	new QLabel(tr("lpm"),faxTool);
 	QSpinBox* lpm=new QSpinBox(60,360,10,faxTool);
+	QToolTip::add(lpm,tr("lines per minute"));
 	faxTool->addSeparator();
 	new QLabel(tr("phasing lines"),faxTool);
 	QSpinBox* phaseLines=new QSpinBox(0,50,1,faxTool);
+	QToolTip::add(phaseLines,
+         tr("phasing lines mark the beginning of a line and the speed(lpm)"));
 	invertPhase=new QComboBox(false,faxTool);
 	invertPhase->insertItem(tr("normal"));
 	invertPhase->insertItem(tr("inverted"));
+	QToolTip::add(invertPhase,
+	      tr("normal means 2.5% white, 95% black and again 2.5% white"));
 	faxTool->addSeparator();
 	color=new QComboBox(false,faxTool);
 	color->insertItem(tr("mono"));
 	color->insertItem(tr("color"));
+	QToolTip::add(color,
+		      tr("In color mode each line "
+			 "is split in three lines: red, green and blue."));
 
 	connect(config,SIGNAL(carrier(int)),carrier,SLOT(setValue(int)));
 	connect(carrier,SIGNAL(valueChanged(int)),
@@ -289,6 +311,9 @@ FaxWindow::FaxWindow(const QString& version)
 					    unsigned int,unsigned int)),
 		faxImage, SLOT(resize(unsigned int, unsigned int,
 				      unsigned int, unsigned int)));
+
+	connect(config,SIGNAL(toolTip(bool)),
+		this,SLOT(setToolTip(bool)));
 	
 	config->readFile();
 }
@@ -346,6 +371,9 @@ void FaxWindow::buildMenuBar(void)
 	scrollID=optionsMenu->
 		insertItem(tr("automatic scroll to last received line"),
 			   this,SLOT(changeScroll()));
+	toolTipID=optionsMenu->
+		insertItem(tr("show tool tips"),
+			   this,SLOT(changeToolTip()));
 
 	QPopupMenu* helpMenu=new QPopupMenu(this);
 	helpMenu->insertItem(tr("&About"),this,SLOT(about()));
@@ -779,4 +807,16 @@ void FaxWindow::setBeginEnd(void)
 	emit correctBegin();
 	disconnect(faxImage,SIGNAL(clicked()),this,SLOT(setBeginEnd()));
 	enableControls();
+}
+
+void FaxWindow::changeToolTip(void)
+{
+	setToolTip(!optionsMenu->isItemChecked(toolTipID));
+}
+
+void FaxWindow::setToolTip(bool b)
+{
+	optionsMenu->setItemChecked(toolTipID,b);
+	QToolTip::setEnabled(b);
+	config->setToolTip(b);
 }

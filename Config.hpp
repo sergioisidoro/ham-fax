@@ -53,6 +53,7 @@ signals:
 	void useFM(bool b);
 	void autoScroll(bool b);
 	void color(bool b);
+	void toolTip(bool b);
 public slots:
         void setPTC(QString s);
 	void setPTT(QString s);
@@ -73,6 +74,7 @@ public slots:
 	void setAutoScroll(bool b);
 	void setColor(bool b);
 	void setColor(int i);
+	void setToolTip(bool b);
 };
 
 #endif

@@ -39,6 +39,7 @@ Config::Config(QObject* parent)
 	value["fm"]="1";
 	value["autoScroll"]="1";
 	value["color"]="0";
+	value["toolTip"]="1";
 }
 
 void Config::readFile(void)
@@ -69,7 +70,8 @@ void Config::readFile(void)
 				   key=="phaseInvert" ||
 				   key=="fm" ||
 				   key=="autoScroll" ||
-				   key=="color") {
+				   key=="color" ||
+				   key=="toolTip") {
 					value[key]=data;
 				}
 			};
@@ -92,6 +94,7 @@ void Config::readFile(void)
 	emit useFM(value["fm"]=="1" ? true : false);
 	emit autoScroll(value["autoScroll"]=="1" ? true : false);
 	emit color(value["color"]=="1" ? true : false);
+	emit toolTip(value["toolTip"]=="1" ? true : false);
 }
 
 void Config::writeFile(void)
@@ -269,4 +272,11 @@ void Config::setColor(bool b)
 void Config::setColor(int i)
 {
 	setColor(i==1 ? true : false);
+}
+
+void Config::setToolTip(bool b)
+{
+	if(value["toolTip"]!=b) {
+		value["toolTip"]=QString().sprintf("%u",(int)b);
+	}
 }

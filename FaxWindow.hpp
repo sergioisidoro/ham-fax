@@ -48,6 +48,7 @@ private:
 	int monoDrawID;
 	int shift1ID;
 	int shift2ID;
+	int toolTipID;
 	void buildMenuBar(void);
 	QString getFileName(QString caption, QString filter);
 	virtual void closeEvent(QCloseEvent* close);
@@ -110,6 +111,8 @@ private slots:
 	void redrawColor(void);
 	void redrawMono(void);
 	void setBegin(void);
+	void changeToolTip(void);
+	void setToolTip(bool b);
 };
 
 #endif
