@@ -1,5 +1,5 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmittt, DH1CS <cschmit@suse.de>
+// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmit@suse.de>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,6 +21,7 @@
 #include <qdialog.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
+#include "DisplayLevel.hpp"
 
 class ReceiveDialog : public QDialog {
 	Q_OBJECT
@@ -33,12 +34,14 @@ private:
 	QLabel* aptText;
 	QPushButton* skip;
 	QPushButton* cancel;
+	DisplayLevel* level;
 public slots:
 	void apt(unsigned int f);
 	void aptStart(void);
 	void phasing(void);
 	void phasingLine(double lpm);
 	void imageRow(unsigned int row);
+	void samples(signed short* buffer, unsigned int n);
 signals:
         void cancelClicked(void);
 	void skipClicked(void);

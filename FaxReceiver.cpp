@@ -1,5 +1,5 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmittt, DH1CS <cschmit@suse.de>
+// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmit@suse.de>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -43,6 +43,7 @@ void FaxReceiver::init(void)
 	imageSample=0;
 	emit searchingAptStart();
 	pixelSamples=pixel=0;
+	lastRow=currRow=0;
 }
 
 void FaxReceiver::decode(unsigned int* buf, unsigned int n)
@@ -118,7 +119,8 @@ void FaxReceiver::decodePhasing(unsigned int& x)
 			lpmSum+=l;
 			++phaseLines;
 			lpm=lpmSum/(double)phaseLines;
-			imageSample=(int)(-2.975*60.0/lpm*(double)sampleRate);
+			imageSample=(int)(0.025*60.0/lpm*(double)sampleRate);
+			noPhaseLines=0;
 		} else if(phaseLines>0) {
 			if(++noPhaseLines>=5) {
 				state=IMAGE;
@@ -135,19 +137,17 @@ void FaxReceiver::decodeImage(unsigned int& x)
 		double pos=fmod(imageSample,sampleRate*60/lpm);
 		pos/=(double)sampleRate*60.0/(double)lpm;
 		unsigned int col=(unsigned int)(pos*width);
-		
+		currRow=(unsigned int)((double)imageSample
+				       /(double)sampleRate*lpm/60.0);
 		if(col==lastCol) {
 			pixel+=x;
 			pixelSamples++;
 		} else  {
 			if(pixelSamples>0 && imageSample>0) {
-				unsigned int row=(unsigned int)
-					((double)imageSample
-					 /(double)sampleRate *lpm/60.0);
 				pixel/=pixelSamples;
-				emit newGrayPixel(lastCol,row,pixel);
-				if(lastRow!=row) {
-					emit imageRow(lastRow=row);
+				emit newGrayPixel(lastCol,currRow,pixel);
+				if(lastRow!=currRow) {
+					emit imageRow(lastRow=currRow);
 				}
 			}
 			lastCol=col;
@@ -187,11 +187,13 @@ void FaxReceiver::startPhasing(void)
 	}
 }
 
+// Here we want to remove the last detected phasing line and the following
+// non phasing line from the beginning of the image and one second of apt stop
+// from the end
+
 void FaxReceiver::endReception(void)
 {
-	emit newImageHeight(0,lastRow-
-			    (unsigned int)
-			    (lpm/60.0)+1);
+	emit newImageHeight(2,currRow-(unsigned int)(lpm/60.0)-1);
 	state=DONE;
 	emit receptionEnded();
 }

@@ -1,5 +1,5 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmittt, DH1CS <cschmit@suse.de>
+// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmit@suse.de>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -59,9 +59,9 @@ void Sound::openOutput(unsigned int sampleRate)
 		   ||channels!=1) {
 			throw Error(tr("could not set mono mode"));
 		}
-		unsigned int speed=sampleRate;
+		int speed=(int)sampleRate;
 		if(ioctl(devDSP,SNDCTL_DSP_SPEED,&speed)==-1
-		   ||speed!=sampleRate) {
+		   ||speed!=(int)sampleRate) {
 			throw Error(tr("could not set sample rate"));
 		}
 		int flags=fcntl(devDSP,F_GETFL);
@@ -91,9 +91,9 @@ void Sound::openInput(unsigned int sampleRate)
 		   ||channels!=1) {
 			throw Error(tr("could not set mono mode"));
 		}
-		unsigned int speed=sampleRate;
+		int speed=sampleRate;
 		if(ioctl(devDSP,SNDCTL_DSP_SPEED,&speed)==-1
-		   ||speed!=sampleRate) {
+		   ||speed!=(int)sampleRate) {
 			throw Error(tr("could not set sample rate"));
 		}
 		int flags=fcntl(devDSP,F_GETFL);

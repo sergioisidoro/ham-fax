@@ -1,5 +1,5 @@
 # HamFax -- an application for sending and receiving amateur radio facsimiles
-# Copyright (C) 2001 Christof Schmittt, DH1CS <cschmit@suse.de>
+# Copyright (C) 2001 Christof Schmitt, DH1CS <cschmit@suse.de>
 #  
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -39,6 +39,8 @@ moc_%.cpp: %.hpp
 	$(QT_MOC) $< -o $@
 
 Config.o: Config.cpp Config.hpp
+
+DisplayLevel.o: DisplayLevel.cpp DisplayLevel.hpp
 
 Error.o: Error.cpp Error.hpp
 
@@ -82,6 +84,7 @@ TransmitDialog.o: TransmitDialog.cpp TransmitDialog.hpp
 hamfax.o: hamfax.cpp FaxWindow.hpp
 
 hamfax: Config.o moc_Config.o\
+        DisplayLevel.o moc_DisplayLevel.o\
         Error.o\
         FaxControl.o moc_FaxControl.o\
         FaxDemodulator.o moc_FaxDemodulator.o\

@@ -1,5 +1,5 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmittt, DH1CS <cschmit@suse.de>
+// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmit@suse.de>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -53,6 +53,7 @@ private:
 	int imageSample;
 	unsigned int lastCol;
 	unsigned int lastRow;
+	unsigned int currRow;
 	unsigned int pixel;
 	unsigned int pixelSamples;
 signals:

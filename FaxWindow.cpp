@@ -1,5 +1,5 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmittt, DH1CS <cschmit@suse.de>
+// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmit@suse.de>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -493,6 +493,7 @@ void FaxWindow::receiveNext(void)
 		break;
 	case DSP:
 		sound->read(samples,n);
+		receiveDialog->samples(samples,n);
 		faxDemodulator->demodulate(buffer,samples,n);
 		break;
 	case SCSPTC:

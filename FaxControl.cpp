@@ -74,7 +74,7 @@ FaxControl::FaxControl(QWidget* parent)
 	phasePol->insertItem(tr("normal"));
 	phasePol->insertItem(tr("inverted"));
 
-	QFrame* size=new QFrame(this);
+/*	QFrame* size=new QFrame(this);
 	layout->addWidget(size);
 	size->setFrameStyle(QFrame::Panel|QFrame::Raised);
 	QGridLayout* sizeLayout=new QGridLayout(size,3,2,10,10);
@@ -84,7 +84,7 @@ FaxControl::FaxControl(QWidget* parent)
 	sizeLayout->addWidget(width=new QLabel(size),2,2);
 	sizeLayout->addWidget(new QLabel(tr("height"),size),3,1);
 	sizeLayout->addWidget(height=new QLabel(size),3,2);
-	
+*/	
 	QFrame* dummy=new QFrame(this);
 	dummy->setFrameStyle(QFrame::Panel|QFrame::Raised);
 	layout->addWidget(dummy,1);
@@ -138,13 +138,13 @@ void FaxControl::setLPM(unsigned int lpm)
 
 void FaxControl::setImageSize(unsigned int width, unsigned int height)
 {
-	QString s;
+/*	QString s;
 	s.setNum((unsigned int)fabs(((double)width/M_PI+0.5)));
 	ioc->setText(s);
 	s.setNum(width);
 	this->width->setText(s);
 	s.setNum(height);
-	this->height->setText(s);
+	this->height->setText(s);*/
 }
 
 void FaxControl::setAptStartFreq(unsigned int f)
