@@ -149,7 +149,9 @@ void Sound::read(int fd)
 	int n=256;
 	short buffer[n];
 	n=::read(fd,buffer,n*sizeof(short))/sizeof(short);
-	emit data(buffer,n);
+	if(n>0) {
+		emit data(buffer,n);
+	}
 }
 
 void Sound::checkSpace(int fd)

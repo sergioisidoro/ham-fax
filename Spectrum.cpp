@@ -25,13 +25,10 @@ Spectrum::Spectrum(QWidget* parent)
 {
 	setFrameStyle(QFrame::Panel|QFrame::Sunken);
 	setMargin(2);
-	m=margin();
-	setFixedSize(128+2*m,64+2*m);
-	w=width();
-	h=height();
-	pixmap=new QPixmap(w-2*m,h-2*m);
+	setFixedSize(128+2*margin(),64+2*margin());
+	pixmap=new QPixmap(width()-2*margin(),height()-2*margin());
 	QPainter paint(pixmap,this);
-	paint.eraseRect(0,0,w,h);
+	paint.eraseRect(0,0,width(),height());
 	paint.flush();
 }
 
@@ -45,7 +42,8 @@ void Spectrum::init(void)
 void Spectrum::paintEvent(QPaintEvent* e)
 {
 	QFrame::paintEvent(e);
-	bitBlt(this,m,m,pixmap,0,0,w-2*m,h-2*m);
+	bitBlt(this,margin(),margin(),pixmap,0,0,
+	       width()-2*margin(),height()-2*margin());
 }
 
 void Spectrum::samples(int* buffer, int n)
@@ -64,7 +62,7 @@ void Spectrum::samples(int* buffer, int n)
 		}
 	}
 	QPainter paint(pixmap,this);
-	paint.eraseRect(0,0,w,h);
+	paint.eraseRect(0,0,width(),height());
 	paint.setPen(Qt::blue);
 	paint.setBrush(Qt::blue);
 	for(int i=0; i<64; i++) {
