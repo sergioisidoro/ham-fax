@@ -20,4 +20,3 @@ features:
 - is it possible to do slant correction in QImage?
 - fancy icon bar
 - do translation of strings
-- move some (all?) items from FaxControl to toolbars

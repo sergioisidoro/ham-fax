@@ -44,8 +44,6 @@ DisplayLevel.o: DisplayLevel.cpp DisplayLevel.hpp
 
 Error.o: Error.cpp Error.hpp
 
-FaxControl.o: FaxControl.cpp FaxControl.hpp
-
 FaxDemodulator.o: FaxDemodulator.cpp FaxDemodulator.hpp
 
 FaxImage.o: FaxImage.cpp FaxImage.hpp
@@ -86,7 +84,6 @@ hamfax.o: hamfax.cpp FaxWindow.hpp
 hamfax: Config.o moc_Config.o\
         DisplayLevel.o moc_DisplayLevel.o\
         Error.o\
-        FaxControl.o moc_FaxControl.o\
         FaxDemodulator.o moc_FaxDemodulator.o\
         FaxImage.o moc_FaxImage.o\
         FaxModulator.o moc_FaxModulator.o\
