@@ -104,8 +104,8 @@ hamfax: Config.o\
         File.o moc_File.o\
         HelpDialog.o moc_HelpDialog.o\
         OptionsDialog.o moc_OptionsDialog.o\
-        PTC.o\
-        PTT.o moc_PTT.o\
+        PTC.o moc_PTC.o\
+        PTT.o\
         ReceiveDialog.o moc_ReceiveDialog.o\
         Sound.o moc_Sound.o\
         Spectrum.o moc_Spectrum.o\

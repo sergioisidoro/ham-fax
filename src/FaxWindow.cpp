@@ -183,11 +183,12 @@ void FaxWindow::createMenubar(void)
 			   this,SLOT(changeScroll()));
 	optionsMenu->setItemChecked(scrollID,
 				    config.readBoolEntry("/hamfax/GUI/autoScroll"));
-	toolTipID=optionsMenu->
-		insertItem(tr("show tool tips"),
-			   this,SLOT(changeToolTip()));
-	optionsMenu->setItemChecked(toolTipID,
-				    config.readBoolEntry("/hamfax/GUI/toolTips"));
+	toolTipID=optionsMenu->insertItem(tr("show tool tips"),
+					  this,SLOT(changeToolTip()));
+	bool toolTipEnabled=config.readBoolEntry("/hamfax/GUI/toolTips");
+	optionsMenu->setItemChecked(toolTipID,toolTipEnabled);
+	QToolTip::setGloballyEnabled(toolTipEnabled);
+
 	QPopupMenu* helpMenu=new QPopupMenu(this);
 	helpMenu->insertItem(tr("&Help"),this,SLOT(help()));
 	helpMenu->insertSeparator();
@@ -652,6 +653,7 @@ void FaxWindow::changeToolTip(void)
 	bool b=!optionsMenu->isItemChecked(toolTipID);
 	optionsMenu->setItemChecked(toolTipID,b);
 	Config::instance().writeEntry("/hamfax/GUI/toolTips",b);
+	QToolTip::setGloballyEnabled(b);
 }
 
 void FaxWindow::help(void)
