@@ -20,6 +20,7 @@
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qframe.h>
+#include <qlabel.h>
 #include <math.h>
 
 FaxControl::FaxControl(QWidget* parent)
@@ -134,17 +135,6 @@ void FaxControl::setDeviation(unsigned int deviation)
 void FaxControl::setLPM(unsigned int lpm)
 {
 	this->lpm->setValue(lpm);
-}
-
-void FaxControl::setImageSize(unsigned int width, unsigned int height)
-{
-/*	QString s;
-	s.setNum((unsigned int)fabs(((double)width/M_PI+0.5)));
-	ioc->setText(s);
-	s.setNum(width);
-	this->width->setText(s);
-	s.setNum(height);
-	this->height->setText(s);*/
 }
 
 void FaxControl::setAptStartFreq(unsigned int f)

@@ -18,10 +18,9 @@
 #ifndef FAXWINDOW_HPP
 #define FAXWINDOW_HPP
 
-#include <qwidget.h>
+#include <qmainwindow.h>
 #include <qstring.h>
 #include <qtimer.h>
-#include <qmenubar.h>
 
 #include "Config.hpp"
 #include "FaxControl.hpp"
@@ -37,7 +36,7 @@
 #include "Sound.hpp"
 #include "TransmitDialog.hpp"
 
-class FaxWindow : public QWidget {
+class FaxWindow : public QMainWindow {
 	Q_OBJECT
 public:
 	FaxWindow(const QString& version);
@@ -45,9 +44,12 @@ private:
 	enum { FILE, DSP, SCSPTC };
 	int interface;
 	int pttID;
+	int scrollID;
 	void buildMenuBar(void);
 	QString getFileName(QString caption, QString filter);
 	virtual void closeEvent(QCloseEvent* close);
+	QLabel* sizeText;
+	QLabel* iocText;
 	Config* config;
 	QString version;
 	QPopupMenu* optionsMenu;
@@ -57,7 +59,6 @@ private:
 	FaxModulator* faxModulator;
 	FaxDemodulator* faxDemodulator;
 	FaxControl* faxControl;
-	QMenuBar* menuBar;
 	Sound* sound;
 	File* file;
 	PTT* ptt;
@@ -83,7 +84,9 @@ private slots:
 	void doOptionsDialog(void);
 	void doScaleDialog(void);
 	void changePTT(void);
+	void changeScroll(void);
 	void quickSave(void);
+	void newImageSize(unsigned int w, unsigned int h);
 };
 
 #endif

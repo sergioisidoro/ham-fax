@@ -27,14 +27,21 @@
 #include "FaxView.hpp"
 #include "OptionsDialog.hpp"
 #include "ScaleDialog.hpp"
+#include <qhbox.h>
+#include <qstatusbar.h>
+#include <qmenubar.h>
+#include <math.h>
 
 FaxWindow::FaxWindow(const QString& version)
 	: version(version)
 {
+	QHBox* hbox=new QHBox(this);
+	setCentralWidget(hbox);
+
 	config=new Config(this);
 	faxImage=new FaxImage(this);
-	FaxView* faxView=new FaxView(this,faxImage);
-	faxControl=new FaxControl(this);
+	faxControl=new FaxControl(hbox);
+	FaxView* faxView=new FaxView(hbox,faxImage);
 	faxTransmitter=new FaxTransmitter(this,faxImage);
 	faxReceiver=new FaxReceiver(this);
 	sound=new Sound(this);
@@ -46,6 +53,12 @@ FaxWindow::FaxWindow(const QString& version)
 	timer=new QTimer(this);
 	transmitDialog=new TransmitDialog(this);
 	receiveDialog=new ReceiveDialog(this);
+
+	sizeText=new QLabel(statusBar());
+	iocText=new QLabel(statusBar());
+	statusBar()->setSizeGripEnabled(false);
+	statusBar()->addWidget(sizeText,0,true);
+	statusBar()->addWidget(iocText,0,true);
 
 	connect(config,SIGNAL(carrier(unsigned int)),
 		faxControl,SLOT(setCarrier(unsigned int)));
@@ -135,13 +148,16 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(config,SIGNAL(useFM(bool)),
 		ptc,SLOT(setFM(bool)));
 
+	connect(config,SIGNAL(autoScroll(bool)),
+		faxImage,SLOT(setAutoScroll(bool)));
+
 	// FaxWindow -- FaxImage -- FaxView
 	connect(this,SIGNAL(loadFile(QString)),faxImage,SLOT(load(QString)));
 	connect(this,SIGNAL(saveFile(QString)),faxImage,SLOT(save(QString)));
 	connect(faxImage,SIGNAL(sizeUpdated(unsigned int, unsigned int)),
 		faxView,SLOT(updateView(unsigned int, unsigned int)));
 	connect(faxImage,SIGNAL(sizeUpdated(unsigned int, unsigned int)),
-		faxControl,SLOT(setImageSize(unsigned int, unsigned int)));
+		this,SLOT(newImageSize(unsigned int, unsigned int)));
 	connect(faxImage,SIGNAL(sizeUpdated(unsigned int,unsigned int)),
 		faxReceiver,SLOT(setWidth(unsigned int)));
 	connect(faxImage,SIGNAL(contentUpdated(int,int,int,int)),
@@ -191,10 +207,6 @@ FaxWindow::FaxWindow(const QString& version)
 
 	config->readFile();
 	buildMenuBar();
-	QHBoxLayout* layout=new QHBoxLayout(this);
-	layout->setMenuBar(menuBar);
-	layout->addWidget(faxControl);
-	layout->addWidget(faxView);
 	resize(650,0);
 }
 
@@ -231,7 +243,8 @@ void FaxWindow::buildMenuBar(void)
 			      faxImage,SLOT(doubleWidth()));
 	imageMenu->insertSeparator();
 	imageMenu->insertItem(tr("rotate left"),faxImage,SLOT(rotateLeft()));
-	imageMenu->insertItem(tr("rotate right"),faxImage,SLOT(rotateRight()));
+	imageMenu->insertItem(tr("rotate right"),
+			      faxImage,SLOT(rotateRight()));
 
 	optionsMenu=new QPopupMenu(this);
 	optionsMenu->insertItem(tr("device settings"),
@@ -241,20 +254,22 @@ void FaxWindow::buildMenuBar(void)
 		insertItem(tr("key PTT while transmitting with DSP"),
 			   this,SLOT(changePTT()));
 	optionsMenu->setItemChecked(pttID,config->getKeyPTT());
+	scrollID=optionsMenu->
+		insertItem(tr("automatic scroll to last received line"),
+			   this,SLOT(changeScroll()));
 
 	QPopupMenu* helpMenu=new QPopupMenu(this);
 	helpMenu->insertItem(tr("&About"),this,SLOT(about()));
 	helpMenu->insertItem(tr("About &QT"),this,SLOT(aboutQT()));
 
-	menuBar=new QMenuBar(this);
-	menuBar->insertItem(tr("&File"),fileMenu);
-	menuBar->insertItem(tr("&Transmit"),transmitMenu);
-	menuBar->insertItem(tr("&Receive"),receiveMenu);
-	menuBar->insertItem(tr("&Image"),imageMenu);
-	menuBar->insertItem(tr("&Options"),optionsMenu);
-	menuBar->insertSeparator();
-	menuBar->insertItem(tr("&Help"),helpMenu);
-	menuBar->setFrameStyle(QFrame::Panel|QFrame::Raised);
+	menuBar()->insertItem(tr("&File"),fileMenu);
+	menuBar()->insertItem(tr("&Transmit"),transmitMenu);
+	menuBar()->insertItem(tr("&Receive"),receiveMenu);
+	menuBar()->insertItem(tr("&Image"),imageMenu);
+	menuBar()->insertItem(tr("&Options"),optionsMenu);
+	menuBar()->insertSeparator();
+	menuBar()->insertItem(tr("&Help"),helpMenu);
+	menuBar()->setFrameStyle(QFrame::Panel|QFrame::Raised);
 
 	connect(transmitMenu,SIGNAL(activated(int)),
 		this,SLOT(initTransmit(int)));
@@ -336,6 +351,17 @@ void FaxWindow::changePTT(void)
 	}
 }
 
+void FaxWindow::changeScroll(void)
+{
+	if(optionsMenu->isItemChecked(scrollID)) {
+		optionsMenu->setItemChecked(scrollID,false);
+		config->setAutoScroll(false);
+	} else {
+		optionsMenu->setItemChecked(scrollID,true);
+		config->setAutoScroll(true);
+	}
+}
+
 QString FaxWindow::getFileName(QString caption, QString filter)
 {
 	QFileDialog* fd=new QFileDialog(this,0,true);
@@ -378,7 +404,7 @@ void FaxWindow::initTransmit(int item)
 		faxModulator->setSampleRate(sampleRate);
 		faxTransmitter->setSampleRate(sampleRate);
 		faxTransmitter->startTransmission();
-		menuBar->setDisabled(true);
+		menuBar()->setDisabled(true);
 		faxControl->setDisabled(true);
 		timer->start(0);
 		connect(timer,SIGNAL(timeout()),this,SLOT(transmitNext()));
@@ -437,7 +463,7 @@ void FaxWindow::endTransmission(void)
 	case SCSPTC:
 		ptc->close();
 	}
-	menuBar->setDisabled(false);
+	menuBar()->setDisabled(false);
 	faxControl->setDisabled(false);
 	transmitDialog->hide();
 }
@@ -467,7 +493,7 @@ void FaxWindow::initReception(int item)
 		faxDemodulator->setSampleRate(sampleRate);
 		faxReceiver->setSampleRate(sampleRate);
 		faxReceiver->init();
-		menuBar->setDisabled(true);
+		menuBar()->setDisabled(true);
 		faxControl->setDisabled(true);
 		timer->start(0);
 		connect(timer,SIGNAL(timeout()),
@@ -518,7 +544,7 @@ void FaxWindow::endReception(void)
 		ptc->close();
 		break;
 	}
-	menuBar->setDisabled(false);
+	menuBar()->setDisabled(false);
 	faxControl->setDisabled(false);
 	receiveDialog->hide();
 }
@@ -547,4 +573,11 @@ void FaxWindow::quickSave(void)
 		      sprintf("%04d-%02d-%02d-%02d-%02d-%02d.png",
 			      date.year(),date.month(),date.day(),
 			      time.hour(),time.minute(),time.second()));
+}
+
+void FaxWindow::newImageSize(unsigned int w, unsigned int h)
+{
+	sizeText->setText(QString(tr("image size: %1x%2")).arg(w).arg(h));
+	unsigned int ioc=(unsigned int)((double)w/M_PI+0.5);
+	iocText->setText(QString(tr("IOC: %1").arg(ioc)));
 }

@@ -35,6 +35,7 @@ public:
 	unsigned int getPixelBlue(unsigned int col, unsigned int row);
 private:
 	QImage image;
+	bool autoScroll;
 signals:
 	void sizeUpdated(unsigned int width, unsigned int height);
 	void contentUpdated(int x, int y, int w, int h);
@@ -62,6 +63,7 @@ public slots:
 	void doubleWidth(void);
 	void rotateLeft(void);
 	void rotateRight(void);
+	void setAutoScroll(bool b);
 };
 
 #endif

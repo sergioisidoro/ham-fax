@@ -20,7 +20,6 @@
 
 #include <qspinbox.h>
 #include <qcombobox.h>
-#include <qlabel.h>
 #include <qwidget.h>
 
 class FaxControl : public QWidget {
@@ -34,14 +33,10 @@ private:
 	QComboBox* modulation;
 	QSpinBox* startFreq;
 	QSpinBox* startLength;
-
 	QSpinBox* stopFreq;
 	QSpinBox* stopLength;
 	QSpinBox* phasing;
 	QComboBox* phasePol;
-	QLabel* ioc;
-	QLabel* width;
-	QLabel* height;
 signals:
 	void newCarrier(unsigned int carrier);
 	void newDeviation(unsigned int deviation);
@@ -64,7 +59,6 @@ public slots:
 	void setAptStopLength(unsigned int t);
 	void setPhasingLines(unsigned int lines);
 	void setPhasingPol(bool pol);
-        void setImageSize(unsigned int width, unsigned int height);
 private slots:
         void newModSelect(int index);
 	void newPolSelect(int index);

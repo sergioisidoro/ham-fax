@@ -19,7 +19,7 @@
 #include <math.h>
 
 FaxImage::FaxImage(QObject* parent)
-	: QObject(parent)
+	: QObject(parent), autoScroll(true)
 {
 }
 
@@ -65,7 +65,9 @@ bool FaxImage::setPixelGray(unsigned int col, unsigned int row,
 	}
 	image.setPixel(col,row,qRgb(value,value,value));
 	emit contentUpdated(col,row,1,1);
-	emit scrollTo(0,row);
+	if(autoScroll) {
+		emit scrollTo(0,row);
+	}
 	return true;
 }
 
@@ -187,4 +189,9 @@ void FaxImage::rotateRight(void)
 	}
 	image=newImage;
 	emit sizeUpdated(image.width(),image.height());
+}
+
+void FaxImage::setAutoScroll(bool b)
+{
+	autoScroll=b;
 }

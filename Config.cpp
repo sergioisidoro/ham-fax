@@ -37,6 +37,7 @@ Config::Config(QObject* parent)
 	value["phaseLines"]="20";
 	value["phaseInvert"]="0";
 	value["fm"]="1";
+	value["autoScroll"]="1";
 }
 
 void Config::readFile(void)
@@ -65,7 +66,8 @@ void Config::readFile(void)
 				   key=="aptStopLength" ||
 				   key=="phaseLines" ||
 				   key=="phaseInvert" ||
-				   key=="fm") {
+				   key=="fm" ||
+				   key=="autoScroll") {
 					value[key]=data;
 				}
 			};
@@ -86,6 +88,7 @@ void Config::readFile(void)
 	emit phaseLines(value["phaseLines"].toUInt());
 	emit phaseInvert(value["phaseInvert"]=="1" ? true : false);
 	emit useFM(value["fm"]=="1" ? true : false);
+	emit autoScroll(value["autoScroll"]=="1" ? true : false);
 }
 
 void Config::writeFile(void)
@@ -231,5 +234,13 @@ void Config::setUseFM(bool b)
 	if(value["fm"]!=b) {
 		value["fm"]=QString().sprintf("%u",(int)b);
 		emit useFM(b);
+	}
+}
+
+void Config::setAutoScroll(bool b)
+{
+	if(value["autoScroll"]!=b) {
+		value["autoScroll"]=QString().sprintf("%u",(int)b);
+		emit autoScroll(b);
 	}
 }

@@ -18,5 +18,4 @@ features:
 - is it possible to do slant correction in QImage?
 - fancy icon bar
 - do translation of strings
-- move display of image size and ioc to status bar
-- control scrolling to end of image via switch
+- move some (all?) items from FaxControl to toolbars
