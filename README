@@ -59,9 +59,9 @@ see file TODO for information on missing features
 Installation:
 *************
 
-With SuSE Linux 7.2 you need the rpm packages qt, qt-devel and
-audiofile.  After unpacking the archive, locate your qt directory and
-type (with the correct directories):
+With SuSE Linux 7.2 or a similar version you need the rpm packages qt,
+qt-devel and audiofile.  After unpacking the archive, locate your qt
+directory and type (with the correct directories):
 
 ./configure --with-Qt-dir=/usr/lib/qt2 --with-Qt-includes=/usr/lib/qt2/include
 

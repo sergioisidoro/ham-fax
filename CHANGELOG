@@ -1,0 +1,16 @@
+HamFax 0.2
+ * some changes to creation and recognition of phasing lines
+ * options are now saved in config file ~/.hamfax
+ * now all image file formats supported by Qt are available
+ * added menu items to rotate the image and to scale to ioc
+ * switch for scrolling to last line while receiving
+ * added status bar and moved image size and ioc there
+ * while receiving facsimiles via sound card the signal level is shown
+ * little changes to README
+ * added this file :)
+
+HamFax 0.1
+ * initial release
+
+HamFax 0.0
+ * this was just a test for uploading files to sourceforge
