@@ -18,9 +18,16 @@
 #include "FaxDemodulator.hpp"
 #include <math.h>
 
+static const double lpf[3][17]={
+	{ -7,-18,-15, 11, 56,116,177,223,240,223,177,116, 56, 11,-15,-18, -7},
+	{  0,-18,-38,-39,  0, 83,191,284,320,284,191, 83,  0,-39,-38,-18,  0},
+	{  6, 20,  7,-42,-74,-12,159,353,440,353,159,-12,-74,-42,  7, 20,  6}
+};
+
 FaxDemodulator::FaxDemodulator(QObject* parent)
 	: QObject(parent), 
-	carrier(0), rate(0), deviation(0), fm(true), ifirold(0), qfirold(0)
+	carrier(0), rate(0), deviation(0), fm(true), ifirold(0), qfirold(0),
+	filter(1)
 {
 	sine=new double[sine_size];
 	for(int i=0; i<sine_size; i++) {
@@ -38,7 +45,7 @@ FaxDemodulator::FaxDemodulator(QObject* parent)
 	for(int i=0; i<asine_size; i++) {
 		asine[i]=asin(2.0*i/asine_size-1.0)/2.0/M_PI;
 	}
-}
+};
 
 FaxDemodulator::~FaxDemodulator(void)
 {
@@ -80,8 +87,8 @@ void FaxDemodulator::newSamples(short* audio, int n)
 		double* pi=icurrent;
 		double* pq=qcurrent;
 		for(int k=0; k<fir_size; k++) {
-			ifirout+= *pi * lpf[k];
-			qfirout+= *pq * lpf[k];
+			ifirout+= *pi * lpf[filter][k];
+			qfirout+= *pq * lpf[filter][k];
 			if(++pi>=ifir_end) {
 				pi=ifir;
 			}
@@ -131,4 +138,9 @@ void FaxDemodulator::newSamples(short* audio, int n)
 		}
 	}
 	emit data(demod,n);
+}
+
+void FaxDemodulator::setFilter(int n)
+{
+	filter=n;
 }

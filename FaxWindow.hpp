@@ -56,6 +56,7 @@ private:
 	int toolTipID;
 	QToolBar* modTool;
 	QComboBox* modulation;
+	QComboBox* filter;
 	QToolBar* aptTool;
 	QToolBar* faxTool;
 	QComboBox* invertPhase;
@@ -90,6 +91,7 @@ public slots:
 	void setColor(bool b);
 	void setImageAdjust(bool b);
         void setModulation(bool b);
+	void setFilter(int n);
 	void setPhasingPol(bool b);
 	void endReception(void);
 	void endTransmission(void);

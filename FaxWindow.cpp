@@ -85,6 +85,13 @@ FaxWindow::FaxWindow(const QString& version)
 				    "a FM receiver. FM together with a\n"
 				    "USB (upper side band) transceiver is\n"
 				    "the right setting for HF"));
+	modTool->addSeparator();
+	new QLabel(tr("filter"),modTool);
+	filter=new QComboBox(false,modTool);
+	filter->insertItem(tr("narrow"));
+	filter->insertItem(tr("middle"));
+	filter->insertItem(tr("wide"));
+	QToolTip::add(filter,tr("bandwidth of the software demodulator"));
 
 	aptTool=new QToolBar(tr("apt settings"),this);
 	new QLabel(tr("apt start"),aptTool);
@@ -212,6 +219,11 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(config,SIGNAL(useFM(bool)),faxModulator,SLOT(setFM(bool)));
 	connect(config,SIGNAL(useFM(bool)),faxDemodulator,SLOT(setFM(bool)));
 	connect(config,SIGNAL(useFM(bool)),ptc,SLOT(setFM(bool)));
+
+	connect(config,SIGNAL(filter(int)),SLOT(setFilter(int)));
+	connect(config,SIGNAL(filter(int)),faxDemodulator,
+		SLOT(setFilter(int)));
+	connect(filter,SIGNAL(activated(int)),config,SLOT(setFilter(int)));
 
 	connect(config,SIGNAL(aptStartLength(int)),
 		aptStartLength,SLOT(setValue(int)));
@@ -673,6 +685,11 @@ void FaxWindow::setModulation(bool b)
 	modulation->setCurrentItem(b ? 1 : 0);
 }
 
+void FaxWindow::setFilter(int n)
+{
+	filter->setCurrentItem(n);
+}
+
 void FaxWindow::setPhasingPol(bool b)
 {
 	invertPhase->setCurrentItem(b ? 1 : 0);
@@ -708,13 +725,13 @@ void FaxWindow::slantEnd(void)
 void FaxWindow::redrawColor(void)
 {
 	emit color(true);
-	faxReceiver->correctLPM(1);
+	faxReceiver->correctLPM(0);
 }
 
 void FaxWindow::redrawMono(void)
 {
 	emit color(false);
-	faxReceiver->correctLPM(1);
+	faxReceiver->correctLPM(0);
 }
 
 void FaxWindow::disableControls(void)

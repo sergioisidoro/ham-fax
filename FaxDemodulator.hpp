@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include <qobject.h>
+#ifndef FAXDEMODULATOR_HPP
+#define FAXDEMODULATOR_HPP
 
-// these coefficents are taken from ACfax
-const double lpf[]={0,-18,-38,-39,0,83,191,284,320,284,191,83,0,-39,-38,-18,0};
+#include <qobject.h>
 
 class FaxDemodulator : public QObject {
 	Q_OBJECT
@@ -45,6 +45,7 @@ private:
 	double qfirold;
 	static const int asine_size=256;
 	double* asine;
+	int filter;
 signals:
 	void data(int* buffer, int n);
 public slots:
@@ -53,4 +54,7 @@ public slots:
 	void setDeviation(int dev);
 	void setFM(bool fm);
 	void newSamples(short* audio, int n);
+	void setFilter(int n);
 };
+
+#endif

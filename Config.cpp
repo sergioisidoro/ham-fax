@@ -41,6 +41,7 @@ Config::Config(QObject* parent)
 	value["color"]="0";
 	value["toolTip"]="1";
 	value["ptcSpeed"]="57600";
+	value["filter"]="1";
 }
 
 void Config::readFile(void)
@@ -73,7 +74,8 @@ void Config::readFile(void)
 				   key=="autoScroll" ||
 				   key=="color" ||
 				   key=="toolTip" ||
-				   key=="ptcSpeed") {
+				   key=="ptcSpeed" ||
+				   key=="filter") {
 					value[key]=data;
 				}
 			};
@@ -98,6 +100,7 @@ void Config::readFile(void)
 	emit color(value["color"]=="1" ? true : false);
 	emit toolTip(value["toolTip"]=="1" ? true : false);
 	emit ptcSpeed(value["ptcSpeed"].toUInt());
+	emit filter(value["filter"].toInt());
 }
 
 Config::~Config(void)
@@ -273,5 +276,13 @@ void Config::setPtcSpeed(int s)
 	if(value["ptcSpeed"]!=s) {
 		value["ptcSpeed"]=QString().sprintf("%d",s);
 		emit ptcSpeed(s);
+	}
+}
+
+void Config::setFilter(int n)
+{
+	if(value["filter"]!=n) {
+		value["filter"]=QString().sprintf("%d",n);
+		emit filter(n);
 	}
 }

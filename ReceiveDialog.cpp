@@ -22,17 +22,18 @@ ReceiveDialog::ReceiveDialog(QWidget* parent)
 	: QDialog(parent)
 {
         setCaption(parent->caption());
-	QGridLayout* layout=new QGridLayout(this,6,1,15,15);
-	layout->addWidget(status=new QLabel(this),1,1);
+	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
+	layout->addWidget(status=new QLabel(this));
 	status->setMinimumWidth(200);
-	layout->addWidget(aptText=new QLabel(this),2,1);
-	layout->addWidget(level=new DisplayLevel(this),3,1);
-	layout->addWidget(spectrum=new Spectrum(this),4,1);
-	layout->addWidget(skip=new QPushButton(this),5,1);
+	layout->addWidget(aptText=new QLabel(this));
+	layout->addWidget(level=new DisplayLevel(this));
+	layout->addWidget(spectrum=new Spectrum(this));
+	layout->addWidget(skip=new QPushButton(this));
 	connect(skip,SIGNAL(clicked()),this,SIGNAL(skipClicked()));
-	layout->addWidget(cancel=new QPushButton(tr("&Cancel"),this),6,1);
+	layout->addWidget(cancel=new QPushButton(tr("&Cancel"),this));
 	connect(cancel,SIGNAL(clicked()),this,SIGNAL(cancelClicked()));
 }
+
 void ReceiveDialog::showText(const QString& s)
 {
 	status->setText(s);

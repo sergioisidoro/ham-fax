@@ -52,6 +52,7 @@ signals:
 	void color(bool b);
 	void toolTip(bool b);
 	void ptcSpeed(int s);
+	void filter(int);
 public slots:
         void setPTC(const QString& s);
 	void setPTT(const QString& s);
@@ -74,6 +75,7 @@ public slots:
 	void setColor(int i);
 	void setToolTip(bool b);
 	void setPtcSpeed(int s);
+	void setFilter(int n);
 };
 
 #endif
