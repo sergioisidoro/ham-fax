@@ -22,17 +22,17 @@ ReceiveDialog::ReceiveDialog(QWidget* parent)
 	: QDialog(parent)
 {
         setCaption(parent->caption());
-	QGridLayout* layout=new QGridLayout(this,5,1,15,15);
+	QGridLayout* layout=new QGridLayout(this,6,1,15,15);
 	layout->addWidget(status=new QLabel(this),1,1);
 	status->setMinimumWidth(200);
 	layout->addWidget(aptText=new QLabel(this),2,1);
 	layout->addWidget(level=new DisplayLevel(this),3,1);
-	layout->addWidget(skip=new QPushButton(this),4,1);
+	layout->addWidget(spectrum=new Spectrum(this),4,1);
+	layout->addWidget(skip=new QPushButton(this),5,1);
 	connect(skip,SIGNAL(clicked()),this,SIGNAL(skipClicked()));
-	layout->addWidget(cancel=new QPushButton(tr("&Cancel"),this),5,1);
+	layout->addWidget(cancel=new QPushButton(tr("&Cancel"),this),6,1);
 	connect(cancel,SIGNAL(clicked()),this,SIGNAL(cancelClicked()));
 }
-
 void ReceiveDialog::showText(const QString& s)
 {
 	status->setText(s);
@@ -85,6 +85,11 @@ void ReceiveDialog::imageRow(int row)
 void ReceiveDialog::samples(short* buffer, int n)
 {
 	level->samples(buffer,n);
+}
+
+void ReceiveDialog::imageData(int* buffer, int n)
+{
+	spectrum->samples(buffer,n);
 }
 
 void ReceiveDialog::disableSkip(void)

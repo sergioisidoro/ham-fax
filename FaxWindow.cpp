@@ -304,6 +304,13 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(optionsDialog,SIGNAL(ptt(const QString&)),
 		config,SLOT(setPTT(const QString&)));
 
+	connect(config,SIGNAL(ptcSpeed(int)),
+		optionsDialog,SLOT(setPtcSpeed(int)));
+	connect(config,SIGNAL(ptcSpeed(int)),
+		ptc,SLOT(setSpeed(int)));
+	connect(optionsDialog,SIGNAL(ptcSpeed(int)),
+		config,SLOT(setPtcSpeed(int)));
+	
 	connect(config,SIGNAL(keyPTT(bool)),ptt,SLOT(setUse(bool)));
 	connect(config,SIGNAL(keyPTT(bool)),SLOT(setUsePTT(bool)));
 	connect(this,SIGNAL(usePTT(bool)),config,SLOT(setKeyPTT(bool)));
@@ -344,7 +351,7 @@ FaxWindow::FaxWindow(const QString& version)
 		faxReceiver,SLOT(setSampleRate(int)));
 	connect(ptc,SIGNAL(newSampleRate(int)),
 		faxTransmitter,SLOT(setSampleRate(int)));
-	
+
 	// transmission
 	connect(faxTransmitter,SIGNAL(start()),transmitDialog,SLOT(start()));
 	connect(sound,SIGNAL(openForWriting()),ptt,SLOT(set()));
@@ -374,6 +381,10 @@ FaxWindow::FaxWindow(const QString& version)
 		receiveDialog,SLOT(show()));
 	connect(sound, SIGNAL(data(short*,int)),
 		receiveDialog, SLOT(samples(short*,int)));
+	connect(faxDemodulator, SIGNAL(data(int*,int)),
+		receiveDialog, SLOT(imageData(int*,int)));
+	connect(ptc,SIGNAL(data(int*,int)),
+		receiveDialog, SLOT(imageData(int*,int)));
 	connect(faxReceiver,SIGNAL(aptFound(int)),
 		receiveDialog,SLOT(apt(int)));
 	connect(faxReceiver,SIGNAL(startingPhasing()),

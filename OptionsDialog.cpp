@@ -29,14 +29,16 @@ OptionsDialog::OptionsDialog(QWidget* parent)
 
 	QGridLayout* settings=new QGridLayout(layout,3,2);
 	settings->addWidget(new QLabel(tr("dsp device"),this),1,1);
-	devDSP=new QLineEdit(this);
-	settings->addWidget(devDSP,1,2);
+	settings->addWidget(devDSP=new QLineEdit(this),1,2);
 	settings->addWidget(new QLabel(tr("ptt device"),this),2,1);
-	devPTT=new QLineEdit(this);
-	settings->addWidget(devPTT,2,2);
+	settings->addWidget(devPTT=new QLineEdit(this),2,2);
 	settings->addWidget(new QLabel(tr("ptc device"),this),3,1);
-	devPTC=new QLineEdit(this);
-	settings->addWidget(devPTC,3,2);
+	settings->addWidget(devPTC=new QLineEdit(this),3,2);
+	settings->addWidget(new QLabel(tr("ptc speed"),this),4,1);
+	settings->addWidget(speedPTC=new QComboBox(this),4,2);
+	speedPTC->insertItem(tr("38400bps"));
+	speedPTC->insertItem(tr("57600bps"));
+	speedPTC->insertItem(tr("115200bps"));
 
 	QHBoxLayout* buttons=new QHBoxLayout(layout);
 	QPushButton* ok=new QPushButton(tr("&OK"),this);
@@ -54,6 +56,14 @@ void OptionsDialog::okClicked(void)
 	emit dsp(devDSP->text());
 	emit ptt(devPTT->text());
 	emit ptc(devPTC->text());
+	switch (speedPTC->currentItem()) {
+	case 0: emit ptcSpeed(38400);
+		break;
+	case 1: emit ptcSpeed(57600);
+		break;
+	case 2: emit ptcSpeed(115200);
+		break;
+	};
 }
 
 void OptionsDialog::cancelClicked(void)
@@ -74,6 +84,18 @@ void OptionsDialog::setPTT(const QString& s)
 void OptionsDialog::setPTC(const QString& s)
 {
 	devPTC->setText(s);
+}
+
+void OptionsDialog::setPtcSpeed(int s)
+{
+	switch(s) {
+	case 38400: speedPTC->setCurrentItem(0);
+		break;
+	case 57600: speedPTC->setCurrentItem(1);
+		break;
+	case 115200: speedPTC->setCurrentItem(2);
+		break;
+	};
 }
 
 void OptionsDialog::doDialog(void)

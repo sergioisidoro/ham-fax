@@ -94,17 +94,20 @@ void FaxDemodulator::newSamples(short* audio, int n)
 			double abs=sqrt(qfirout*qfirout+ifirout*ifirout);
 			ifirout/=abs;
 			qfirout/=abs;
-			
-			double y=qfirold*ifirout-ifirold*qfirout;
-			double x=static_cast<double>(rate)/deviation
-				*asine[static_cast<int>
-				      ((y+1.0)/2.0*asine_size)];
-			if(x<-1.0) {
-				x=-1.0;
-			} else if(x>1.0) {
-				x=1.0;
+			if(abs>10000) {
+				double y=qfirold*ifirout-ifirold*qfirout;
+				y=(y+1.0)/2.0*asine_size;
+				double x=static_cast<double>(rate)/deviation;
+				x*=asine[static_cast<int>(y)];
+				if(x<-1.0) {
+					x=-1.0;
+				} else if(x>1.0) {
+					x=1.0;
+				}
+				demod[i]=static_cast<int>((x/2.0+0.5)*255.0);
+			} else {
+				demod[i]=0;
 			}
-			demod[i]=static_cast<int>((x/2.0+0.5)*255.0);
 		} else {
 			ifirout/=96000;
 			qfirout/=96000;

@@ -22,6 +22,7 @@
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include "DisplayLevel.hpp"
+#include "Spectrum.hpp"
 
 class ReceiveDialog : public QDialog {
 	Q_OBJECT
@@ -36,6 +37,7 @@ private:
 	QPushButton* skip;
 	QPushButton* cancel;
 	DisplayLevel* level;
+	Spectrum* spectrum;
 signals:
         void cancelClicked(void);
 	void skipClicked(void);
@@ -46,6 +48,7 @@ public slots:
 	void phasingLine(double lpm);
 	void imageRow(int row);
 	void disableSkip(void);
+	void imageData(int* buffer, int n);
 	void samples(short* buffer, int n);
 };
 

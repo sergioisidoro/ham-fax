@@ -17,7 +17,7 @@ void DisplayLevel::paintEvent(QPaintEvent* e)
 	paint.begin(this);
 	paint.setPen(Qt::blue);
 	paint.setBrush(Qt::blue);
-	paint.drawRect(m,m,w,height()-2*margin());
+	paint.drawRect(m,m,w,height()-2*m);
 	paint.end();
 }
 

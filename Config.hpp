@@ -51,6 +51,7 @@ signals:
 	void autoScroll(bool b);
 	void color(bool b);
 	void toolTip(bool b);
+	void ptcSpeed(int s);
 public slots:
         void setPTC(const QString& s);
 	void setPTT(const QString& s);
@@ -72,6 +73,7 @@ public slots:
 	void setColor(bool b);
 	void setColor(int i);
 	void setToolTip(bool b);
+	void setPtcSpeed(int s);
 };
 
 #endif

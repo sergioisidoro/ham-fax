@@ -83,9 +83,12 @@ PTC.o: PTC.cpp PTC.hpp Error.hpp
 
 PTT.o: PTT.cpp PTT.hpp Error.hpp
 
-ReceiveDialog.o: ReceiveDialog.cpp ReceiveDialog.hpp
+ReceiveDialog.o: ReceiveDialog.cpp ReceiveDialog.hpp\
+                 DisplayLevel.hpp Spectrum.hpp
 
 Sound.o: Sound.cpp Sound.hpp Error.hpp
+
+Spectrum.O: Spectrum.cpp Spectrum.hpp
 
 TransmitDialog.o: TransmitDialog.cpp TransmitDialog.hpp
 
@@ -108,6 +111,7 @@ hamfax: Config.o moc_Config.o\
         PTT.o moc_PTT.o\
         ReceiveDialog.o moc_ReceiveDialog.o\
         Sound.o moc_Sound.o\
+        Spectrum.o moc_Spectrum.o\
         TransmitDialog.o moc_TransmitDialog.o\
         hamfax.o
 	$(CXX) -o $@ $(CXXFLAGS) $(LIBS) $+

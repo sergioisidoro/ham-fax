@@ -21,6 +21,7 @@
 #include <qdialog.h>
 #include <qstring.h>
 #include <qlineedit.h>
+#include <qcombobox.h>
 
 class OptionsDialog : public QDialog {
 	Q_OBJECT
@@ -30,14 +31,17 @@ private:
 	QLineEdit* devDSP;
 	QLineEdit* devPTT;
 	QLineEdit* devPTC;
+	QComboBox* speedPTC;
 signals:
 	void dsp(const QString&);
 	void ptt(const QString&);
 	void ptc(const QString&);
+	void ptcSpeed(int);
 public slots:
         void setDSP(const QString& s);
 	void setPTT(const QString& s);
 	void setPTC(const QString& s);
+	void setPtcSpeed(int s);
 	void doDialog(void);
 private slots:
         void okClicked(void);

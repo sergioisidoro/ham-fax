@@ -32,11 +32,11 @@ public:
 	void end(void);
 	void receive(int* samples, int& count);
 private:
-	int sampleRate;
 	void open(void);
 	QString deviceName;
 	int device;
 	bool fm;
+	int speed;
 	int deviation;
 	QSocketNotifier* notifier;
 signals:
@@ -47,6 +47,7 @@ signals:
 public slots:
         void setDeviceName(const QString& s);
         void setDeviation(int dev);
+	void setSpeed(int s);
 	void setFM(bool fm);
 	void transmit(double* samples, int count);
 private slots:

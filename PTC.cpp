@@ -25,7 +25,7 @@
 
 PTC::PTC(QObject* parent) 
 	: QObject(parent), deviceName("/dev/ttyS0"),
-	  device(-1), fm(true), deviation(0), notifier(0)
+	  device(-1), fm(true), speed(38400), deviation(0), notifier(0)
 {
 }
 
@@ -48,8 +48,20 @@ void PTC::open(void)
 	
 	struct termios options;
 	tcgetattr(device,&options);
-	cfsetispeed(&options,B57600);
-	cfsetospeed(&options,B57600);
+	switch(speed) {
+	case 38400:
+		cfsetispeed(&options,B38400);
+		cfsetospeed(&options,B38400);
+		break;
+	case 57600:
+		cfsetispeed(&options,B57600);
+		cfsetospeed(&options,B57600);
+		break;
+	case 115200:
+		cfsetispeed(&options,B115200);
+		cfsetospeed(&options,B115200);
+		break;
+	}
 	options.c_cflag|=CRTSCTS;
 	options.c_cc[VMIN]=0;
 	options.c_cc[VTIME]=0;
@@ -57,8 +69,7 @@ void PTC::open(void)
 	tcsetattr(device,TCSAFLUSH,&options);
 
 	write(device,"\r\r",2);
-	QString s;
-	s="FAX MBAUD 57600\r";
+	QString s=QString("FAX MBAUD %1\r").arg(speed);
 	write(device,s,s.length());
 	s=QString("FAX DEVIATION %1\r").arg(deviation);
 	write(device,s,s.length());
@@ -66,23 +77,22 @@ void PTC::open(void)
 	write(device,s,s.length());
 	usleep(300000);
 	tcflush(device,TCIOFLUSH);
-	emit newSampleRate(sampleRate);
 }
 
 void PTC::startInput(void)
 {
-	sampleRate=57600/10;
 	open();
 	notifier=new QSocketNotifier(device,QSocketNotifier::Read);
 	connect(notifier,SIGNAL(activated(int)),this,SLOT(read(int)));
+	emit newSampleRate(speed/10);
 }
 
 void PTC::startOutput(void)
 {
-	sampleRate=57600/20;
 	open();
 	notifier=new QSocketNotifier(device,QSocketNotifier::Write);
 	connect(notifier,SIGNAL(activated(int)),this,SLOT(checkSpace(int)));
+	emit newSampleRate(speed/20);
 }
 
 void PTC::end(void)
@@ -98,7 +108,7 @@ void PTC::end(void)
 				   this,SLOT(checkSpace(int)));
 			int i;
 			ioctl(device,TIOCOUTQ,&i);
-			QTimer::singleShot(1000*(i+8000)/sampleRate,
+			QTimer::singleShot(1000*(i+8000)*20/speed,
 					   this,SLOT(close()));
 		}
 		delete notifier;
@@ -142,6 +152,11 @@ void PTC::setDeviation(int dev)
 void PTC::setFM(bool fm)
 {
 	this->fm=fm;
+}
+
+void PTC::setSpeed(int s)
+{
+	speed=s;
 }
 
 void PTC::read(int fd)

@@ -157,7 +157,7 @@ bool Sound::outputBufferEmpty(void)
 
 void Sound::read(int fd)
 {
-	int n=512;
+	int n=256;
 	short buffer[n];
 	n=::read(fd,buffer,n*sizeof(short))/sizeof(short);
 	emit data(buffer,n);
@@ -186,4 +186,3 @@ void Sound::closeNow(void)
 		close();
 	}
 }
-

@@ -15,23 +15,26 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef DISPLAYLEVEL_HPP
-#define DISPLAYLEVEL_HPP
+#ifndef SPECTRUM_HPP
+#define SPECTRUM_HPP
 
-#include <qwidget.h>
 #include <qframe.h>
+#include <qwidget.h>
 
-class DisplayLevel : public QFrame {
+class Spectrum : public QFrame {
 	Q_OBJECT
 public:
-	DisplayLevel(QWidget* parent);
-	void setZero(void);
+	Spectrum(QWidget* parent);
 private:
 	virtual void paintEvent(QPaintEvent* e);
-	int m;
+	QPixmap* pixmap;
+	double data[64];
+	int h;
 	int w;
+	int m;
 public slots:
-        void samples(short* buffer, int n);
+        void init(void);
+        void samples(int* buffer, int n);
 };
 
 #endif
