@@ -27,6 +27,8 @@ Config& Config::instance()
 
 Config::Config()
 {
+	insertSearchPath( QSettings::Unix, "/etc" );
+
 	setDefault("/hamfax/sound/device","/dev/dsp");
 	setDefault("/hamfax/PTC/device","/dev/ttyS0");
 	setDefault("/hamfax/PTC/speed",38400);

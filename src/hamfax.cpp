@@ -34,8 +34,8 @@ int main(int argc, char* argv[])
 			config.readEntry("/hamfax/directories/qm"));
 
 	QApplication app(argc, argv);
-	FaxWindow* faxWindow=new FaxWindow(version);
 	app.installTranslator(&translator);
+	FaxWindow* faxWindow=new FaxWindow(version);
 	QFont f;
 	f.fromString(config.readEntry("/hamfax/GUI/font"));
 	app.setFont(f,true);

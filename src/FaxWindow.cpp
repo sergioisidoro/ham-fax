@@ -172,7 +172,7 @@ void FaxWindow::createMenubar(void)
 			      this,SLOT(setBegin()));
 	optionsMenu=new QPopupMenu(this);
 	optionsMenu->insertItem(tr("device settings"),this,SLOT(doOptions()));
-	optionsMenu->insertItem(tr("select font"),this,SLOT(selectFont()));
+	optionsMenu->insertItem(tr("&select font"),this,SLOT(selectFont()));
 	optionsMenu->insertSeparator();
 	pttID=optionsMenu->
 		insertItem(tr("key PTT while transmitting with DSP"),
@@ -646,6 +646,7 @@ void FaxWindow::changeScroll(void)
 	bool b=!optionsMenu->isItemChecked(scrollID);
 	optionsMenu->setItemChecked(scrollID,b);
 	Config::instance().writeEntry("/hamfax/GUI/autoScroll",b);
+	faxImage->setAutoScroll(b);
 }
 
 void FaxWindow::changeToolTip(void)

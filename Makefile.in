@@ -18,8 +18,9 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
-docdir=@datadir@/doc/HamFax
-qmdir=@datadir@/HamFax
+docdir=@datadir@/doc/hamfax
+qmdir=@datadir@/hamfax
+configdir=/etc
 INSTALL=@INSTALL@
 
 .PHONY: all binary clean doc distclean install uninstall translations
@@ -54,7 +55,10 @@ install: binary translations
 	$(INSTALL) -o root -g root -m 0644 doc/HamFax.html $(docdir)
 	$(INSTALL) -o root -g root -m 0755 -d $(qmdir)
 	$(INSTALL) -o root -g root -m 0644 po/hamfax_de.qm $(qmdir)
+	$(INSTALL) -o root -g root -m 0755 -d $(configdir)
+	$(INSTALL) -o root -g root -m 0644 etc/hamfaxrc $(configdir)
 
 uninstall:
-	rm -rfv $(bindir)/hamfax $(docdir)/HamFax.html $(qmdir)/hamfax_de.qm
-	rmdir -p $(bindir) $(docdir) $(qmdir)
+	rm -rfv $(bindir)/hamfax $(docdir)/HamFax.html $(qmdir)/hamfax_de.qm\
+		$(configdir)/hamfaxrc
+	rmdir -p $(bindir) $(docdir) $(qmdir) $(configdir)
