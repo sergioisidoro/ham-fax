@@ -19,7 +19,7 @@
 #ifndef FIRFILTER_HPP
 #define FIRFILTER_HPP
 
-#include <cstddef>
+#include <valarray>
 
 /**
  * This template class implements a FIR filter (finite impulse response). 
@@ -29,135 +29,106 @@
 template <class T> class FirFilter {
 public:
 	/**
-	 * Constructs the FIR filter
-	 * \param N specifies the filter length.
+	 * Convenient name for the coefficients.
 	 */
-	FirFilter(const size_t N);
+	typedef valarray<T> coeff_t;
 
 	/**
-	 * Destructs the FIR filter.
+	 * Convenient name for the buffer.
 	 */
-	~FirFilter(void);
-	
-	/**
-	 * Initializes the filter coefficients
-	 * The parameter is an array of filter coefficients in ascending order.
-	 * The array has to have the same length as the filter.
-	 */
-	void setCoefficients(const T* const coeffs);
+	typedef valarray<T> buffer_t;
 
 	/**
-	 * Filter one sample. The parameter is the input value which is stored 
-	 * in the buffer. The return value is the resulting value of convuluting
-	 * the buffer content and the coefficients.
+	 * Create the FirFilter.
+	 * \param b is the initial value for the buffer and
+	 * \param c are the coefficients.
+	 * Both must be the same size!
 	 */
-	T filterSample(const T sample);
+	FirFilter(const buffer_t& b, const coeff_t& c);
 
 	/**
-	 * Dump the current buffer content. This is for debugging purposes.
+	 * Create the FirFilter.
+	 * \param n is the size of buffer and coefficient array
 	 */
-	void getBuffer(T* const bufferCopy) const;
-private:
-	/**
-	 * The filter length.
-	 */
-	size_t N;
+	FirFilter(size_t n);
 
 	/**
-	 * Pointer to the array of coefficients.
-	 * The coefficients are stored in descending order.
+	 * Set new coefficients and don't change the size!
 	 */
-	T* coeffs;
+	void setCoeffs(const coeff_t& c);
 
 	/**
-	 * Pointer to last element of coefficients array.
+	 * Set new buffer content, e.g. all zero; don't change
+	 * the buffer size!
 	 */
-	T* coeffsLast;
+	void setBuffer(const buffer_t& b);
 
         /**
-	 * Pointer to buffer which is used circular.
+	 * Pass one sample through the filter and get the result as return value.
 	 */
-	T* buffer;
+	T filterSample(const T& sample);
 
 	/**
-	 * Pointer to last element of buffer array.
+	 * Get current buffer; useful for debugging purposes.
 	 */
-	T* bufferLast;
-
-	/** 
-	 * Pointer to oldest entry of buffer.
-	 */
-	T* bufferCurrent;
+	buffer_t getBuffer(void) const;
+private:
+        coeff_t coeffs;
+        buffer_t buffer;
+        T* current;
 };
 
-template <class T> FirFilter<T>::FirFilter(const size_t N) : N(N)
+template <class T>
+inline FirFilter<T>::FirFilter(const buffer_t& b, const coeff_t& c) 
+	: coeffs(c), buffer(b)
 {
-	coeffs=new T[N];
-	coeffsLast=coeffs+(N-1);
-	buffer=new T[N];
-	bufferLast=buffer+(N-1);
-	bufferCurrent=buffer;
-	for(size_t i=0; i<N; i++) {
-		coeffs[i]=0;
-		buffer[i]=0;
-	}
+	current=&buffer[0];
 }
 
-template <class T> FirFilter<T>::~FirFilter(void)
+template <class T> FirFilter<T>::FirFilter(size_t n)
+	: coeffs(n), buffer(n)
 {
-	delete[] coeffs;
-	delete[] buffer;
+	current=&buffer[0];
 }
 
-template <class T> void FirFilter<T>::setCoefficients(const T* const coeffs)
+template <class T> void FirFilter<T>::setCoeffs(const coeff_t& c)
 {
-	for(size_t i=0; i<N; i++) {
-		this->coeffs[i]=coeffs[i];
-	}
+	coeffs=c;
 }
 
-template <class T> inline T FirFilter<T>::filterSample(const T sample)
+template <class T> inline void FirFilter<T>::setBuffer(const buffer_t& b)
 {
-	T* c=coeffs;
-	T result=0;
-
-	// replace oldest value with current
-	*bufferCurrent=sample;
-
-	// convolution: sum c_i*x_{k-i}
-	for(size_t i=0; i<N; i++) {
-		result+=(*c)*(*bufferCurrent);
-		if(++c>coeffsLast) {
-			c=coeffs;
-		}
-		if(--bufferCurrent<buffer) {
-			bufferCurrent=bufferLast;
-		}
-	}
-
-	// point again to oldest value
-	if(++bufferCurrent>bufferLast) {
-		bufferCurrent=buffer;;
-	}
-
-	return result;
+	buffer=b;
 }
 
-template <class T> void FirFilter<T>::getBuffer(T* const bufferCopy) const
+template <class T> inline T FirFilter<T>::filterSample(const T& sample)
 {
-	T* b=bufferCurrent;
+        const T* c=&coeffs[0];
+	T* const c_end=&coeffs[coeffs.size()];
+	T* const b_begin=&buffer[0];
+	T* const b_end=&buffer[buffer.size()];
+        T sum=0;
 
-	// newest value
-	if(--b<buffer) {
-		b=bufferLast;
-	}
-	
-	for(size_t i=0; i<N; i++) {
-		bufferCopy[i]=*b;
-		if(--b<buffer) {
-			b=bufferLast;
-		}
-	}
+        // replace oldest value with current
+        *current=sample;
+
+	// convolution
+	while(current!=b_end)
+		sum+=(*current++)*(*c++);
+	current=b_begin;
+	while(c!=c_end)
+		sum+=(*current++)*(*c++);
+
+        // point again to oldest value
+        if(--current<b_begin)
+                current=b_end-1;
+
+        return sum;
 }
 
+template <class T>
+inline FirFilter<T>::buffer_t FirFilter<T>::getBuffer(void) const
+{
+	return buffer;
+}
 #endif

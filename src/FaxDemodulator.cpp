@@ -20,16 +20,9 @@
 #include "FaxDemodulator.hpp"
 #include <cmath>
 
-// Narrow, middle and wide fir low pass filter from ACfax
-static const double lowPassFilter[3][17]={
-	{ -7,-18,-15, 11, 56,116,177,223,240,223,177,116, 56, 11,-15,-18, -7},
-	{  0,-18,-38,-39,  0, 83,191,284,320,284,191, 83,  0,-39,-38,-18,  0},
-	{  6, 20,  7,-42,-74,-12,159,353,440,353,159,-12,-74,-42,  7, 20,  6}
-};
-
-
 FaxDemodulator::FaxDemodulator(QObject* parent)	
-	:QObject(parent),iFir(17),qFir(17),sine(8192),cosine(8192),arcSine(256)
+	: QObject(parent),iLpf(17),qLpf(17),
+	  sine(8192),cosine(8192),arcSine(256)
 {
 	for(size_t i=0; i<sine.size(); i++) {
 		sine[i]=std::sin(2.0*M_PI*i/sine.size());
@@ -40,6 +33,16 @@ FaxDemodulator::FaxDemodulator(QObject* parent)
 	for(size_t i=0; i<arcSine.size(); i++) {
 		arcSine[i]=std::asin(2.0*i/arcSine.size()-1.0)/2.0/M_PI;
 	}
+
+        // Narrow, middle and wide fir low pass filter from ACfax
+	const double lpf[3][17]={
+		{ -7,-18,-15, 11, 56,116,177,223,240,223,177,116, 56, 11,-15,-18, -7},
+		{  0,-18,-38,-39,  0, 83,191,284,320,284,191, 83,  0,-39,-38,-18,  0},
+		{  6, 20,  7,-42,-74,-12,159,353,440,353,159,-12,-74,-42,  7, 20,  6}};
+	for(size_t i=0; i<3; ++i) {
+		lowPassFilter[i].resize(17);
+		lowPassFilter[i]=LPF::coeff_t(lpf[i],17);
+	}
 };
 
 void FaxDemodulator::init(int sampleRate)
@@ -47,8 +50,8 @@ void FaxDemodulator::init(int sampleRate)
 	rate=sampleRate;
 	Config& config=Config::instance();
 	size_t filter=config.readNumEntry("/hamfax/modulation/filter");
-	iFir.setCoefficients(lowPassFilter[filter]);
-	qFir.setCoefficients(lowPassFilter[filter]);
+	iLpf.setCoeffs(lowPassFilter[filter]);
+	qLpf.setCoeffs(lowPassFilter[filter]);
 	deviation=config.readNumEntry("/hamfax/modulation/deviation");
 	int carrier=config.readNumEntry("/hamfax/modulation/carrier");
 	fm=config.readBoolEntry("/hamfax/modulation/FM");
@@ -63,8 +66,8 @@ void FaxDemodulator::newSamples(short* audio, int n)
 {
 	int demod[n];
 	for(int i=0; i<n; i++) {
-		double ifirout=iFir.filterSample(audio[i]*cosine.nextValue());
-		double qfirout=qFir.filterSample(audio[i]*sine.nextValue());
+		double ifirout=iLpf.filterSample(audio[i]*cosine.nextValue());
+		double qfirout=qLpf.filterSample(audio[i]*sine.nextValue());
 		if(fm) {
 			double abs=std::sqrt(qfirout*qfirout+ifirout*ifirout);
 			ifirout/=abs;

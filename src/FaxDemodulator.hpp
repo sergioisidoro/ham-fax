@@ -29,16 +29,18 @@ public:
 	FaxDemodulator(QObject* parent);
         void init(int sampleRate);
 private:
+	typedef FirFilter<double> LPF;
 	int rate;
 	int deviation;
 	bool fm;
-	FirFilter<double> iFir;
-	FirFilter<double> qFir;
+	LPF iLpf;
+	LPF qLpf;
 	LookUpTable<double> sine;
 	LookUpTable<double> cosine;
 	LookUpTable<double> arcSine;
 	double ifirold;
 	double qfirold;
+	LPF::coeff_t lowPassFilter[3];
 public slots:
 	void newSamples(short* audio, int n);
 signals:
