@@ -1,6 +1,7 @@
+HamFax 0.5.2
  * should now work with Qt 3.0 (one #include was missing)
  * failed read on sound device no longer does crash the program :)
- * minimal carrier frequency of 800Hz (1500Hz was a arbitrary restriction)
+ * minimal carrier frequency of 800Hz (1500Hz was an arbitrary restriction)
  * the sound card may use a sample rate of 8000Hz+-1% (this should make
      some cheap sound cards usable)
 

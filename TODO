@@ -16,5 +16,7 @@ to do:
 - possibility for permanent slant correction
 - frequency / brightness scale for spectrum
 - automatic reception (perhaps a background/daemon process doing the work)
-- setting the frequency on the transceiver and doing the work
+- setting the frequency on the transceiver, perhaps having a daemon process
    (have a look at hamlib)
+- automatic generation of dependencies (automake, gcc -M or ?)
+- possibility for selecting available input/output
