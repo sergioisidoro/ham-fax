@@ -43,7 +43,6 @@ public:
 	FaxWindow(const QString& version);
 private:
 	enum { FILE, DSP, SCSPTC };
-	enum { SC288, SC576, R576288, R288576 };
 	int interface;
 	int pttID;
 	void buildMenuBar(void);
@@ -84,7 +83,6 @@ private slots:
 	void doOptionsDialog(void);
 	void doScaleDialog(void);
 	void changePTT(void);
-	void scaleImage(int item);
 	void quickSave(void);
 };
 

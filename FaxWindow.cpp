@@ -142,7 +142,7 @@ FaxWindow::FaxWindow(const QString& version)
 		faxView,SLOT(updateView(unsigned int, unsigned int)));
 	connect(faxImage,SIGNAL(sizeUpdated(unsigned int, unsigned int)),
 		faxControl,SLOT(setImageSize(unsigned int, unsigned int)));
-	connect(faxImage,SIGNAL(widthUpdated(unsigned int)),
+	connect(faxImage,SIGNAL(sizeUpdated(unsigned int,unsigned int)),
 		faxReceiver,SLOT(setWidth(unsigned int)));
 	connect(faxImage,SIGNAL(contentUpdated(int,int,int,int)),
 		faxView,SLOT(update(int,int,int,int)));
@@ -220,11 +220,18 @@ void FaxWindow::buildMenuBar(void)
 	QPopupMenu* imageMenu=new QPopupMenu(this);
 	imageMenu->insertItem(tr("&Scale image / adjust IOC"),
 			      this,SLOT(doScaleDialog()));
-	imageMenu->insertItem(tr("Scale image to IOC &288"),SC288);
-	imageMenu->insertItem(tr("Scale image to IOC &576"),SC576);
+	imageMenu->insertItem(tr("Scale image to IOC &288"),
+			      faxImage,SLOT(scaleToIOC288()));
+	imageMenu->insertItem(tr("Scale image to IOC &576"),
+			      faxImage,SLOT(scaleToIOC576()));
 	imageMenu->insertSeparator();
-	imageMenu->insertItem(tr("correct IOC from 576 to 288"),R576288);
-	imageMenu->insertItem(tr("correct IOC from 288 to 576"),R288576);
+	imageMenu->insertItem(tr("correct IOC from 576 to 288"),
+			      faxImage,SLOT(halfWidth()));
+	imageMenu->insertItem(tr("correct IOC from 288 to 576"),
+			      faxImage,SLOT(doubleWidth()));
+	imageMenu->insertSeparator();
+	imageMenu->insertItem(tr("rotate left"),faxImage,SLOT(rotateLeft()));
+	imageMenu->insertItem(tr("rotate right"),faxImage,SLOT(rotateRight()));
 
 	optionsMenu=new QPopupMenu(this);
 	optionsMenu->insertItem(tr("device settings"),
@@ -253,8 +260,6 @@ void FaxWindow::buildMenuBar(void)
 		this,SLOT(initTransmit(int)));
 	connect(receiveMenu,SIGNAL(activated(int)),
 		this,SLOT(initReception(int)));
-	connect(imageMenu,SIGNAL(activated(int)),
-		this,SLOT(scaleImage(int)));
 }
 
 void FaxWindow::about(void)
@@ -528,27 +533,6 @@ void FaxWindow::closeEvent(QCloseEvent* close)
 		config->writeFile();
 		break;
 	case 1:
-		break;
-	}
-}
-
-void FaxWindow::scaleImage(int item)
-{
-	switch(item)
-	{
-	case SC288:
-		faxImage->scaleToIOC(288);
-		break;
-	case SC576:
-		faxImage->scaleToIOC(576);
-		break;
-	case R576288:
-		faxImage->scale(faxImage->getCols()/2,faxImage->getRows());
-		break;
-	case R288576:
-		faxImage->scale(faxImage->getCols()*2,faxImage->getRows());
-		break;
-	default:
 		break;
 	}
 }

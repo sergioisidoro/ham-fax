@@ -101,14 +101,12 @@ void FaxImage::create(unsigned int cols, unsigned int rows)
 	image.create(cols,rows,32);
 	image.fill(qRgb(80,80,80));
 	emit sizeUpdated(image.width(),image.height());
-	emit widthUpdated(image.width());
 }
 
 void FaxImage::load(QString fileName)
 {
 	image=QImage(fileName).convertDepth(32);
 	emit sizeUpdated(image.width(),image.height());
-	emit widthUpdated(image.width());
 }
 
 void FaxImage::save(QString fileName)
@@ -121,7 +119,6 @@ void FaxImage::scale(unsigned int width, unsigned int height)
 {
 	image=image.smoothScale(width,height);
 	emit sizeUpdated(image.width(),image.height());
-	emit widthUpdated(image.width());
 }
 
 void FaxImage::resize(unsigned int x, unsigned int y,
@@ -129,7 +126,6 @@ void FaxImage::resize(unsigned int x, unsigned int y,
 {
 	image=image.copy(x,y,w,h);
 	emit sizeUpdated(image.width(),image.height());
-	emit widthUpdated(image.width());
 }
 
 void FaxImage::resizeHeight(unsigned int y, unsigned int h)
@@ -143,4 +139,52 @@ void FaxImage::scaleToIOC(unsigned int ioc)
 	      (unsigned int)
 	      ((double)image.height()/(double)image.width()
 	       *M_PI*ioc));
+}
+
+void FaxImage::scaleToIOC288(void) 
+{
+	scaleToIOC(288);
+}
+
+void FaxImage::scaleToIOC576(void)
+{
+	scaleToIOC(576);
+}
+
+void FaxImage::halfWidth(void)
+{
+	scale(image.width()/2,image.height());
+}
+
+void FaxImage::doubleWidth(void)
+{
+	scale(image.width()*2,image.height());
+}
+
+void FaxImage::rotateLeft(void)
+{
+	int h=image.height();
+	int w=image.width();
+	QImage newImage(h,w,32);
+	for(int y=0; y<h; y++) {
+		for(int x=0; x<w; x++) {
+			newImage.setPixel(y,w-x-1,image.pixel(x,y));
+		}
+	}
+	image=newImage;
+	emit sizeUpdated(image.width(),image.height());
+}
+
+void FaxImage::rotateRight(void)
+{
+	int h=image.height();
+	int w=image.width();
+	QImage newImage(h,w,32);
+	for(int y=0; y<h; y++) {
+		for(int x=0; x<w; x++) {
+			newImage.setPixel(h-y-1,x,image.pixel(x,y));
+		}
+	}
+	image=newImage;
+	emit sizeUpdated(image.width(),image.height());
 }

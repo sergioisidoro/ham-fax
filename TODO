@@ -14,7 +14,6 @@ features:
 - CW id before and after transmission
 - color fax
 - spectroscope
-- menu item for rotating image
 - display level of line-in while receiving
 - include phasing lines in image and delete them after reception
 - is it possible to do slant correction in QImage?

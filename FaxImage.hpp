@@ -37,7 +37,6 @@ private:
 	QImage image;
 signals:
 	void sizeUpdated(unsigned int width, unsigned int height);
-	void widthUpdated(unsigned int width);
 	void contentUpdated(int x, int y, int w, int h);
 	void scrollTo(int x, int y);
 public slots:
@@ -57,6 +56,12 @@ public slots:
 		    unsigned int w, unsigned int h);
 	void resizeHeight(unsigned int y, unsigned int h);
 	void scaleToIOC(unsigned int ioc);
+	void scaleToIOC288(void);
+	void scaleToIOC576(void);
+	void halfWidth(void);
+	void doubleWidth(void);
+	void rotateLeft(void);
+	void rotateRight(void);
 };
 
 #endif
