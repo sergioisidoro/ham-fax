@@ -20,6 +20,7 @@
 
 #include <qobject.h>
 #include <qstring.h>
+#include <qsocketnotifier.h>
 
 class PTC : public QObject {
 	Q_OBJECT
@@ -29,17 +30,25 @@ public:
 	void setDeviceName(QString s);
 	QString& getDeviceName(void);
 	void open(void);
+	void openInput(void);
 	void close(void);
 	void receive(unsigned int* samples, unsigned int& count);
-	void transmit(double* samples, unsigned int count);
 private:
 	QString deviceName;
 	int device;
 	bool fm;
 	unsigned int deviation;
+	QSocketNotifier* notifier;
+signals:
+	void data(unsigned int*, unsigned int);
+	void spaceLeft(unsigned int);
 public slots:
         void setDeviation(int dev);
 	void setFM(bool fm);
+	void transmit(double* samples, unsigned int count);
+private slots:
+        void read(int fd);
+	void checkSpace(int fd);
 };
 
 #endif

@@ -25,7 +25,6 @@ class FaxModulator : public QObject {
 public:
 	FaxModulator(QObject* parent);
 	~FaxModulator(void);
-	void modulate(signed short* sample, double* buffer, unsigned int n);
 	void setSampleRate(unsigned int sr);
 private:
 	static const unsigned int size_sine=8192;
@@ -35,10 +34,13 @@ private:
 	bool fm;
 	unsigned int carrier;
 	unsigned int dev;
+signals:
+	void data(signed short*, unsigned int);
 public slots:
         void setCarrier(int carrier);
 	void setDeviation(int dev);
 	void setFM(bool fm);
+	void modulate(double* buffer, unsigned int n);
 };
 
 #endif

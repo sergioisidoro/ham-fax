@@ -20,6 +20,7 @@
 
 #include <qobject.h>
 #include <audiofile.h>
+#include <qtimer.h>
 
 class File : public QObject {
 	Q_OBJECT
@@ -33,6 +34,11 @@ public:
 	void close(void);
 private:
 	AFfilehandle aFile;
+	QTimer* timer;
+signals:
+	void data(signed short* buffer, unsigned int n);
+private slots:
+        void read(void);
 };
 
 #endif

@@ -47,9 +47,12 @@ private:
 	double qfirold;
 	static const unsigned int asine_size=256;
 	double* asine;
+signals:
+	void data(unsigned int* buffer, unsigned int n);
 public slots:
         void setCarrier(int carrier);
 	void setSampleRate(int sampleRate);
 	void setDeviation(int dev);
 	void setFM(bool fm);
+	void newSamples(signed short* audio, unsigned int n);
 };

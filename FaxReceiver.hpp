@@ -27,7 +27,6 @@ public:
 	FaxReceiver(QObject* parent);
 	void setSampleRate(unsigned int rate);
 	void init(void);
-	void decode(unsigned int*, unsigned int n);
 private:
 	void decodeApt(unsigned int& x);
 	void decodePhasing(unsigned int& x);
@@ -69,6 +68,7 @@ signals:
 	void imageRow(unsigned int row);
 	void receptionEnded(void);
 public slots:
+	void decode(unsigned int*, unsigned int n);
         void setAptStartFreq(int f);
 	void setAptStopFreq(int f);
 	void setWidth(unsigned int width);

@@ -45,7 +45,6 @@ FaxWindow::FaxWindow(const QString& version)
 	ptc=new PTC(this);
 	faxModulator=new FaxModulator(this);
 	faxDemodulator=new FaxDemodulator(this);
-	timer=new QTimer(this);
 	transmitDialog=new TransmitDialog(this);
 	receiveDialog=new ReceiveDialog(this);
 
@@ -55,6 +54,7 @@ FaxWindow::FaxWindow(const QString& version)
 	statusBar()->addWidget(sizeText,0,true);
 	statusBar()->addWidget(iocText,0,true);
 	
+
 	modTool=new QToolBar(tr("modulation settings"),this);
 	new QLabel(tr("carrier"),modTool);
 	QSpinBox* carrier=new QSpinBox(1500,2400,100,modTool);
@@ -446,10 +446,25 @@ void FaxWindow::initTransmit(int item)
 			sound->openOutput(sampleRate);
 			ptt->openDevice();
 			ptt->set(true);
+			connect(sound,SIGNAL(spaceLeft(unsigned int)),
+				faxTransmitter,SLOT(doNext(unsigned int)));
+			connect(faxTransmitter,
+				SIGNAL(data(double*, unsigned int)),
+				faxModulator,
+				SLOT(modulate(double*, unsigned int)));
+			connect(faxModulator,
+				SIGNAL(data(signed short*, unsigned int)),
+				sound,
+				SLOT(write(signed short*, unsigned int)));
 			break;
 		case SCSPTC:
 			sampleRate=5760;
 			ptc->open();
+			connect(ptc,SIGNAL(spaceLeft(unsigned int)),
+				faxTransmitter,SLOT(doNext(unsigned int)));
+			connect(faxTransmitter,
+				SIGNAL(data(double*, unsigned int)),
+				ptc,SLOT(transmit(double*, unsigned int)));
 			break;
 		}
 		faxModulator->setSampleRate(sampleRate);
@@ -459,8 +474,6 @@ void FaxWindow::initTransmit(int item)
 		modTool->setDisabled(true);
 		aptTool->setDisabled(true);
 		faxTool->setDisabled(true);
-		timer->start(0);
-		connect(timer,SIGNAL(timeout()),this,SLOT(transmitNext()));
 		transmitDialog->show();
 
 	} catch (Error e) {
@@ -468,53 +481,34 @@ void FaxWindow::initTransmit(int item)
 	}
 }
 
-void FaxWindow::transmitNext(void)
-{
-	try {
-		unsigned int n=512;
-		signed short sample[n];
-		double buffer[n];
-		faxTransmitter->getValues(buffer,n);
-		if(n>0) {
-			switch(interface) {
-			case SCSPTC:
-				ptc->transmit(buffer,n);
-				break;
-			case DSP:
-				faxModulator->modulate(sample,buffer,n);
-				sound->write(sample,n);
-				break;
-			case FILE:
-				faxModulator->modulate(sample,buffer,n);
-				file->write(sample,n);
-				break;
-			}
-		} else {
-			if(interface!=DSP || sound->outputBufferEmpty()) {
-				endTransmission();
-			}
-		}
-	} catch(Error e) {
-		endTransmission();
-		QMessageBox::warning(this,tr("error"),e.getText());
-	}
-}
-
 void FaxWindow::endTransmission(void)
 {
-	timer->stop();
-	disconnect(timer,SIGNAL(timeout()),this,SLOT(transmitNext()));
 	switch(interface) {
 	case FILE:
 		file->close();
 		break;
 	case DSP:
+		disconnect(sound,SIGNAL(spaceLeft(unsigned int)),
+			faxTransmitter,SLOT(doNext(unsigned int)));
+		disconnect(faxTransmitter,
+			SIGNAL(data(double*,unsigned int)),
+			faxModulator,
+			SLOT(modulate(double*,unsigned int)));
+		disconnect(faxModulator,
+			SIGNAL(data(signed short*,unsigned int)),
+			sound,
+			SLOT(write(signed short*,unsigned int)));
 		ptt->set(false);
 		sound->close();
 		ptt->closeDevice();
 		break;
 	case SCSPTC:
 		ptc->close();
+		disconnect(ptc,SIGNAL(spaceLeft(unsigned int)),
+			   faxTransmitter,SLOT(doNext(unsigned int)));
+		disconnect(faxTransmitter,
+			   SIGNAL(data(double*, unsigned int)),
+			   ptc,SLOT(transmit(double*, unsigned int)));
 	}
 	menuBar()->setDisabled(false);
 	modTool->setDisabled(false);
@@ -535,14 +529,33 @@ void FaxWindow::initReception(int item)
 				return;
 			}
 			file->openInput(fileName,sampleRate);
+			connect(file,
+				SIGNAL(data(signed short*, unsigned int)),
+				faxDemodulator,
+				SLOT(newSamples(signed short*, unsigned int)));
+			connect(faxDemodulator,
+				SIGNAL(data(unsigned int*, unsigned int)),
+				faxReceiver,
+				SLOT(decode(unsigned int*, unsigned int)));
 			break;
 		case DSP:
 			sampleRate=8000;
 			sound->openInput(sampleRate);
+			connect(sound,
+				SIGNAL(data(signed short*, unsigned int)),
+				faxDemodulator,
+				SLOT(newSamples(signed short*, unsigned int)));
+			connect(faxDemodulator,
+				SIGNAL(data(unsigned int*, unsigned int)),
+				faxReceiver,
+				SLOT(decode(unsigned int*, unsigned int)));
 			break;
 		case SCSPTC:
 			sampleRate=5760;
 			ptc->open();
+			connect(ptc,SIGNAL(data(unsigned int*, unsigned int)),
+				faxReceiver,
+				SLOT(decode(unsigned int*, unsigned int)));
 			break;
 		}
 		faxDemodulator->setSampleRate(sampleRate);
@@ -552,54 +565,42 @@ void FaxWindow::initReception(int item)
 		modTool->setDisabled(true);
 		aptTool->setDisabled(true);
 		faxTool->setDisabled(true);
-		timer->start(0);
-		connect(timer,SIGNAL(timeout()),
-			this,SLOT(receiveNext()));
 		receiveDialog->show();
 	} catch(Error e) {
 		QMessageBox::warning(this,tr("error"),e.getText());
 	}
 }
 
-void FaxWindow::receiveNext(void)
-{
-	unsigned int n=256;
-	signed short samples[n];
-	unsigned int buffer[n];
-	switch(interface) {
-	case FILE:
-		file->read(samples,n);
-		faxDemodulator->demodulate(buffer,samples,n);
-		break;
-	case DSP:
-		sound->read(samples,n);
-		receiveDialog->samples(samples,n);
-		faxDemodulator->demodulate(buffer,samples,n);
-		break;
-	case SCSPTC:
-		ptc->receive(buffer,n);
-		break;
-	}
-	if(n==0) {
-		faxReceiver->endReception();
-	} else {
-		faxReceiver->decode(buffer,n);
-	}
-}
-
 void FaxWindow::endReception(void)
 {
-	timer->stop();
-	disconnect(timer,SIGNAL(timeout()),this,SLOT(receiveNext()));
 	switch(interface) {
 	case FILE:
 		file->close();
+		disconnect(file,
+			SIGNAL(data(signed short*, unsigned int)),
+			faxDemodulator,
+			SLOT(newSamples(signed short*, unsigned int)));
+		disconnect(faxDemodulator,
+			SIGNAL(data(unsigned int*, unsigned int)),
+			faxReceiver,
+			SLOT(decode(unsigned int*, unsigned int)));
 		break;
 	case DSP:
 		sound->close();
+		disconnect(sound,
+			SIGNAL(data(signed short*, unsigned int)),
+			faxDemodulator,
+			SLOT(newSamples(signed short*, unsigned int)));
+		disconnect(faxDemodulator,
+			SIGNAL(data(unsigned int*, unsigned int)),
+			faxReceiver,
+			SLOT(decode(unsigned int*, unsigned int)));
 		break;
 	case SCSPTC:
 		ptc->close();
+		connect(ptc,SIGNAL(data(unsigned int*, unsigned int)),
+			faxReceiver,
+			SLOT(decode(unsigned int*, unsigned int)));
 		break;
 	}
 	menuBar()->setDisabled(false);
@@ -615,7 +616,6 @@ void FaxWindow::closeEvent(QCloseEvent* close)
 					tr("Really exit?"),
 					tr("&Exit"),tr("&Don't Exit"))) {
 	case 0:
-		timer->stop();
 		close->accept();
 		config->writeFile();
 		break;

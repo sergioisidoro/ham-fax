@@ -16,15 +16,16 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "PTC.hpp"
-#include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
 #include "Error.hpp"
 
 PTC::PTC(QObject* parent) 
 	: QObject(parent),
 	  deviceName("/dev/ttyS0"),
-	  device(-1), fm(true), deviation(0)
+	  device(-1), fm(true), deviation(0), notifier(0)
 {
 }
 
@@ -46,10 +47,6 @@ QString& PTC::getDeviceName(void)
 void PTC::open(void)
 {
 	device=::open(deviceName,O_RDWR|O_NOCTTY|O_NONBLOCK);
-	int flags=fcntl(device,F_GETFL);
-	if(fcntl(device,F_SETFL,flags&~O_NONBLOCK)==-1) {
-		throw Error(tr("could not set blocking mode"));
-	}
 	
 	struct termios options;
 	tcgetattr(device,&options);
@@ -72,6 +69,13 @@ void PTC::open(void)
 	tcflush(device,TCIOFLUSH);
 }
 
+void PTC::openInput(void)
+{
+	open();
+	notifier=new QSocketNotifier(device,QSocketNotifier::Read);
+	connect(notifier,SIGNAL(activated(int)),this,SLOT(read(int)));
+}
+
 void PTC::close(void)
 {
 	if(device!=-1) {
@@ -84,7 +88,7 @@ void PTC::close(void)
 void PTC::receive(unsigned int* samples, unsigned int& count)
 {
 	unsigned char buf[count];
-	count=read(device,buf,count);
+	count=::read(device,buf,count);
 	for(unsigned int i=0; i<count; i++) {
 		samples[i]=buf[i];
 	}
@@ -108,4 +112,22 @@ void PTC::setDeviation(int dev)
 void PTC::setFM(bool fm)
 {
 	this->fm=fm;
+}
+
+void PTC::read(int fd)
+{
+	unsigned int n=512;
+	unsigned int buffer[n];
+	n=::read(device,buffer,n);
+	emit data(buffer,n);
+}
+
+void PTC::checkSpace(int fd)
+{
+	int n;
+	ioctl(fd,TIOCOUTQ,&n);
+	if(n>=512) {
+		n=512;
+	}
+	emit spaceLeft(n);
 }

@@ -20,6 +20,7 @@
 
 #include <qobject.h>
 #include <qstring.h>
+#include <qsocketnotifier.h>
 
 class Sound : public QObject {
 	Q_OBJECT
@@ -31,12 +32,19 @@ public:
 	void openOutput(unsigned int sampleRate);
 	void openInput(unsigned int sampleRate);
 	void close(void);
-	void write(signed short* samples, unsigned int number);
-	void read(signed short* samples, unsigned int& number);
 	bool outputBufferEmpty(void);
 private:
 	int devDSP;
 	QString devDSPName;
+	QSocketNotifier* notifier;
+signals:
+        void data(signed short*, unsigned int n);
+	void spaceLeft(unsigned int n);
+public slots:
+	void write(signed short* samples, unsigned int number);
+private slots:
+        void read(int fd);
+	void checkSpace(int fd);
 };
 
 #endif

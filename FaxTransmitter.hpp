@@ -52,11 +52,13 @@ public slots:
 	void setPhasePol(bool pol);
 	void setSampleRate(int rate);
 	void setColor(bool b);
+	void doNext(unsigned int n);
 signals:
 	void aptStart(void);
 	void phasing(void);
 	void imageLine(unsigned int n);
 	void aptStop(void);
+	void data(double* buf, unsigned int n);
 };
 
 #endif

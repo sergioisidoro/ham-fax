@@ -20,7 +20,6 @@
 
 #include <qmainwindow.h>
 #include <qstring.h>
-#include <qtimer.h>
 #include <qtoolbar.h>
 #include <qcombobox.h>
 #include <qmessagebox.h>
@@ -72,7 +71,6 @@ private:
 	File* file;
 	PTT* ptt;
 	PTC* ptc;
-	QTimer* timer;
 	TransmitDialog* transmitDialog;
 	ReceiveDialog* receiveDialog;
 	QMessageBox* slantDialog;
@@ -93,9 +91,7 @@ private slots:
         void load(void);
         void save(void);
 	void initTransmit(int item);
-	void transmitNext(void);
 	void initReception(int item);
-	void receiveNext(void);
         void about(void);
 	void aboutQT(void);
 	void doOptionsDialog(void);

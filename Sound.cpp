@@ -23,7 +23,8 @@
 #include "Error.hpp"
 
 Sound::Sound(QObject* parent)
-	: QObject(parent), devDSP(-1), devDSPName("/dev/dsp")
+	: QObject(parent), devDSP(-1), devDSPName("/dev/dsp"),
+	  notifier(0)
 {
 }
 
@@ -64,10 +65,10 @@ void Sound::openOutput(unsigned int sampleRate)
 		   ||speed!=(int)sampleRate) {
 			throw Error(tr("could not set sample rate"));
 		}
-		int flags=fcntl(devDSP,F_GETFL);
-		if(fcntl(devDSP,F_SETFL,flags&~O_NONBLOCK)==-1) {
-			throw Error(tr("could not set blocking mode"));
-		}
+		notifier=new QSocketNotifier(devDSP,QSocketNotifier::Write,
+					     this);
+		connect(notifier,SIGNAL(activated(int)),
+			this,SLOT(checkSpace(int)));
 	} catch(Error) {
 		close();
 		throw;
@@ -96,10 +97,10 @@ void Sound::openInput(unsigned int sampleRate)
 		   ||speed!=(int)sampleRate) {
 			throw Error(tr("could not set sample rate"));
 		}
-		int flags=fcntl(devDSP,F_GETFL);
-		if(fcntl(devDSP,F_SETFL,flags&~O_NONBLOCK)==-1) {
-			throw Error(tr("could not set blocking mode"));
-		}
+		notifier=new QSocketNotifier(devDSP,QSocketNotifier::Read,
+					     this);
+		connect(notifier,SIGNAL(activated(int)),
+			this,SLOT(read(int)));
 	} catch(Error) {
 		close();
 		throw;
@@ -112,6 +113,14 @@ void Sound::close(void)
 		ioctl(devDSP,SNDCTL_DSP_RESET);
 		::close(devDSP);
 		devDSP=-1;
+		if(notifier->type()==QSocketNotifier::Read) {
+			disconnect(notifier,SIGNAL(activated(int)),
+				   this,SLOT(read(int)));
+		} else {
+			disconnect(notifier,SIGNAL(activated(int)),
+				   this,SLOT(checkSpace(int)));
+		}
+		delete notifier;
 	}
 }
 
@@ -131,21 +140,6 @@ void Sound::write(signed short* samples, unsigned int number)
 	}
 }
 
-void Sound::read(signed short* samples, unsigned int& number)
-{
-	try {
-		if(devDSP!=-1) {
-			if(::read(devDSP,samples,
-				  number*sizeof(signed short))==-1) {
-				throw Error(tr("could not read from DSP"));
-			}
-		}
-	} catch(Error) {
-		close();
-		throw;
-	}
-}
-
 bool Sound::outputBufferEmpty(void)
 {
 	if(devDSP!=-1) {
@@ -154,4 +148,21 @@ bool Sound::outputBufferEmpty(void)
 		return i>0 ? false : true;
 	}
 	return true;
+}
+
+void Sound::read(int fd)
+{
+	unsigned int n=512;
+	signed short buffer[n];
+	n=::read(fd,buffer,n);
+	emit data(buffer,n);
+}
+
+void Sound::checkSpace(int fd)
+{
+	int n;
+	ioctl(fd,SNDCTL_DSP_GETISPACE,&n);
+	notifier->setEnabled(false);
+	emit spaceLeft(n>512 ? 512 : n);
+	notifier->setEnabled(true);
 }

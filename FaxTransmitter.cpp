@@ -42,11 +42,15 @@ void FaxTransmitter::startTransmission(void)
 
 void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples) 
 {
-	unsigned int i;
-	for(i=0; i<maxSamples; i++) {
+}
+
+void FaxTransmitter::doNext(unsigned int n)
+{
+	double buf[n];
+	for(unsigned int i=0; i<n; i++) {
 		if(state==IDLE) {
 			i=0;
-			maxSamples=i;
+			n=0;
 			break;
 		}
 		if(state==APTSTART) {
@@ -130,7 +134,7 @@ void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples)
 		if(state==APTSTOP) {
 			if(sampleNr>=sampleRate*stopLength) {
 				state=IDLE;
-				maxSamples=i;
+				n=i;
 				break;
 			} else {
 				// black/white pattern with stopFreq
@@ -144,6 +148,7 @@ void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples)
 			       sampleNr*lpm/60/sampleRate/3 :
 			       sampleNr*lpm/60/sampleRate);
 	}
+	emit data(buf,n);
 }
 
 void FaxTransmitter::setLPM(int lpm)

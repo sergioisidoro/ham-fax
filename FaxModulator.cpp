@@ -34,9 +34,9 @@ FaxModulator::~FaxModulator(void)
 	delete sine;
 }
 
-void FaxModulator::modulate(signed short* sample, double* buffer,
-			    unsigned int number)
+void FaxModulator::modulate(double* buffer, unsigned int number)
 {
+	signed short sample[number];
 	for(unsigned int i=0; i<number; i++) {
 		if(fm) {
 			sample[i]=sine[phase];
@@ -50,6 +50,7 @@ void FaxModulator::modulate(signed short* sample, double* buffer,
 		}
 		phase%=size_sine;
 	}
+	emit data(sample,number);
 }
 
 void FaxModulator::setSampleRate(unsigned int sr)

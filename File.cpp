@@ -22,6 +22,7 @@ File::File(QObject* parent)
 	: QObject(parent)
 {
 	afSetErrorHandler(0);
+	timer=new QTimer(this);
 }
 
 File::~File(void)
@@ -59,6 +60,8 @@ void File::openInput(const QString& fileName, unsigned int& sampleRate)
 			throw Error(tr("samples size not 16 bit"));
 		}
 		sampleRate=(unsigned int)afGetRate(aFile,AF_DEFAULT_TRACK);
+		timer->start(0);
+		connect(timer,SIGNAL(timeout()),this,SLOT(read()));
 	} catch(Error) {
 		close();
 		throw;
@@ -67,6 +70,8 @@ void File::openInput(const QString& fileName, unsigned int& sampleRate)
 
 void File::close(void)
 {
+	timer->stop();
+	disconnect
 	if(aFile!=0) {
 		afCloseFile(aFile);
 		aFile=0;
@@ -101,4 +106,12 @@ void File::read(signed short* samples, unsigned int& number)
 		close();
 		throw;
 	}
+}
+
+void File::read(void)
+{
+	unsigned int n=512;
+	signed short buffer[n];
+	n=afReadFrames(aFile,AF_DEFAULT_TRACK,buffer,n);
+	emit data(buffer,n);
 }

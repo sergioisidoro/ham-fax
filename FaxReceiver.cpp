@@ -45,6 +45,7 @@ void FaxReceiver::init(void)
 
 void FaxReceiver::decode(unsigned int* buf, unsigned int n)
 {
+	if(n==0) endReception();
 	for(unsigned int i=0; i<n; i++) {
 		currentValue=buf[i];
 		decodeApt(buf[i]);

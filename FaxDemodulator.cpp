@@ -70,6 +70,11 @@ void FaxDemodulator::setFM(bool fm)
 void FaxDemodulator::demodulate(unsigned int* demod,
 				short* audio, unsigned int n)
 {
+}
+
+void FaxDemodulator::newSamples(signed short* audio, unsigned int n)
+{
+	unsigned int demod[n];
 	for(unsigned int i=0; i<n; i++) {
 		*icurrent=(double)audio[i]* *cos_phase;
 		*qcurrent=(double)audio[i]* *sin_phase;
@@ -127,4 +132,5 @@ void FaxDemodulator::demodulate(unsigned int* demod,
 			cos_phase-=sine_size;
 		}
 	}
+	emit data(demod,n);
 }
