@@ -2,17 +2,9 @@ to do:
 - test AM
 - real "on air test"
 - write some documentation about HamFax and facsimiles
+- translation (at least to german)
 
-to fix:
-- smarter handling of init, tr/rx, end, make use of Qt's connect
-- better handling of phasing (tr AND rcp)
-- fix input overruns while using PTC (better handling of serial data)
-- better recognition of apt
-- look at messages displayed while receiving apt, phasing, image
-- noise in FM reception gives apt frequency of about 300Hz...
-
-features:
+features that would be nice:
 - CW id before and after transmission
 - spectroscope
 - fancy icon bar
-- do translation of strings

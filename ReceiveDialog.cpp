@@ -21,7 +21,7 @@
 ReceiveDialog::ReceiveDialog(QWidget* parent)
 	: QDialog(parent)
 {
-	QGridLayout* layout=new QGridLayout(this,5,1,20,20);
+	QGridLayout* layout=new QGridLayout(this,5,1,15,15);
 	layout->addWidget(status=new QLabel(this),1,1);
 	status->setMinimumWidth(200);
 	layout->addWidget(aptText=new QLabel(this),2,1);
@@ -35,13 +35,11 @@ ReceiveDialog::ReceiveDialog(QWidget* parent)
 void ReceiveDialog::showText(const QString& s)
 {
 	status->setText(s);
-	adjustSize();
 }
 
 void ReceiveDialog::apt(int f)
 {
 	aptText->setText(QString(tr("Apt frequency: %1 Hz")).arg(f));
-	adjustSize();
 }
 
 void ReceiveDialog::closeEvent(QCloseEvent* close)

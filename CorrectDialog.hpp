@@ -15,28 +15,24 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include "HelpDialog.hpp"
-#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qtextbrowser.h>
+#ifndef CORRECTDIALOG_HPP
+#define CORRECTDIALOG_HPP
 
-HelpDialog::HelpDialog(QWidget* parent)
-	: QDialog(parent,0,true)
-{
-	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
-	QTextBrowser* browser=new QTextBrowser(this);
-	layout->addWidget(browser);
-	browser->mimeSourceFactory()->addFilePath("/usr/share/doc/HamFax/");
-	browser->mimeSourceFactory()->
-		addFilePath("/usr/local/share/doc/HamFax/");
-	browser->setSource("HamFax.html");
-	QPushButton* button=new QPushButton(tr("&Close"),this);
-	layout->addWidget(button);
-	connect(button,SIGNAL(clicked()),SLOT(close()));
-	resize(300,300);
-}
+#include <qdialog.h>
+#include <qlabel.h>
 
-void HelpDialog::close(void)
+class CorrectDialog : public QDialog
 {
-	done(0);
-}
+	Q_OBJECT
+public:
+	CorrectDialog(QWidget* parent);
+	void setText(const QString& s);
+private:
+	QLabel* text;
+signals:
+	void cancelClicked(void);
+private slots:
+        void hideWindow(void);
+};
+
+#endif

@@ -15,48 +15,28 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include "TransmitDialog.hpp"
+#include "CorrectDialog.hpp"
+#include <qpushbutton.h>
 #include <qlayout.h>
 
-TransmitDialog::TransmitDialog(QWidget* parent)
+CorrectDialog::CorrectDialog(QWidget* parent)
 	: QDialog(parent)
 {
+	setCaption(parent->caption());
 	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
-	layout->addWidget(status=new QLabel(this));
-	status->setMinimumWidth(150);
-	layout->addWidget(cancel=new QPushButton(tr("&Cancel"),this));
-	connect(cancel,SIGNAL(clicked()),this,SIGNAL(cancelClicked()));
-	connect(cancel,SIGNAL(clicked()),this,SLOT(hide()));
+	layout->addWidget(text=new QLabel(this));
+	QPushButton* cancel=new QPushButton(tr("&Cancel"),this);
+	layout->addWidget(cancel);
+	connect(cancel,SIGNAL(clicked()),SIGNAL(cancelClicked()));
+	connect(cancel,SIGNAL(clicked()),SLOT(hideWindow()));
 }
 
-void TransmitDialog::showText(const QString& s)
+void CorrectDialog::setText(const QString& s)
 {
-	status->setText(s);
+	text->setText(s);
 }
 
-void TransmitDialog::closeEvent(QCloseEvent* close)
+void CorrectDialog::hideWindow(void)
 {
-	close->accept();
-	emit cancelClicked();
-}
-
-void TransmitDialog::start(void)
-{
-	show();
-	showText("transmitting APT start");
-}
-
-void TransmitDialog::phasing(void)
-{
-	showText("transmitting phasing");
-}
-
-void TransmitDialog::imageLine(int n)
-{
-	showText(QString("transmitting line %1").arg(n));
-}
-
-void TransmitDialog::aptStop(void)
-{
-	showText("transmitting APT stop");
+	hide();
 }

@@ -146,12 +146,5 @@ void PTC::read(int fd)
 
 void PTC::checkSpace(int fd)
 {
-	int n;
-//	ioctl(fd,TIOCOUTQ,&n);
-//	n=256-n;
-//	qDebug("%d",n);
-//	if(n>=512) {
-		n=512;
-//	}
-	emit spaceLeft(n);
+	emit spaceLeft(512);
 }

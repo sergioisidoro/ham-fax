@@ -28,7 +28,8 @@ all: hamfax
 
 clean:
 	rm -rfv *~ *.o moc_*.cpp hamfax qhamfax\
-        config.cache config.log config.status moc_bnv_qt_test.C
+        config.cache config.log config.status moc_bnv_qt_test.C\
+        doc/*~
 
 install: hamfax
 	$(INSTALL) -s hamfax $(INSTALLDIR)

@@ -23,9 +23,7 @@
 OptionsDialog::OptionsDialog(QWidget* parent)
 	: QDialog(parent,0,true)
 {
-	QVBoxLayout* layout=new QVBoxLayout(this);
-	layout->setSpacing(10);
-	layout->setMargin(10);
+	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
 
 	QGridLayout* settings=new QGridLayout(layout,3,2);
 	settings->addWidget(new QLabel(tr("dsp device"),this),1,1);

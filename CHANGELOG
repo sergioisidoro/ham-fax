@@ -1,3 +1,10 @@
+HamFax 0.3
+ * moved controls to three tool bars
+ * some tool tips explaining controls
+ * color fax like JVFAX does as JVCOLOR
+ * several routines to correct received picture
+ * sound card and serial interface are now accessed non blocking
+
 HamFax 0.2
  * some changes to creation and recognition of phasing lines
  * options are now saved in config file ~/.hamfax

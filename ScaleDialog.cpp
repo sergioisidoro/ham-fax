@@ -24,18 +24,17 @@
 ScaleDialog::ScaleDialog(QWidget* parent)
 	: QDialog(parent,0,true)
 {
-	QVBoxLayout* layout=new QVBoxLayout(this);
-	layout->setSpacing(10);
-	layout->setMargin(10);
+	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
 
 	QGridLayout* settings=new QGridLayout(layout,3,2);
-	settings->addWidget(new QLabel(tr("IOC"),this),1,1);
+	settings->addWidget(new QLabel(tr("IOC:"),this),1,1);
 	ioc=new QSpinBox(204,576,1,this);
+
 	settings->addWidget(ioc,1,2);
-	settings->addWidget(new QLabel(tr("width"),this),2,1);
+	settings->addWidget(new QLabel(tr("width:"),this),2,1);
 	widthLabel=new QLabel(this);
 	settings->addWidget(widthLabel,2,2);
-	settings->addWidget(new QLabel(tr("height"),this),3,1);
+	settings->addWidget(new QLabel(tr("height:"),this),3,1);
 	heightLabel=new QLabel(this);
 	settings->addWidget(heightLabel,3,2);
 
