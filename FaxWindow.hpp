@@ -43,6 +43,11 @@ private:
 	int interface;
 	int pttID;
 	int scrollID;
+	int slantID;
+	int colDrawID;
+	int monoDrawID;
+	int shift1ID;
+	int shift2ID;
 	void buildMenuBar(void);
 	QString getFileName(QString caption, QString filter);
 	virtual void closeEvent(QCloseEvent* close);
@@ -57,6 +62,7 @@ private:
 	Config* config;
 	QString version;
 	QPopupMenu* optionsMenu;
+	QPopupMenu* imageMenu;
 	FaxTransmitter* faxTransmitter;
 	FaxReceiver* faxReceiver;
 	FaxImage* faxImage;
@@ -66,11 +72,14 @@ private:
 	File* file;
 	PTC* ptc;
 	QMessageBox* slantDialog;
+	QMessageBox* beginDialog;
 	enum { WAITFIRST, WAITSECOND, NOTHING } slantState;
 signals:
 	void loadFile(QString fileName);
 	void saveFile(QString fileName);
 	void correctSlant(void);
+	void imageWidth(unsigned int w);
+	void correctBegin(void);
 public slots:
         void setModulation(bool b);
 	void setPhasingPol(bool b);
@@ -81,6 +90,8 @@ public slots:
 	void slantEnd(void);
 	void disableControls(void);
 	void enableControls(void);
+	void setImageAdjust(bool b);
+	void setBeginEnd(void);
 private slots:
         void load(void);
         void save(void);
@@ -96,6 +107,9 @@ private slots:
 	void quickSave(void);
 	void newImageSize(unsigned int w, unsigned int h);
 	void slantWaitFirst(void);
+	void redrawColor(void);
+	void redrawMono(void);
+	void setBegin(void);
 };
 
 #endif

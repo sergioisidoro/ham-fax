@@ -49,6 +49,7 @@ private:
 	unsigned int noPhaseLines;
 	bool phaseInvers;
 	double lpm;
+	int txLPM;
 	double lpmSum;
 	unsigned int width;
 	int imageSample;
@@ -64,7 +65,6 @@ private:
 signals:
 	void aptFound(unsigned int f);
 	void aptStopDetected(void);
-	void newImageHeight(unsigned int y, unsigned int h);
 	void newPixel(unsigned int c, unsigned int h, 
 		      unsigned int v, unsigned int rgbg);
 	void startReception(void);
@@ -73,16 +73,25 @@ signals:
 	void startingPhasing(void);
 	void phasingLine(double lpm);
 	void imageRow(unsigned int row);
+	void bufferNotEmpty(bool);
+	void scaleImage(unsigned int w, unsigned int h);
+	void newSize(unsigned int x, unsigned int y,
+		     unsigned int w, unsigned int h);
 public slots:
 	void decode(unsigned int*, unsigned int n);
         void setAptStartFreq(int f);
 	void setAptStopFreq(int f);
 	void setWidth(unsigned int width);
 	void setPhasePol(bool pol);
-	void startPhasing(void);
+	void skip(void);
 	void endReception(void);
 	void setColor(bool b);
-	void widthAdjust(double d);
+	void correctLPM(double d);
+	void correctWidth(unsigned int w);
+	void releaseBuffer(void);
+	void setTxLPM(int lpm);
+	void correctToIOC288(void);
+	void correctToIOC576(void);
 private slots:
         void adjustNext(void);
 };

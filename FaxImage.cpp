@@ -22,8 +22,6 @@ FaxImage::FaxImage(QWidget* parent)
 	: QScrollView(parent), autoScroll(true)
 {
 	setResizePolicy(Manual);
-	resizeContents(image.width(), image.height());
-	emit sizeUpdated(image.width(), image.height());
 }
 
 unsigned int FaxImage::getRows(void)
@@ -99,7 +97,7 @@ void FaxImage::create(unsigned int cols, unsigned int rows)
 	image.fill(qRgb(80,80,80));
 	resizeContents(cols,rows);
 	emit sizeUpdated(cols,rows);
-	viewport()->update();
+	emit newImage();
 }
 
 void FaxImage::load(QString fileName)
@@ -107,7 +105,7 @@ void FaxImage::load(QString fileName)
 	image=QImage(fileName).convertDepth(32);
 	resizeContents(image.width(),image.height());
 	emit sizeUpdated(image.width(),image.height());
-	viewport()->update();
+	emit newImage();
 }
 
 void FaxImage::save(QString fileName)
@@ -123,97 +121,26 @@ void FaxImage::save(QString fileName)
 
 void FaxImage::scale(unsigned int width, unsigned int height)
 {
-	if(image.width()==0 || image.height()==0) {
-		create(width==0?1:width,height==0?1:height);
-	} else {
-		image=image.smoothScale(width,height);
+	if(height==0) {
+		height=width*image.height()/image.width();
 	}
+	image=image.smoothScale(width,height);
 	resizeContents(width,height);
 	emit sizeUpdated(width,height);
-	viewport()->update();
 }
 
 void FaxImage::resize(unsigned int x, unsigned int y,
 		      unsigned int w, unsigned int h)
 {
-	image=image.copy(x,y,w,h);
-	resizeContents(w,h);
-	emit sizeUpdated(w,h);
-}
-
-void FaxImage::resizeHeight(unsigned int y, unsigned int h)
-{
-	resize(0,y,image.width(),h);
-}
-
-void FaxImage::scaleToIOC(unsigned int ioc)
-{
-	scale((unsigned int)(M_PI*ioc),
-	      (unsigned int)
-	      ((double)image.height()/(double)image.width()
-	       *M_PI*ioc));
-}
-
-void FaxImage::scaleToIOC288(void) 
-{
-	scaleToIOC(288);
-}
-
-void FaxImage::scaleToIOC576(void)
-{
-	scaleToIOC(576);
-}
-
-void FaxImage::halfWidth(void)
-{
-	scale(image.width()/2,image.height());
-}
-
-void FaxImage::doubleWidth(void)
-{
-	scale(image.width()*2,image.height());
-}
-
-void FaxImage::rotateLeft(void)
-{
-	int h=image.height();
-	int w=image.width();
-	QImage newImage(h,w,32);
-
-
-
-
-
-
-
-
-
-
-	for(int y=0; y<h; y++) {
-		for(int x=0; x<w; x++) {
-			newImage.setPixel(y,w-x-1,image.pixel(x,y));
-		}
+	if(w==0) {
+		w=image.width();
 	}
-	image=newImage;
-	resizeContents(w,h);
-	emit sizeUpdated(w,h);
-	viewport()->update();
-}
-
-void FaxImage::rotateRight(void)
-{
-	int h=image.height();
-	int w=image.width();
-	QImage newImage(h,w,32);
-	for(int y=0; y<h; y++) {
-		for(int x=0; x<w; x++) {
-			newImage.setPixel(h-y-1,x,image.pixel(x,y));
-		}
+	if(h==0) {
+		h=image.height();
 	}
-	image=newImage;
+	image=image.copy(x, y, w, h);
 	resizeContents(w,h);
 	emit sizeUpdated(w,h);
-	viewport()->update();
 }
 
 void FaxImage::setAutoScroll(bool b)
@@ -239,4 +166,50 @@ void FaxImage::contentsMousePressEvent(QMouseEvent* m)
 	slant1=slant2;
 	slant2=m->pos();
 	emit clicked();
+}
+
+
+void FaxImage::shiftCol1(void)
+{
+	for(int c=0; c<image.width(); c++) {
+		for(int r=0; r<image.height(); r++) {
+			QRgb rgb=image.pixel(c,r);
+			rgb=qRgb(qGreen(rgb),qBlue(rgb),qRed(rgb));
+			image.setPixel(c,r,rgb);
+		}
+	}
+	viewport()->update();
+}
+
+void FaxImage::shiftCol2(void)
+{
+	for(int c=0; c<image.width(); c++) {
+		for(int r=0; r<image.height(); r++) {
+			QRgb rgb=image.pixel(c,r);
+			rgb=qRgb(qBlue(rgb),qRed(rgb),qGreen(rgb));
+			image.setPixel(c,r,rgb);
+		}
+	}
+	viewport()->update();
+}
+
+void FaxImage::correctBegin(void)
+{
+	int n=slant2.x();
+	int h=image.height();
+	int w=image.width();
+	for(int c=0; c<w; c++) {
+		for(int r=0; r<h; r++) {
+			QRgb pixel;
+			if(c+n<w) {
+				pixel=image.pixel(n+c,r);
+			} else if(r+1<h) {
+				pixel=image.pixel((n+c)%w,r+1);
+			} else {
+				pixel=qRgb(0,0,0);
+			}
+			image.setPixel(c,r,pixel);
+		}
+	}
+	viewport()->update();
 }

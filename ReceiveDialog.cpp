@@ -66,16 +66,20 @@ void ReceiveDialog::phasing(void)
 {
 	skip->setDisabled(true);
 	showText(tr("decoding phasing"));
+	skip->setText(tr("skip phasing"));
+	skip->setDisabled(false);
 }
 
 void ReceiveDialog::phasingLine(double lpm)
 {
 	showText(QString(tr("phasing line, lpm %1")).arg(lpm,0,'f',1));
+	skip->setDisabled(true);
 }
 
 void ReceiveDialog::imageRow(unsigned int row)
 {
 	showText(tr("receiving line %1").arg(row));
+	skip->setDisabled(true);
 }
 
 void ReceiveDialog::samples(signed short* buffer, unsigned int n)

@@ -109,6 +109,7 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(config,SIGNAL(lpm(int)),lpm,SLOT(setValue(int)));
 	connect(lpm,SIGNAL(valueChanged(int)),config,SLOT(setLpm(int)));
 	connect(config,SIGNAL(lpm(int)),faxTransmitter,SLOT(setLPM(int)));
+	connect(config,SIGNAL(lpm(int)),faxReceiver,SLOT(setTxLPM(int)));
 
 	connect(config,SIGNAL(aptStartFreq(int)),
 		aptStartFreq,SLOT(setValue(int)));
@@ -201,12 +202,8 @@ FaxWindow::FaxWindow(const QString& version)
 		this,SLOT(newImageSize(unsigned int, unsigned int)));
 	connect(faxImage,SIGNAL(sizeUpdated(unsigned int,unsigned int)),
 		faxReceiver,SLOT(setWidth(unsigned int)));
-	faxImage->create(904,1);
 
 	// FaxReceiver -- FaxImage
-	connect(faxReceiver,
-		SIGNAL(newImageHeight(unsigned int, unsigned int)),
-		faxImage,SLOT(resizeHeight(unsigned int, unsigned int)));
 	connect(faxReceiver,SIGNAL(newPixel(unsigned int,unsigned int,
 					    unsigned int,unsigned int)),
 		faxImage,SLOT(setPixel(unsigned int,unsigned int,
@@ -251,7 +248,7 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(faxReceiver,SIGNAL(phasingLine(double)),
 		receiveDialog,SLOT(phasingLine(double)));
 	connect(receiveDialog,SIGNAL(skipClicked()),
-		faxReceiver,SLOT(startPhasing()));
+		faxReceiver,SLOT(skip()));
 	connect(faxReceiver,SIGNAL(imageRow(unsigned int)),
 		receiveDialog,SLOT(imageRow(unsigned int)));
 	connect(receiveDialog,SIGNAL(cancelClicked()),
@@ -273,9 +270,26 @@ FaxWindow::FaxWindow(const QString& version)
 
 	connect(this,SIGNAL(correctSlant()),faxImage,SLOT(correctSlant()));
 	connect(faxImage,SIGNAL(widthAdjust(double)),
-		faxReceiver,SLOT(widthAdjust(double)));
+		faxReceiver,SLOT(correctLPM(double)));
 
+	connect(this,SIGNAL(correctBegin()),faxImage,SLOT(correctBegin()));
+
+	connect(faxReceiver,SIGNAL(bufferNotEmpty(bool)),
+		this,SLOT(setImageAdjust(bool)));
 	buildMenuBar();
+	connect(faxImage,SIGNAL(newImage()),
+		faxReceiver,SLOT(releaseBuffer()));
+	faxImage->create(904,904);
+
+	connect(this,SIGNAL(imageWidth(unsigned int)),
+		faxReceiver,SLOT(correctWidth(unsigned int)));
+	connect(faxReceiver,SIGNAL(scaleImage(unsigned int, unsigned int)),
+		faxImage,SLOT(scale(unsigned int, unsigned int)));
+	connect(faxReceiver, SIGNAL(newSize(unsigned int,unsigned int,
+					    unsigned int,unsigned int)),
+		faxImage, SLOT(resize(unsigned int, unsigned int,
+				      unsigned int, unsigned int)));
+	
 	config->readFile();
 }
 
@@ -298,25 +312,28 @@ void FaxWindow::buildMenuBar(void)
 	receiveMenu->insertItem(tr("Receive from f&ile"),FILE);
 	receiveMenu->insertItem(tr("Receive from P&TC"),SCSPTC);
 
-	QPopupMenu* imageMenu=new QPopupMenu(this);
+	imageMenu=new QPopupMenu(this);
 	imageMenu->insertItem(tr("&Scale image / adjust IOC"),
 			      this,SLOT(doScaleDialog()));
 	imageMenu->insertItem(tr("Scale image to IOC &288"),
-			      faxImage,SLOT(scaleToIOC288()));
+			      faxReceiver,SLOT(correctToIOC288()));
 	imageMenu->insertItem(tr("Scale image to IOC &576"),
-			      faxImage,SLOT(scaleToIOC576()));
+			      faxReceiver,SLOT(correctToIOC576()));
 	imageMenu->insertSeparator();
-	imageMenu->insertItem(tr("correct IOC from 576 to 288"),
-			      faxImage,SLOT(halfWidth()));
-	imageMenu->insertItem(tr("correct IOC from 288 to 576"),
-			      faxImage,SLOT(doubleWidth()));
+	colDrawID=imageMenu->insertItem(tr("redraw as color facsimile")
+					,this,SLOT(redrawColor()));
+	monoDrawID=imageMenu->insertItem(tr("redraw as mono facsimile"),
+					 this,SLOT(redrawMono()));
 	imageMenu->insertSeparator();
-	imageMenu->insertItem(tr("rotate left"),faxImage,SLOT(rotateLeft()));
-	imageMenu->insertItem(tr("rotate right"),
-			      faxImage,SLOT(rotateRight()));
+	imageMenu->insertItem(tr("shift colors (R->G,G->B,B->R)"),
+			      faxImage,SLOT(shiftCol1()));
+	imageMenu->insertItem(tr("shift colors (R->B,G->R,B->G)"),
+				       faxImage,SLOT(shiftCol2()));
 	imageMenu->insertSeparator();
-	imageMenu->insertItem(tr("slant correction"),
-			      this,SLOT(slantWaitFirst()));
+	slantID=imageMenu->insertItem(tr("slant correction"),
+				      this,SLOT(slantWaitFirst()));
+	imageMenu->insertItem(tr("set beginning of line"),
+			      this,SLOT(setBegin()));
 
 	optionsMenu=new QPopupMenu(this);
 	optionsMenu->insertItem(tr("device settings"),
@@ -406,7 +423,7 @@ void FaxWindow::doScaleDialog(void)
 	d->height=faxImage->getRows();
 	d->init();
 	if(d->exec()) {
-		faxImage->scale(d->width,d->height);
+		emit imageWidth(d->width);
 	}
 	delete d;
 }
@@ -686,6 +703,7 @@ void FaxWindow::slantWaitFirst(void)
 				    QMessageBox::NoButton,
 				    QMessageBox::NoButton,
 				    this,0,false);
+	disableControls();
 	slantDialog->show();
 	connect(faxImage,SIGNAL(clicked()),this,SLOT(slantWaitSecond()));
 }
@@ -702,7 +720,20 @@ void FaxWindow::slantEnd(void)
 	slantDialog->hide();
 	disconnect(faxImage,SIGNAL(clicked()),this,SLOT(slantEnd()));
 	emit correctSlant();
+	enableControls();
 	delete slantDialog;
+}
+
+void FaxWindow::redrawColor(void)
+{
+	config->setColor(true);
+	faxReceiver->correctLPM(1);
+}
+
+void FaxWindow::redrawMono(void)
+{
+	config->setColor(false);
+	faxReceiver->correctLPM(1);
 }
 
 void FaxWindow::disableControls(void)
@@ -719,4 +750,33 @@ void FaxWindow::enableControls(void)
 	modTool->setDisabled(false);
 	aptTool->setDisabled(false);
 	faxTool->setDisabled(false);
+}
+
+void FaxWindow::setImageAdjust(bool b)
+{
+	imageMenu->setItemEnabled(slantID,b);
+	imageMenu->setItemEnabled(colDrawID,b);
+	imageMenu->setItemEnabled(monoDrawID,b);
+}
+
+void FaxWindow::setBegin(void)
+{
+	beginDialog=new QMessageBox(this->caption(),
+				    tr("select beginning of line"),
+				    QMessageBox::Information,
+				    QMessageBox::Cancel,
+				    QMessageBox::NoButton,
+				    QMessageBox::NoButton,
+				    this,0,false);
+	disableControls();
+	beginDialog->show();
+	connect(faxImage,SIGNAL(clicked()),this,SLOT(setBeginEnd()));
+}
+
+void FaxWindow::setBeginEnd(void)
+{
+	delete beginDialog;
+	emit correctBegin();
+	disconnect(faxImage,SIGNAL(clicked()),this,SLOT(setBeginEnd()));
+	enableControls();
 }

@@ -45,25 +45,22 @@ signals:
 	void sizeUpdated(unsigned int width, unsigned int height);
 	void clicked(void);
 	void widthAdjust(double);
+	void newImage(void);
+	void shiftLine(double);
 public slots:
         bool setPixel(unsigned int col, unsigned int row,
 		      unsigned int value, unsigned int rgbg);
         void create(unsigned int cols, unsigned int rows);
 	void load(QString fileName);
 	void save(QString fileName);
-	void scale(unsigned int width, unsigned int height);
+	void scale(unsigned int width, unsigned int height=0);
 	void resize(unsigned int x, unsigned int y,
-		    unsigned int w, unsigned int h);
-	void resizeHeight(unsigned int y, unsigned int h);
-	void scaleToIOC(unsigned int ioc);
-	void scaleToIOC288(void);
-	void scaleToIOC576(void);
-	void halfWidth(void);
-	void doubleWidth(void);
-	void rotateLeft(void);
-	void rotateRight(void);
+		    unsigned int w, unsigned int h=0);
 	void setAutoScroll(bool b);
 	void correctSlant(void);
+	void shiftCol1(void);
+	void shiftCol2(void);
+	void correctBegin(void);
 };
 
 #endif

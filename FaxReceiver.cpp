@@ -76,7 +76,7 @@ void FaxReceiver::decodeApt(unsigned int& x)
 		emit aptFound(f);
 		if(state==APTSTART) {
 			if(f==aptStartFreq) {
-				startPhasing();
+				skip();
 			}
 		} else {
 			if(f==aptStopFreq) {
@@ -178,14 +178,39 @@ void FaxReceiver::decodeImage(unsigned int& x)
 	imageSample++;
 }
 
-void FaxReceiver::widthAdjust(double d)
+void FaxReceiver::correctLPM(double d)
 {
 	pixel=pixelSamples=imageSample=0;
 	lastCol=99;
-	lpm*=d;
+	lpm*= (color ? (d-1.0)/3.0+1.0 : d);
 	rawIt=rawData.begin();
 	timer->start(0);
 	emit startCorrection();
+}
+
+void FaxReceiver::correctWidth(unsigned int w)
+{
+	pixel=pixelSamples=imageSample=0;
+	lastCol=99;
+	width=w;
+	if(rawData.isNull()) {
+		emit scaleImage(w,0);
+	} else {
+		rawIt=rawData.begin();
+		timer->start(0);
+		emit newSize(0,0,w,0);
+		emit startCorrection();
+	}
+}
+
+void FaxReceiver::correctToIOC288(void)
+{
+	correctWidth(905);
+}
+
+void FaxReceiver::correctToIOC576(void)
+{
+	correctWidth(1810);
 }
 
 void FaxReceiver::adjustNext(void)
@@ -194,7 +219,7 @@ void FaxReceiver::adjustNext(void)
 		if(rawIt++>=rawData.end()) {
 			timer->stop();
 			int h=currRow-(int)(lpm/60.0)-1;
-			emit newImageHeight(2,color ? h/3 : h);
+			emit newSize(0,2,0,color ? h/3 : h);
 			emit end();
 			break;
 		}
@@ -247,12 +272,19 @@ void FaxReceiver::setPhasePol(bool pol)
 	phaseInvers=pol;
 }
 
-void FaxReceiver::startPhasing(void)
+void FaxReceiver::skip(void)
 {
 	if(state==APTSTART) {
 		state=PHASING;
 		phaseHigh = currentValue>=128 ? true : false;
 		emit startingPhasing();
+	} else if(state==PHASING) {
+		lpm=txLPM;
+		double pos=fmod(imageSample,sampleRate*60/lpm);
+		pos/=(double)sampleRate*60.0/(double)lpm;
+		lastCol=(unsigned int)(pos*width);
+		pixel=pixelSamples=imageSample=0;
+		lastRow=99; // just !=0 which is the first row
 	}
 }
 
@@ -265,7 +297,8 @@ void FaxReceiver::endReception(void)
 	int h=currRow-(int)(lpm/60.0)-1;
 	rawData.resize(imageSample);
 	if(h>0) {
-		emit newImageHeight(2,color ? h/3 : h);
+		emit newSize(0,2,0,color ? h/3 : h);
+		emit bufferNotEmpty(true);
 	}
 	state=DONE;
 	emit end();
@@ -274,4 +307,15 @@ void FaxReceiver::endReception(void)
 void FaxReceiver::setColor(bool b)
 {
 	color=b;
+}
+
+void FaxReceiver::releaseBuffer(void)
+{
+	rawData.resize(0);
+	emit bufferNotEmpty(false);
+}
+
+void FaxReceiver::setTxLPM(int lpm)
+{
+	txLPM=lpm;
 }
