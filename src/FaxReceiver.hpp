@@ -86,7 +86,6 @@ public slots:
 	void correctLPM(double d);
 	void correctWidth(int w);
 	void releaseBuffer(void);
-	void setTxLPM(int lpm);
 private slots:
         void adjustNext(void);
 };

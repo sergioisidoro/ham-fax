@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -31,7 +32,7 @@ void FaxReceiver::init(int sampleRate)
 	Config& config=Config::instance();
 	aptStartFreq=config.readNumEntry("/hamfax/APT/startFrequency");
 	aptStopFreq=config.readNumEntry("/hamfax/APT/stopFrequency");
-	lpm=config.readNumEntry("/hamfax/fax/LPM");
+	txLPM=config.readNumEntry("/hamfax/fax/LPM");
 	phaseInvers=config.readBoolEntry("/hamfax/phasing/invert");
 	color=config.readBoolEntry("/hamfax/fax/color");
 	this->sampleRate=sampleRate;
@@ -207,11 +208,11 @@ void FaxReceiver::adjustNext(void)
 void FaxReceiver::skip(void)
 {
 	if(state==APTSTART) {
+		lpm=lpmSum=0;
 		state=PHASING;
 		phaseHigh = currentValue>=128 ? true : false;
 		currPhaseLength=currPhaseHigh=0;
 		phaseLines=noPhaseLines=0;
-		lpm=lpmSum=0;
 		emit startingPhasing();
 	} else if(state==PHASING) {
 		lpm=txLPM;
@@ -250,11 +251,6 @@ void FaxReceiver::releaseBuffer(void)
 void FaxReceiver::setColor(bool b)
 {
 	color=b;
-}
-
-void FaxReceiver::setTxLPM(int lpm)
-{
-	txLPM=lpm;
 }
 
 void FaxReceiver::setAptStartFreq(int f)
