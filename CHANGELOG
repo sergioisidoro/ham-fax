@@ -1,3 +1,7 @@
+ * fixed disconnect bug while writing to file
+ * fixed line length while transmitting at high speed (>300lpm)
+ * minor changes
+
 HamFax 0.4
  * received colors are displayed as spectrum in receive dialog
  * possible data rates for the PTC are now 38400, 57600 and 115200 bps

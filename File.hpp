@@ -31,6 +31,7 @@ public:
 	void startInput(const QString& fileName);
 	void end(void);
 private:
+	static const int blockSize=512;
 	AFfilehandle aFile;
 	QTimer* timer;
 signals:

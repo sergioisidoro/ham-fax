@@ -96,8 +96,8 @@ void File::end(void)
 void File::write(short* samples, int number)
 {
 	if(aFile!=0) {
-		if((afWriteFrames(aFile,AF_DEFAULT_TRACK,
-				  samples,number))==AF_BAD_WRITE) {
+		if((afWriteFrames(aFile,AF_DEFAULT_TRACK,samples,number))
+		   !=blockSize) {
 			end();
 			}
 	}
@@ -105,7 +105,7 @@ void File::write(short* samples, int number)
 
 void File::read(void)
 {
-	int n=512;
+	int n=blockSize;
 	short buffer[n];
 	n=afReadFrames(aFile,AF_DEFAULT_TRACK,buffer,n);
 	emit data(buffer,n);
@@ -113,5 +113,5 @@ void File::read(void)
 
 void File::timerSignal(void)
 {
-	emit next(512);
+	emit next(blockSize);
 }

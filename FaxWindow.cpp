@@ -576,7 +576,7 @@ void FaxWindow::endTransmission(void)
 		disconnect(faxTransmitter, SIGNAL(data(double*, int)),
 			   faxModulator, SLOT(modulate(double*, int)));
 		disconnect(faxModulator, SIGNAL(data(short*, int)),
-			   sound, SLOT(write(short*, int)));
+			   file, SLOT(write(short*, int)));
 		break;
 	case DSP:
 		sound->end();
