@@ -20,6 +20,8 @@
 
 #include <qobject.h>
 #include <qstring.h>
+#include <qarray.h>
+#include <qtimer.h>
 
 class FaxReceiver : public QObject {
 	Q_OBJECT
@@ -56,17 +58,20 @@ private:
 	unsigned int pixel;
 	unsigned int pixelSamples;
 	bool color;
+	QTimer* timer;
+	QArray<unsigned int> rawData;
+	QArray<unsigned int>::Iterator rawIt;
 signals:
 	void aptFound(unsigned int f);
 	void aptStopDetected(void);
 	void newImageHeight(unsigned int y, unsigned int h);
 	void newPixel(unsigned int c, unsigned int h, 
 		      unsigned int v, unsigned int rgbg);
-	void searchingAptStart(void);
+	void start(void);
+	void end(void);
 	void startingPhasing(void);
 	void phasingLine(double lpm);
 	void imageRow(unsigned int row);
-	void receptionEnded(void);
 public slots:
 	void decode(unsigned int*, unsigned int n);
         void setAptStartFreq(int f);
@@ -76,6 +81,9 @@ public slots:
 	void startPhasing(void);
 	void endReception(void);
 	void setColor(bool b);
+	void widthAdjust(double d);
+private slots:
+        void adjustNext(void);
 };
 
 #endif

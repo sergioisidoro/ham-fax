@@ -85,6 +85,8 @@ public slots:
 	void endReception(void);
 	void slantWaitSecond(void);
 	void slantEnd(void);
+	void disableControls(void);
+	void enableControls(void);
 private slots:
         void load(void);
         void save(void);

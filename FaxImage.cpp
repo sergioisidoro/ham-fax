@@ -215,22 +215,9 @@ void FaxImage::setAutoScroll(bool b)
 
 void FaxImage::correctSlant(void)
 {
-	int w=image.width();
-	int h=image.height();
-	double pixCorrect=1.0
-		-(double)(slant1.x()-slant2.x())
-		/(double)(slant1.y()-slant2.y())
-		/(double)w;
-	QImage newImage(w, h, 32);
-	for(int pix=0; pix<w*h; pix++) {
-		int oldPix=(int)((double)pix/pixCorrect);
-		int oldX=oldPix%w;
-		int oldY=oldPix/w;
-		newImage.setPixel(pix%w,pix/w, oldY<h 
-				  ? image.pixel(oldX,oldY) : 0);
-	}
-	image=newImage;
-	updateContents(0,0,w,h);
+	emit widthAdjust(1.0-(double)(slant1.x()-slant2.x())
+			 /(double)(slant1.y()-slant2.y())
+			 /(double)image.width());
 }
 
 void FaxImage::drawContents(QPainter* p,

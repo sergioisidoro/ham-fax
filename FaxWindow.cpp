@@ -227,7 +227,7 @@ FaxWindow::FaxWindow(const QString& version)
 	// FaxReceiver -- ReceiveDialog
 	connect(faxReceiver,SIGNAL(aptFound(unsigned int)),
 		receiveDialog,SLOT(apt(unsigned int)));
-	connect(faxReceiver,SIGNAL(searchingAptStart()),
+	connect(faxReceiver,SIGNAL(start()),
 		receiveDialog,SLOT(aptStart()));
 	connect(faxReceiver,SIGNAL(startingPhasing()),
 		receiveDialog,SLOT(phasing()));
@@ -239,10 +239,17 @@ FaxWindow::FaxWindow(const QString& version)
 		receiveDialog,SLOT(imageRow(unsigned int)));
 	connect(receiveDialog,SIGNAL(cancelClicked()),
 		faxReceiver,SLOT(endReception()));
-	connect(faxReceiver,SIGNAL(receptionEnded()),
+	connect(faxReceiver,SIGNAL(end()),
 		this,SLOT(endReception()));
 
+	connect(faxReceiver,SIGNAL(start()),
+		this,SLOT(disableControls()));
+	connect(faxReceiver,SIGNAL(end()),
+		this,SLOT(enableControls()));
+
 	connect(this,SIGNAL(correctSlant()),faxImage,SLOT(correctSlant()));
+	connect(faxImage,SIGNAL(widthAdjust(double)),
+		faxReceiver,SLOT(widthAdjust(double)));
 
 	buildMenuBar();
 	config->readFile();
@@ -474,10 +481,6 @@ void FaxWindow::initTransmit(int item)
 		faxModulator->setSampleRate(sampleRate);
 		faxTransmitter->setSampleRate(sampleRate);
 		faxTransmitter->startTransmission();
-		menuBar()->setDisabled(true);
-		modTool->setDisabled(true);
-		aptTool->setDisabled(true);
-		faxTool->setDisabled(true);
 		transmitDialog->show();
 
 	} catch (Error e) {
@@ -524,10 +527,6 @@ void FaxWindow::endTransmission(void)
 			   SIGNAL(data(double*, unsigned int)),
 			   ptc,SLOT(transmit(double*, unsigned int)));
 	}
-	menuBar()->setDisabled(false);
-	modTool->setDisabled(false);
-	aptTool->setDisabled(false);
-	faxTool->setDisabled(false);
 	transmitDialog->hide();
 }
 
@@ -697,4 +696,20 @@ void FaxWindow::slantEnd(void)
 	disconnect(faxImage,SIGNAL(clicked()),this,SLOT(slantEnd()));
 	emit correctSlant();
 	delete slantDialog;
+}
+
+void FaxWindow::disableControls(void)
+{
+	menuBar()->setDisabled(true);
+	modTool->setDisabled(true);
+	aptTool->setDisabled(true);
+	faxTool->setDisabled(true);
+}
+
+void FaxWindow::enableControls(void)
+{
+	menuBar()->setDisabled(false);
+	modTool->setDisabled(false);
+	aptTool->setDisabled(false);
+	faxTool->setDisabled(false);
 }

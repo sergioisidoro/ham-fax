@@ -44,6 +44,7 @@ private:
 signals:
 	void sizeUpdated(unsigned int width, unsigned int height);
 	void clicked(void);
+	void widthAdjust(double);
 public slots:
         bool setPixel(unsigned int col, unsigned int row,
 		      unsigned int value, unsigned int rgbg);

@@ -23,8 +23,11 @@ FaxReceiver::FaxReceiver(QObject* parent)
 	  currentValue(0),
 	  aptHigh(false), aptTrans(0), aptCount(0),
 	  aptStartFreq(0), aptStopFreq(0), aptStop(false),
-	  phaseHigh(false), currPhaseLength(0), color(false)
+	  phaseHigh(false), currPhaseLength(0), color(false),
+	  rawData(0)
 {
+	timer=new QTimer(this);
+	connect(timer,SIGNAL(timeout()),this,SLOT(adjustNext()));
 }
 
 void FaxReceiver::setSampleRate(unsigned int rate)
@@ -40,7 +43,8 @@ void FaxReceiver::init(void)
 	currPhaseLength=currPhaseHigh=0;
 	phaseLines=noPhaseLines=0;
 	lpm=lpmSum=0;
-	emit searchingAptStart();
+	rawData.resize(8388608);
+	emit start();
 }
 
 void FaxReceiver::decode(unsigned int* buf, unsigned int n)
@@ -140,6 +144,11 @@ void FaxReceiver::decodeImage(unsigned int& x)
 		unsigned int col=(unsigned int)(pos*width);
 		currRow=(unsigned int)((double)imageSample
 				       /(double)sampleRate*lpm/60.0);
+		int rawSize=rawData.size();
+		if(rawSize<=imageSample) {
+			rawData.resize(rawSize+1048576);
+		}
+		rawData[imageSample]=x;
 		if(col==lastCol) {
 			pixel+=x;
 			pixelSamples++;
@@ -167,6 +176,55 @@ void FaxReceiver::decodeImage(unsigned int& x)
 		}
 	}
 	imageSample++;
+}
+
+void FaxReceiver::widthAdjust(double d)
+{
+	pixel=pixelSamples=imageSample=0;
+	lastCol=99;
+	lpm*=d;
+	rawIt=rawData.begin();
+	timer->start(0);
+	emit start();
+}
+
+void FaxReceiver::adjustNext(void)
+{
+	for(unsigned int i=0; i<512; i++) {
+		if(rawIt++>=rawData.end()) {
+			timer->stop();
+			int h=currRow-(int)(lpm/60.0)-1;
+			emit newImageHeight(2,color ? h/3 : h);
+			emit end();
+			break;
+		}
+		double pos=fmod(imageSample,(double)sampleRate*60.0/lpm);
+		pos/=(double)sampleRate*60.0/(double)lpm;
+		unsigned int col=(unsigned int)(pos*width);
+		currRow=(unsigned int)((double)imageSample
+				       /(double)sampleRate*lpm/60.0);
+		if(col==lastCol) {
+			pixel+=*rawIt;
+			pixelSamples++;
+		} else  {
+			if(pixelSamples>0 && imageSample>0) {
+				pixel/=pixelSamples;
+				if(color) {
+					emit newPixel(lastCol,
+						      currRow/3,
+						      pixel,
+						      currRow%3);
+				} else {
+					emit newPixel(lastCol,currRow,
+						      pixel,3);
+				}
+			}
+			lastCol=col;
+			pixel=*rawIt;
+			pixelSamples=1;
+		}
+		imageSample++;
+	}
 }
 
 void FaxReceiver::setAptStartFreq(int f)
@@ -205,11 +263,12 @@ void FaxReceiver::startPhasing(void)
 void FaxReceiver::endReception(void)
 {
 	int h=currRow-(int)(lpm/60.0)-1;
+	rawData.resize(imageSample);
 	if(h>0) {
 		emit newImageHeight(2,color ? h/3 : h);
 	}
 	state=DONE;
-	emit receptionEnded();
+	emit end();
 }
 
 void FaxReceiver::setColor(bool b)
