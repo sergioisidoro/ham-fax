@@ -62,12 +62,17 @@ void FaxReceiver::decode(int* buf, int n)
 	}
 }
 
+// The number of transistions between black and white is counted. After 1/2 
+// second, the frequency is calculated. If it matches the APT start frequency,
+// the state skips to the detection of phasing lines, if it matches the apt
+// stop frequency two times, the reception is ended.
+
 void FaxReceiver::decodeApt(int& x)
 {
-	if(x>220 && !aptHigh) {
+	if(x>229 && !aptHigh) {
 		aptHigh=true;
 		aptTrans++;
-	} else if(x<42 && aptHigh) {
+	} else if(x<25 && aptHigh) {
 		aptHigh=false;
 	}
 	if(++aptCount >= sampleRate/2) {
@@ -103,11 +108,11 @@ void FaxReceiver::decodePhasing(int& x)
 	if(x>128) {
 		currPhaseHigh++;
 	}
-	if((!phaseInvers && x>220 && !phaseHigh) ||
-	   ( phaseInvers && x<42  && phaseHigh)) {
+	if((!phaseInvers && x>229 && !phaseHigh) ||
+	   ( phaseInvers && x<25  && phaseHigh)) {
 		phaseHigh=phaseInvers?false:true;
-	} else if((!phaseInvers && x<=128 && phaseHigh) ||
-		  ( phaseInvers && x>=128 && !phaseHigh)) {
+	} else if((!phaseInvers && x<25 && phaseHigh) ||
+		  ( phaseInvers && x>229 && !phaseHigh)) {
 		phaseHigh=phaseInvers?true:false;
 		if(currPhaseHigh>=(phaseInvers?0.948:0.048)*currPhaseLength &&
 		   currPhaseHigh<=(phaseInvers?0.952:0.052)*currPhaseLength &&
@@ -118,8 +123,7 @@ void FaxReceiver::decodePhasing(int& x)
 			lpmSum+=l;
 			++phaseLines;
 			lpm=lpmSum/phaseLines;
-			imageSample=static_cast<int>
-				(1.025*60.0/lpm*sampleRate);
+			imageSample=static_cast<int>(1.025*60./lpm*sampleRate);
 			noPhaseLines=0;
 		} else if(phaseLines>0 && ++noPhaseLines>=5) {
 			state=IMAGE;
@@ -144,28 +148,24 @@ void FaxReceiver::decodeImage(int& x)
 			(static_cast<double>(imageSample)/sampleRate*lpm/60.0);
 		int rawSize=rawData.size();
 		if(rawSize<=imageSample) {
-			rawData.resize(rawSize+1048576);
+			rawData.resize(rawSize+1024*1024);
 		}
 		rawData[imageSample]=x;
 		if(col==lastCol) {
 			pixel+=x;
 			pixelSamples++;
 		} else  {
-			if(pixelSamples>0 && imageSample>0) {
+			if(pixelSamples>0) {
 				pixel/=pixelSamples;
 				if(color) {
-					emit newPixel(lastCol,
-						      currRow/3,
-						      pixel,
-						      currRow%3);
+					emit newPixel(lastCol,currRow/3,
+						      pixel,currRow%3);
 				} else {
-					emit newPixel(lastCol,currRow,
-						      pixel,3);
+					emit newPixel(lastCol,currRow,pixel,3);
 				}
 				if(lastRow!=currRow && state==IMAGE) {
 					lastRow=currRow;
-					emit imageRow(color ?
-						      currRow/3 : currRow);
+					emit imageRow(color?currRow/3:currRow);
 				}
 			}
 			lastCol=col;

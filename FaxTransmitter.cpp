@@ -50,57 +50,42 @@ void FaxTransmitter::doNext(int n)
 			break;
 		}
 		if(state==APTSTART) {
-			if(sampleNr>=sampleRate*startLength) {
-				state=PHASING;
-				sampleNr=0;
-				emit phasing();
-			} else {
-				// black/white pattern with startFreq
+			if(sampleNr<sampleRate*startLength) {
 				buf[i]=(sampleNr*2*startFreq/sampleRate)%2;
 				sampleNr++;
+			} else {
+				sampleNr=0;
+				emit phasing();
+				state=PHASING;
 			}
 		}
 		if(state==PHASING) {
-			if(sampleNr>=sampleRate*phasingLines*60/lpm) {
-				state=ENDPHASING;
-				sampleNr=0;
-			} else {
-				// determine current position in line
-                                // (0.0 ... 1.0) and build line with
-				// 2.5% white, 95% black and 2.5% white
-				double pos=fmod(sampleNr,
-						sampleRate*60/lpm);
-				pos/=(double)sampleRate*60.0/(double)lpm;
+			if(sampleNr<sampleRate*phasingLines*60/lpm) {
+				double pos=fmod(sampleNr,sampleRate*60/lpm);
+				pos/=sampleRate*60.0/lpm;
 				buf[i] = pos<0.025||pos>=0.975 
 					? phaseInvers?0.0:1.0 
 					: phaseInvers?1.0:0.0;
 				sampleNr++;
+			} else {
+				state=ENDPHASING;
+				sampleNr=0;
 			}
 		}
 		if(state==ENDPHASING) {
-			if(sampleNr>=sampleRate*60/lpm) {
-				state=IMAGE;
-				sampleNr=0;
-			} else {
-				double pos=fmod(sampleNr,
-						sampleRate*60/lpm);
-				pos/=(double)sampleRate*60.0/(double)lpm;
+			if(sampleNr<sampleRate*60/lpm) {
 				buf[i]= phaseInvers?0.0:1.0;
 				sampleNr++;
+			} else {
+				state=IMAGE;
+				sampleNr=0;
 			}
 		}
 		if(state==IMAGE) {
-			if(!color&&sampleNr
-			   >=sampleRate*faxImage->getRows()*60/lpm ||
-			   color&&sampleNr
-			   >=3*sampleRate*faxImage->getRows()*60/lpm) {
-				state=APTSTOP;
-				sampleNr=0;
-				emit aptStop();
-			} else {
-				// get pixel determining current value
-				double pos=fmod(sampleNr,sampleRate*60/lpm);
-				pos/=(double)sampleRate*60.0/(double)lpm;
+			if(sampleNr<
+			   color?3:1 *sampleRate*faxImage->getRows()*60/lpm) {
+				double pos=fmod(sampleNr,sampleRate*60/lpm)
+					/sampleRate*60.0/lpm;
 				int c=static_cast<int>
 					(pos*faxImage->getCols());
 				int r=sampleNr*lpm/60/sampleRate;
@@ -120,22 +105,25 @@ void FaxTransmitter::doNext(int n)
 						break;
 					}
 				} else {
-				buf[i]=faxImage->getPixelGray(c,r);
+					buf[i]=faxImage->getPixelGray(c,r);
 				}
 				buf[i]=buf[i]/255.0;
 				sampleNr++;
+			} else {
+				state=APTSTOP;
+				sampleNr=0;
+				emit aptStop();
 			}
 		}
 		if(state==APTSTOP) {
-			if(sampleNr>=sampleRate*stopLength) {
+			if(sampleNr<sampleRate*stopLength) {
+				buf[i]=sampleNr*2*stopFreq/sampleRate%2;
+				sampleNr++;
+			} else {
 				state=IDLE;
 				n=i;
 				emit end();
 				break;
-			} else {
-				// black/white pattern with stopFreq
-				buf[i]=sampleNr*2*stopFreq/sampleRate%2;
-				sampleNr++;
 			}
 		}
 	}

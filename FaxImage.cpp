@@ -178,8 +178,9 @@ void FaxImage::setAutoScroll(bool b)
 
 void FaxImage::correctSlant(void)
 {
-	emit widthAdjust(static_cast<double>(slant2.x()-slant1.x())
-			 /(slant1.y()-slant2.y())/image.width());
+	emit widthAdjust(static_cast<double>
+			 (slant2.x()-slant1.x())/(slant1.y()-slant2.y())
+			 /image.width());
 }
 
 void FaxImage::drawContents(QPainter* p,int x,int y,int w,int h)

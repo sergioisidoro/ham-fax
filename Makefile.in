@@ -15,22 +15,23 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-CXX=@CXX@
-CXXFLAGS=-Wall @QT_CXXFLAGS@ @CXXFLAGS@
-CPPFLAGS=@CPPFLAGS@
-LIBS=@QT_LIBS@ -laudiofile
-QT_MOC=@QT_MOC@
-INSTALL=@INSTALL@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
 docdir=@datadir@/doc/HamFax
-defines=-DDOCDIR='"$(docdir)"'
+CXX=@CXX@
+CXXFLAGS=-Wall @QT_CXXFLAGS@ @CXXFLAGS@
+CPPFLAGS=@CPPFLAGS@ -DDOCDIR='"$(docdir)"'
+LIBS=@QT_LIBS@ -laudiofile
+QT_MOC=@QT_MOC@
+INSTALL=@INSTALL@
+
+.PHONY: all clean install 
 
 all: hamfax
 
 clean:
-	rm -rfv *~ *.o moc_*.cpp hamfax qhamfax\
+	rm -rfv *~ *.o moc_*.cpp hamfax\
         config.cache config.log config.status moc_bnv_qt_test.C\
         doc/*~
 
@@ -41,7 +42,7 @@ install: hamfax
 	$(INSTALL) -o root -g root -m 0644 doc/HamFax.html $(docdir)
 
 .cpp.o:
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(defines) -c $<
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $<
 
 moc_%.cpp: %.hpp
 	$(QT_MOC) $< -o $@
@@ -65,15 +66,16 @@ FaxReceiver.o: FaxReceiver.cpp FaxReceiver.hpp
 FaxTransmitter.o: FaxTransmitter.cpp FaxTransmitter.hpp FaxImage.hpp
 
 FaxWindow.o: FaxWindow.cpp FaxWindow.hpp\
-             CorrectDialog.hpp\
+	     Config.hpp CorrectDialog.hpp\
              Error.hpp OptionsDialog.hpp\
              FaxDemodulator.hpp FaxImage.hpp\
              FaxModulator.hpp FaxReceiver.hpp FaxTransmitter.hpp\
              File.hpp HelpDialog.hpp\
+             OptionsDialog.hpp\
              PTC.hpp PTT.hpp ReceiveDialog.hpp\
              Sound.hpp TransmitDialog.hpp
 
-File.o: File.cpp File.hpp
+File.o: File.cpp File.hpp Error.hpp
 
 HelpDialog.o: HelpDialog.cpp HelpDialog.hpp
 
