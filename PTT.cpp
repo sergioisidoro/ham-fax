@@ -16,69 +16,62 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "PTT.hpp"
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
 #include <termios.h>
-#include "Error.hpp"
+#include <sys/ioctl.h>
+
+class Error {};
 
 PTT::PTT(QObject* parent)
-	: QObject(parent), device(0), usePTT(false), 
-	deviceName("/dev/ttyS1")
+	: QObject(parent), usePTT(false)
 {	
 }
 
 PTT::~PTT(void)
 {
-	if(device!=0) {
-		close(device);
-	}
+	device.close();
 }
 
 void PTT::setDeviceName(const QString& s)
 {
-	deviceName=s;
-}
-
-QString& PTT::getDeviceName(void)
-{
-	return deviceName;
+	device.setName(s);
 }
 
 void PTT::set(void)
 {
 	if(usePTT) {
-		if((device=open(deviceName,O_WRONLY))==-1) {
-			throw Error(tr("could not open PTT device"));
-		}
-		int status;
-		if(ioctl(device,TIOCMGET,&status)==-1) {
-			throw Error(tr("error getting PTT state"));
-		}
-		status|=TIOCM_RTS;
-		if(ioctl(device,TIOCMSET,&status)==-1) {
-			throw Error(tr("error setting PTT"));
-		close(device);
-		device=0;
+		try {
+			if(!device.open(IO_WriteOnly)) {
+				throw Error();
+			}
+			int status;
+			if(ioctl(device.handle(),TIOCMGET,&status)==-1) {
+				throw Error();
+			}
+			status|=TIOCM_RTS;
+			if(ioctl(device.handle(),TIOCMSET,&status)==-1) {
+				throw Error();
+			}
+		} catch(Error) {
+			device.close();
 		}
 	}
 }
 
 void PTT::release(void)
 {
-	if(usePTT) {
-		if((device=open(deviceName,O_WRONLY))==-1) {
-			throw Error(tr("could not open PTT device"));
-		}
-		int status;
-		if(ioctl(device,TIOCMGET,&status)==-1) {
-			throw Error(tr("error getting PTT state"));
-		}
-		status&=~TIOCM_RTS;
-		if(ioctl(device,TIOCMSET,&status)==-1) {
-			throw Error(tr("error setting PTT"));
-		close(device);
-		device=0;
+	if(device.isOpen()) {
+		try {
+			int status;
+			if(ioctl(device.handle(),TIOCMGET,&status)==-1) {
+				throw Error();
+			}
+			status&=~TIOCM_RTS;
+			if(ioctl(device.handle(),TIOCMSET,&status)==-1) {
+				throw Error();
+			}
+			device.close();
+		} catch(Error) {
+			device.close();
 		}
 	}
 }

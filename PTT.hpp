@@ -20,17 +20,16 @@
 
 #include <qstring.h>
 #include <qobject.h>
+#include <qfile.h>
 
 class PTT : public QObject {
 	Q_OBJECT
 public:
 	PTT(QObject* parent);
 	~PTT(void);
-	QString& getDeviceName(void);
 private:
-	int device;
 	bool usePTT;
-	QString deviceName;
+	QFile device;
 public slots:
 	void setDeviceName(const QString& s);
         void setUse(bool use);

@@ -29,7 +29,6 @@ public:
 	~Sound(void);
 	void startOutput(void);
 	void startInput(void);
-	bool outputBufferEmpty(void);
 private:
 	int sampleRate;
 	int devDSP;

@@ -30,7 +30,6 @@ public:
 	void startInput(void);
 	void startOutput(void);
 	void end(void);
-	void receive(int* samples, int& count);
 private:
 	void open(void);
 	QString deviceName;

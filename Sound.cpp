@@ -144,16 +144,6 @@ void Sound::write(short* samples, int number)
 	}
 }
 
-bool Sound::outputBufferEmpty(void)
-{
-	if(devDSP!=-1) {
-		int i;
-		ioctl(devDSP,SNDCTL_DSP_GETODELAY,&i);
-		return i>0 ? false : true;
-	}
-	return true;
-}
-
 void Sound::read(int fd)
 {
 	int n=256;

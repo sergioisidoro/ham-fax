@@ -51,17 +51,13 @@ void ReceiveDialog::closeEvent(QCloseEvent* close)
 	}
 }
 
-void ReceiveDialog::show(void)
-{
-	level->setZero();
-	skip->setText(tr("&Skip apt start"));
-	QDialog::show();
-}
-
 void ReceiveDialog::aptStart(void)
 {
 	showText(tr("searching APT start tone"));
 	skip->setDisabled(false);
+	level->setZero();
+	skip->setText(tr("&Skip apt start"));
+	show();
 }
 
 void ReceiveDialog::phasing(void)

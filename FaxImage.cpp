@@ -178,9 +178,8 @@ void FaxImage::setAutoScroll(bool b)
 
 void FaxImage::correctSlant(void)
 {
-	emit widthAdjust(1.0-(double)(slant1.x()-slant2.x())
-			 /(double)(slant1.y()-slant2.y())
-			 /(double)image.width());
+	emit widthAdjust(static_cast<double>(slant2.x()-slant1.x())
+			 /(slant1.y()-slant2.y())/image.width());
 }
 
 void FaxImage::drawContents(QPainter* p,int x,int y,int w,int h)
@@ -195,7 +194,7 @@ void FaxImage::contentsMousePressEvent(QMouseEvent* m)
 	emit clicked();
 }
 
-void FaxImage::shiftCol1(void)
+void FaxImage::shiftColors(void)
 {
 	int w=image.width();
 	int h=image.height();
@@ -203,21 +202,6 @@ void FaxImage::shiftCol1(void)
 		for(int r=0; r<h; r++) {
 			QRgb rgb=image.pixel(c,r);
 			rgb=qRgb(qGreen(rgb),qBlue(rgb),qRed(rgb));
-			image.setPixel(c,r,rgb);
-		}
-	}
-	updateContents(0,0,w,h);
-	emit newImage();
-}
-
-void FaxImage::shiftCol2(void)
-{
-	int w=image.width();
-	int h=image.height();
-	for(int c=0; c<w; c++) {
-		for(int r=0; r<h; r++) {
-			QRgb rgb=image.pixel(c,r);
-			rgb=qRgb(qBlue(rgb),qRed(rgb),qGreen(rgb));
 			image.setPixel(c,r,rgb);
 		}
 	}

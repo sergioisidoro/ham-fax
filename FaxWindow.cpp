@@ -158,9 +158,7 @@ FaxWindow::FaxWindow(const QString& version)
 					 this,SLOT(redrawMono()));
 	imageMenu->insertSeparator();
 	imageMenu->insertItem(tr("shift colors (R->G,G->B,B->R)"),
-			      faxImage,SLOT(shiftCol1()));
-	imageMenu->insertItem(tr("shift colors (R->B,G->R,B->G)"),
-			      faxImage,SLOT(shiftCol2()));
+			      faxImage,SLOT(shiftColors()));
 	imageMenu->insertItem(tr("set beginning of line"),
 			      this,SLOT(setBegin()));
 	optionsMenu=new QPopupMenu(this);
@@ -377,10 +375,13 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(faxReceiver,SIGNAL(startReception()),
 		receiveDialog,SLOT(aptStart()));
 	connect(faxReceiver,SIGNAL(startReception()),SLOT(disableControls()));
-	connect(faxReceiver,SIGNAL(startReception()),
-		receiveDialog,SLOT(show()));
+	connect(receiveDialog,SIGNAL(skipClicked()),faxReceiver,SLOT(skip()));
+	connect(receiveDialog,SIGNAL(cancelClicked()),
+		faxReceiver,SLOT(endReception()));
 	connect(sound, SIGNAL(data(short*,int)),
 		receiveDialog, SLOT(samples(short*,int)));
+	connect(file, SIGNAL(data(short*,int)),
+		receiveDialog,SLOT(samples(short*,int)));
 	connect(faxDemodulator, SIGNAL(data(int*,int)),
 		receiveDialog, SLOT(imageData(int*,int)));
 	connect(ptc,SIGNAL(data(int*,int)),
@@ -398,9 +399,6 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(faxReceiver,SIGNAL(end()),SLOT(endReception()));
 	connect(faxReceiver,SIGNAL(end()),SLOT(enableControls()));
 	connect(faxReceiver,SIGNAL(end()),receiveDialog,SLOT(hide()));
-	connect(receiveDialog,SIGNAL(skipClicked()),faxReceiver,SLOT(skip()));
-	connect(receiveDialog,SIGNAL(cancelClicked()),
-		faxReceiver,SLOT(endReception()));
 
 	// correction
 	connect(faxReceiver,SIGNAL(bufferNotEmpty(bool)),

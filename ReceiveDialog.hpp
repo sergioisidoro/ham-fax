@@ -28,7 +28,6 @@ class ReceiveDialog : public QDialog {
 	Q_OBJECT
 public:
 	ReceiveDialog(QWidget* parent);
-	virtual void show(void);
 private:
 	virtual void closeEvent(QCloseEvent* close);
         void showText(const QString& s);

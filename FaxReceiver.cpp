@@ -180,7 +180,7 @@ void FaxReceiver::correctLPM(double d)
 {
 	pixel=pixelSamples=imageSample=0;
 	lastCol=99;
-	lpm*= (color ? (d-1.0)/3.0+1.0 : d);
+	lpm*= 1.0 + (color ? d/3.0 : d);
 	rawIt=rawData.begin();
 	timer->start(0);
 	emit redrawStarts();

@@ -58,8 +58,7 @@ public slots:
 	void setWidth(int w);
 	void setAutoScroll(bool b);
 	void correctSlant(void);
-	void shiftCol1(void);
-	void shiftCol2(void);
+	void shiftColors(void);
 	void correctBegin(void);
 };
 

@@ -123,15 +123,6 @@ void PTC::close(void)
 	emit deviceClosed();
 }
 
-void PTC::receive(int* samples, int& count)
-{
-	char buf[count];
-	count=::read(device,buf,count);
-	for(int i=0; i<count; i++) {
-		samples[i]=buf[i];
-	}
-}
-
 void PTC::transmit(double* samples, int count)
 {
 	try {
