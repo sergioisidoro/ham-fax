@@ -34,6 +34,10 @@ public:
 
 	void readFile(void);
 	bool getKeyPTT(void);
+	const QString& getDSP(void);
+	const QString& getPTT(void);
+	const QString& getPTC(void);
+	const int getPtcSpeed(void);
 private:
 	Config(void);
 	~Config(void);

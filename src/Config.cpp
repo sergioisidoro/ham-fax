@@ -116,6 +116,26 @@ void Config::readFile(void)
 	QApplication::setFont(font,true);
 }
 
+const QString& Config::getDSP(void)
+{
+	return value["DSP"];
+}
+
+const QString& Config::getPTT(void)
+{
+	return value["PTT"];
+}
+
+const QString& Config::getPTC(void)
+{
+	return value["PTC"];
+}
+
+const int Config::getPtcSpeed(void)
+{
+	return value["ptcSpeed"].toUInt();
+}
+
 Config::~Config(void)
 {
 	QFile f(QDir::homeDirPath()+"/.hamfax");

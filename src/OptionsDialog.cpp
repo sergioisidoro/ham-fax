@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,100 +25,64 @@
 OptionsDialog::OptionsDialog(QWidget* parent)
 	: QDialog(parent,0,true)
 {
+	Config& config=Config::instance();
 	setCaption(parent->caption());
-
 	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
 
 	QGridLayout* settings=new QGridLayout(layout,3,2);
 	settings->addWidget(new QLabel(tr("dsp device"),this),1,1);
 	settings->addWidget(devDSP=new QLineEdit(this),1,2);
+	devDSP->setText(config.getDSP());
+
 	settings->addWidget(new QLabel(tr("ptt device"),this),2,1);
 	settings->addWidget(devPTT=new QLineEdit(this),2,2);
+	devPTT->setText(config.getPTT());
+
 	settings->addWidget(new QLabel(tr("ptc device"),this),3,1);
 	settings->addWidget(devPTC=new QLineEdit(this),3,2);
+	devPTC->setText(config.getPTC());
+
 	settings->addWidget(new QLabel(tr("ptc speed"),this),4,1);
 	settings->addWidget(speedPTC=new QComboBox(this),4,2);
 	speedPTC->insertItem(tr("38400bps"));
 	speedPTC->insertItem(tr("57600bps"));
 	speedPTC->insertItem(tr("115200bps"));
+	int i=0;
+	switch(config.getPtcSpeed()) {
+	case 115200: i=2; break;
+	case 57600:  i=1; break;
+	default:          break;
+	};
+	speedPTC->setCurrentItem(i);
 
 	QHBoxLayout* buttons=new QHBoxLayout(layout);
 	QPushButton* ok=new QPushButton(tr("&OK"),this);
-	QPushButton* cancel=new QPushButton(tr("&Cancel"),this);
 	buttons->addWidget(ok);
-	buttons->addWidget(cancel);
-
 	connect(ok,SIGNAL(clicked()),this,SLOT(okClicked()));
-	connect(cancel,SIGNAL(clicked()),this,SLOT(cancelClicked()));
 
-	Config* config=&Config::instance();
-	connect(config,SIGNAL(DSPDevice(const QString&)),
-		SLOT(setDSP(const QString&)));
-	connect(this,SIGNAL(dsp(const QString&)),
-		config,SLOT(setDSP(const QString&)));
-	connect(config,SIGNAL(PTCDevice(const QString&)),
-		SLOT(setPTC(const QString&)));
-	connect(this,SIGNAL(ptc(const QString&)),
-		config,SLOT(setPTC(const QString&)));
-	connect(config,SIGNAL(PTTDevice(const QString&)),
-		SLOT(setPTT(const QString&)));
-	connect(this,SIGNAL(ptt(const QString&)),
-		config,SLOT(setPTT(const QString&)));
-	connect(config,SIGNAL(ptcSpeed(int)),
-		SLOT(setPtcSpeed(int)));
-	connect(this,SIGNAL(ptcSpeed(int)),
-		config,SLOT(setPtcSpeed(int)));
+	QPushButton* cancel=new QPushButton(tr("&Cancel"),this);
+	buttons->addWidget(cancel);
+	connect(cancel,SIGNAL(clicked()),this,SLOT(cancelClicked()));
 }
 
 void OptionsDialog::okClicked(void)
 {
+	Config& config=Config::instance();
 	done(1);
-	emit dsp(devDSP->text());
-	emit ptt(devPTT->text());
-	emit ptc(devPTC->text());
+
+	int s=38400;
 	switch (speedPTC->currentItem()) {
-	case 0: emit ptcSpeed(38400);
-		break;
-	case 1: emit ptcSpeed(57600);
-		break;
-	case 2: emit ptcSpeed(115200);
-		break;
+	case 2: s=115200; break;
+	case 1: s=57600;  break;
+	default:          break;
 	};
+	config.setPtcSpeed(s);
+	config.setDSP(devDSP->text());
+	config.setPTT(devPTT->text());
+	config.setPTC(devPTC->text());
 }
 
 void OptionsDialog::cancelClicked(void)
 {
 	done(0);
-}
-
-void OptionsDialog::setDSP(const QString& s)
-{
-	devDSP->setText(s);
-}
-
-void OptionsDialog::setPTT(const QString& s)
-{
-	devPTT->setText(s);
-}
-
-void OptionsDialog::setPTC(const QString& s)
-{
-	devPTC->setText(s);
-}
-
-void OptionsDialog::setPtcSpeed(int s)
-{
-	switch(s) {
-	case 38400: speedPTC->setCurrentItem(0);
-		break;
-	case 57600: speedPTC->setCurrentItem(1);
-		break;
-	case 115200: speedPTC->setCurrentItem(2);
-		break;
-	};
-}
-
-void OptionsDialog::doDialog(void)
-{
-	exec();
 }

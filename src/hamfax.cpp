@@ -28,7 +28,7 @@
 
 int main(int argc, char* argv[])
 {
-	const QString version="0.5.2";
+	const QString version="HamFax 0.5.2";
 	QApplication app(argc, argv);
 	QTranslator translator(0);
 	translator.load(QString("hamfax_")+QTextCodec::locale(),QMDIR);

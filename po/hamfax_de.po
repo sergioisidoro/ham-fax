@@ -100,7 +100,7 @@ msgstr "HamFax ist eine Qt-Anwendung zum Senden und Empfangen"
 	"\n\nDie Demodulationsroutinen stammen aus ACfax"
 	" von Andreas Czechanowski, DL4SDC"
 	"\n\nLizenz: GNU General Public License"
-	"\nVersion %1"
+	"\nVersion: %1"
 
 #: FaxWindow.cpp:113
 msgid "FaxWindow::Hz"

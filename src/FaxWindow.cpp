@@ -40,9 +40,9 @@
 #include "PTT.hpp"
 
 FaxWindow::FaxWindow(const QString& version)
-	: QMainWindow(0,0,WDestructiveClose), version(version)
+	: QMainWindow(0,0,WDestructiveClose)
 {
-	setCaption("HamFax");
+	setCaption(version);
 
 	// create child objects
 	setCentralWidget(faxImage=new FaxImage(this));
@@ -57,7 +57,6 @@ FaxWindow::FaxWindow(const QString& version)
 	transmitDialog=new TransmitDialog(this);
 	ReceiveDialog* receiveDialog=new ReceiveDialog(this);
 	correctDialog=new CorrectDialog(this);
-	OptionsDialog* optionsDialog=new OptionsDialog(this);
 
 	Config* config=&Config::instance();
 
@@ -68,186 +67,8 @@ FaxWindow::FaxWindow(const QString& version)
 	QToolTip::add(iocText,tr("Index Of Cooperation:\n"
 				 "image width in pixels divided by PI"));
 	
-	// build tool bars
-	modTool=new QToolBar(tr("modulation settings"),this);
-	new QLabel(tr("carrier"),modTool);
-	QSpinBox* carrier=new QSpinBox(800,2400,100,modTool);
-	connect(config,SIGNAL(carrier(int)),carrier,SLOT(setValue(int)));
-	connect(carrier,SIGNAL(valueChanged(int)),
-		config,SLOT(setCarrier(int)));
-	carrier->setSuffix(tr("Hz"));
-	modTool->addSeparator();
-	QToolTip::add(carrier,tr("signal carrier for FM and AM"));
-	
-	new QLabel(tr("deviation"),modTool);
-	QSpinBox* deviation=new QSpinBox(400,500,10,modTool);
-	connect(config,SIGNAL(deviation(int)),
-		deviation,SLOT(setValue(int)));
-	connect(deviation,SIGNAL(valueChanged(int)),
-		config,SLOT(setDeviation(int)));
-	deviation->setSuffix(tr("Hz"));
-	QToolTip::add(deviation, tr("deviation for FM"));
-	modTool->addSeparator();
-	
-	new QLabel(tr("modulation"),modTool);
-	modulation=new QComboBox(false,modTool);
-	connect(config,SIGNAL(useFM(bool)),SLOT(setModulation(bool)));
-	connect(modulation,SIGNAL(activated(int)),config,SLOT(setUseFM(int)));
-	modulation->insertItem(tr("AM"));
-	modulation->insertItem(tr("FM"));
-	QToolTip::add(modulation,tr("AM is only used for getting images\n"
-				    "from weather satellites together with\n"
-				    "a FM receiver. FM together with a\n"
-				    "USB (upper side band) transceiver is\n"
-				    "the right setting for HF"));
-	modTool->addSeparator();
-
-	new QLabel(tr("filter"),modTool);
-	filter=new QComboBox(false,modTool);
-	connect(config,SIGNAL(filter(int)),SLOT(setFilter(int)));
-	connect(filter,SIGNAL(activated(int)),config,SLOT(setFilter(int)));
-	filter->insertItem(tr("narrow"));
-	filter->insertItem(tr("middle"));
-	filter->insertItem(tr("wide"));
-	QToolTip::add(filter,tr("bandwidth of the software demodulator"));
-
-	aptTool=new QToolBar(tr("apt settings"),this);
-	new QLabel(tr("apt start"),aptTool);
-	QSpinBox* aptStartLength=new QSpinBox(0,20,1,aptTool);
-	connect(config,SIGNAL(aptStartLength(int)),
-		aptStartLength,SLOT(setValue(int)));
-	connect(aptStartLength,SIGNAL(valueChanged(int)),
-		config,SLOT(setAptStartLength(int)));
-	aptStartLength->setSuffix(tr("s"));
-	QToolTip::add(aptStartLength,tr("length of the black/white pattern\n"
-					"at the beginning of a facsimile"));
-
-	QSpinBox* aptStartFreq=new QSpinBox(300,675,10,aptTool);
-	connect(config,SIGNAL(aptStartFreq(int)),
-		aptStartFreq,SLOT(setValue(int)));
-	connect(aptStartFreq,SIGNAL(valueChanged(int)),
-		config,SLOT(setAptStartFreq(int)));
-	aptStartFreq->setSuffix(tr("Hz"));
-	QToolTip::add(aptStartFreq,tr("frequency of the black/white pattern\n"
-				      "at the beginning of a facsimile"));
-	aptTool->addSeparator();
-
-	new QLabel(tr("apt stop"),aptTool);
-	QSpinBox* aptStopLength=new QSpinBox(0,20,1,aptTool);
-	connect(config,SIGNAL(aptStopLength(int)),
-		aptStopLength,SLOT(setValue(int)));
-	connect(aptStopLength,SIGNAL(valueChanged(int)),
-		config,SLOT(setAptStopLength(int)));
-	QToolTip::add(aptStopLength,tr("length of the black/white pattern\n"
-				       "at the end of a facsimile"));
-	aptStopLength->setSuffix(tr("s"));
-
-	QSpinBox* aptStopFreq=new QSpinBox(300,675,10,aptTool);
-	connect(config,SIGNAL(aptStopFreq(int)),
-		aptStopFreq,SLOT(setValue(int)));
-	connect(aptStopFreq,SIGNAL(valueChanged(int)),
-		config,SLOT(setAptStopFreq(int)));
-	aptStopFreq->setSuffix(tr("Hz"));
-	QToolTip::add(aptStopFreq,tr("frequency of the black/white pattern\n"
-				     "at the end of a facsimile"));
-	
-	faxTool=new QToolBar(tr("facsimile settings"),this);
-	new QLabel(tr("lpm"),faxTool);
-	QSpinBox* lpm=new QSpinBox(60,360,10,faxTool);
-	connect(config,SIGNAL(lpm(int)),lpm,SLOT(setValue(int)));
-	connect(lpm,SIGNAL(valueChanged(int)),config,SLOT(setLpm(int)));
-	QToolTip::add(lpm,tr("lines per minute"));
-	faxTool->addSeparator();
-
-	new QLabel(tr("phasing lines"),faxTool);
-	QSpinBox* phaseLines=new QSpinBox(0,50,1,faxTool);
-	connect(config,SIGNAL(phaseLines(int)),
-		phaseLines,SLOT(setValue(int)));
-	connect(phaseLines,SIGNAL(valueChanged(int)),
-		config,SLOT(setPhaseLines(int)));
-	QToolTip::add(phaseLines,tr("phasing lines mark the beginning\n"
-				    "of a line and the speed (lpm)"));
-
-	invertPhase=new QComboBox(false,faxTool);
-	connect(config,SIGNAL(phaseInvert(bool)),SLOT(setPhasingPol(bool)));
-	connect(invertPhase,SIGNAL(activated(int)),
-		config,SLOT(setPhaseInvert(int)));
-	invertPhase->insertItem(tr("normal"));
-	invertPhase->insertItem(tr("inverted"));
-	QToolTip::add(invertPhase,tr("normal means 2.5% white, 95% black\n"
-				     "and again 2.5% white"));
-
-	faxTool->addSeparator();
-	colorBox=new QComboBox(false,faxTool);
-	colorBox->insertItem(tr("mono"));
-	colorBox->insertItem(tr("color"));
-	connect(config,SIGNAL(color(bool)),SLOT(setColor(bool)));
-	connect(colorBox,SIGNAL(activated(int)),config,SLOT(setColor(int)));
-	connect(this,SIGNAL(color(bool)),config,SLOT(setColor(bool)));
-	QToolTip::add(colorBox,
-		      tr("In color mode each line\n"
-			 "is split in three lines:\n"
-			 "red, green and blue."));
-
-	// build menu bar
-	QPopupMenu* fileMenu=new QPopupMenu(this);
-	fileMenu->insertItem(tr("&Open"),this,SLOT(load()));
-	fileMenu->insertItem(tr("&Save"),this,SLOT(save()));
-	fileMenu->insertItem(tr("&Quick save as PNG"),this,SLOT(quickSave()));
-	fileMenu->insertSeparator();
-	fileMenu->insertItem(tr("&Exit"),this,SLOT(close()));
-	QPopupMenu* transmitMenu=new QPopupMenu(this);
-	transmitMenu->insertItem(tr("Transmit using &dsp"),DSP);
-	transmitMenu->insertItem(tr("Transmit to &file"),FILE);
-	transmitMenu->insertItem(tr("Transmit using &PTC"),SCSPTC);
-	QPopupMenu* receiveMenu=new QPopupMenu(this);
-	receiveMenu->insertItem(tr("Receive from d&sp"),DSP);
-	receiveMenu->insertItem(tr("Receive from f&ile"),FILE);
-	receiveMenu->insertItem(tr("Receive from P&TC"),SCSPTC);
-	imageMenu=new QPopupMenu(this);
-	imageMenu->insertItem(tr("&Adjust IOC (change width)"),
-			      this,SLOT(adjustIOC()));
-	imageMenu->insertItem(tr("&Scale to IOC (scale whole image)"),
-			      this,SLOT(scaleToIOC()));
-	imageMenu->insertSeparator();
-	slantID=imageMenu->insertItem(tr("slant correction"),
-				      this,SLOT(slantWaitFirst()));
-	colDrawID=imageMenu->insertItem(tr("redraw as color facsimile")
-					,this,SLOT(redrawColor()));
-	monoDrawID=imageMenu->insertItem(tr("redraw as mono facsimile"),
-					 this,SLOT(redrawMono()));
-	imageMenu->insertSeparator();
-	imageMenu->insertItem(tr("shift colors (R->G,G->B,B->R)"),
-			      faxImage,SLOT(shiftColors()));
-	imageMenu->insertItem(tr("set beginning of line"),
-			      this,SLOT(setBegin()));
-	optionsMenu=new QPopupMenu(this);
-	optionsMenu->insertItem(tr("device settings"),
-				optionsDialog,SLOT(doDialog()));
-	optionsMenu->insertItem(tr("select font"),this,SLOT(selectFont()));
-	optionsMenu->insertSeparator();
-	pttID=optionsMenu->
-		insertItem(tr("key PTT while transmitting with DSP"),
-			   this,SLOT(changePTT()));
-	scrollID=optionsMenu->
-		insertItem(tr("automatic scroll to last received line"),
-			   this,SLOT(changeScroll()));
-	toolTipID=optionsMenu->
-		insertItem(tr("show tool tips"),
-			   this,SLOT(changeToolTip()));
-	QPopupMenu* helpMenu=new QPopupMenu(this);
-	helpMenu->insertItem(tr("&Help"),this,SLOT(help()));
-	helpMenu->insertSeparator();
-	helpMenu->insertItem(tr("&About HamFax"),this,SLOT(about()));
-	helpMenu->insertItem(tr("About &QT"),this,SLOT(aboutQT()));
-
-	menuBar()->insertItem(tr("&File"),fileMenu);
-	menuBar()->insertItem(tr("&Transmit"),transmitMenu);
-	menuBar()->insertItem(tr("&Receive"),receiveMenu);
-	menuBar()->insertItem(tr("&Image"),imageMenu);
-	menuBar()->insertItem(tr("&Options"),optionsMenu);
-	menuBar()->insertSeparator();
-	menuBar()->insertItem(tr("&Help"),helpMenu);
+	createToolbars();
+	createMenubar();
 
 	// how configuration values get to the correct places
 
@@ -371,11 +192,199 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(faxReceiver,SIGNAL(imageWidth(int)),
 		faxImage,SLOT(setWidth(int)));
 
-	connect(transmitMenu,SIGNAL(activated(int)),SLOT(initTransmit(int)));
-	connect(receiveMenu,SIGNAL(activated(int)),SLOT(initReception(int)));
 	
 	faxImage->create(904,904);
 	resize(600,440);
+}
+
+void FaxWindow::createMenubar(void)
+{
+	QPopupMenu* fileMenu=new QPopupMenu(this);
+	fileMenu->insertItem(tr("&Open"),this,SLOT(load()));
+	fileMenu->insertItem(tr("&Save"),this,SLOT(save()));
+	fileMenu->insertItem(tr("&Quick save as PNG"),this,SLOT(quickSave()));
+	fileMenu->insertSeparator();
+	fileMenu->insertItem(tr("&Exit"),this,SLOT(close()));
+
+	QPopupMenu* transmitMenu=new QPopupMenu(this);
+	transmitMenu->insertItem(tr("Transmit using &dsp"),DSP);
+	transmitMenu->insertItem(tr("Transmit to &file"),FILE);
+	transmitMenu->insertItem(tr("Transmit using &PTC"),SCSPTC);
+	connect(transmitMenu,SIGNAL(activated(int)),SLOT(initTransmit(int)));
+
+	QPopupMenu* receiveMenu=new QPopupMenu(this);
+	receiveMenu->insertItem(tr("Receive from d&sp"),DSP);
+	receiveMenu->insertItem(tr("Receive from f&ile"),FILE);
+	receiveMenu->insertItem(tr("Receive from P&TC"),SCSPTC);
+	connect(receiveMenu,SIGNAL(activated(int)),SLOT(initReception(int)));
+
+	imageMenu=new QPopupMenu(this);
+	imageMenu->insertItem(tr("&Adjust IOC (change width)"),
+			      this,SLOT(adjustIOC()));
+	imageMenu->insertItem(tr("&Scale to IOC (scale whole image)"),
+			      this,SLOT(scaleToIOC()));
+	imageMenu->insertSeparator();
+	slantID=imageMenu->insertItem(tr("slant correction"),
+				      this,SLOT(slantWaitFirst()));
+	colDrawID=imageMenu->insertItem(tr("redraw as color facsimile")
+					,this,SLOT(redrawColor()));
+	monoDrawID=imageMenu->insertItem(tr("redraw as mono facsimile"),
+					 this,SLOT(redrawMono()));
+	imageMenu->insertSeparator();
+	imageMenu->insertItem(tr("shift colors (R->G,G->B,B->R)"),
+			      faxImage,SLOT(shiftColors()));
+	imageMenu->insertItem(tr("set beginning of line"),
+			      this,SLOT(setBegin()));
+	optionsMenu=new QPopupMenu(this);
+	optionsMenu->insertItem(tr("device settings"),this,SLOT(doOptions()));
+	optionsMenu->insertItem(tr("select font"),this,SLOT(selectFont()));
+	optionsMenu->insertSeparator();
+	pttID=optionsMenu->
+		insertItem(tr("key PTT while transmitting with DSP"),
+			   this,SLOT(changePTT()));
+	scrollID=optionsMenu->
+		insertItem(tr("automatic scroll to last received line"),
+			   this,SLOT(changeScroll()));
+	toolTipID=optionsMenu->
+		insertItem(tr("show tool tips"),
+			   this,SLOT(changeToolTip()));
+	QPopupMenu* helpMenu=new QPopupMenu(this);
+	helpMenu->insertItem(tr("&Help"),this,SLOT(help()));
+	helpMenu->insertSeparator();
+	helpMenu->insertItem(tr("&About HamFax"),this,SLOT(about()));
+	helpMenu->insertItem(tr("About &QT"),this,SLOT(aboutQT()));
+
+	menuBar()->insertItem(tr("&File"),fileMenu);
+	menuBar()->insertItem(tr("&Transmit"),transmitMenu);
+	menuBar()->insertItem(tr("&Receive"),receiveMenu);
+	menuBar()->insertItem(tr("&Image"),imageMenu);
+	menuBar()->insertItem(tr("&Options"),optionsMenu);
+	menuBar()->insertSeparator();
+	menuBar()->insertItem(tr("&Help"),helpMenu);
+}
+
+void FaxWindow::createToolbars(void)
+{
+	Config* config=&Config::instance();
+	modTool=new QToolBar(tr("modulation settings"),this);
+	new QLabel(tr("carrier"),modTool);
+	QSpinBox* carrier=new QSpinBox(800,2400,100,modTool);
+	connect(config,SIGNAL(carrier(int)),carrier,SLOT(setValue(int)));
+	connect(carrier,SIGNAL(valueChanged(int)),
+		config,SLOT(setCarrier(int)));
+	carrier->setSuffix(tr("Hz"));
+	modTool->addSeparator();
+	QToolTip::add(carrier,tr("signal carrier for FM and AM"));
+	
+	new QLabel(tr("deviation"),modTool);
+	QSpinBox* deviation=new QSpinBox(400,500,10,modTool);
+	connect(config,SIGNAL(deviation(int)),
+		deviation,SLOT(setValue(int)));
+	connect(deviation,SIGNAL(valueChanged(int)),
+		config,SLOT(setDeviation(int)));
+	deviation->setSuffix(tr("Hz"));
+	QToolTip::add(deviation, tr("deviation for FM"));
+	modTool->addSeparator();
+	
+	new QLabel(tr("modulation"),modTool);
+	modulation=new QComboBox(false,modTool);
+	connect(config,SIGNAL(useFM(bool)),SLOT(setModulation(bool)));
+	connect(modulation,SIGNAL(activated(int)),config,SLOT(setUseFM(int)));
+	modulation->insertItem(tr("AM"));
+	modulation->insertItem(tr("FM"));
+	QToolTip::add(modulation,tr("AM is only used for getting images\n"
+				    "from weather satellites together with\n"
+				    "a FM receiver. FM together with a\n"
+				    "USB (upper side band) transceiver is\n"
+				    "the right setting for HF"));
+	modTool->addSeparator();
+
+	new QLabel(tr("filter"),modTool);
+	filter=new QComboBox(false,modTool);
+	connect(config,SIGNAL(filter(int)),SLOT(setFilter(int)));
+	connect(filter,SIGNAL(activated(int)),config,SLOT(setFilter(int)));
+	filter->insertItem(tr("narrow"));
+	filter->insertItem(tr("middle"));
+	filter->insertItem(tr("wide"));
+	QToolTip::add(filter,tr("bandwidth of the software demodulator"));
+
+	aptTool=new QToolBar(tr("apt settings"),this);
+	new QLabel(tr("apt start"),aptTool);
+	QSpinBox* aptStartLength=new QSpinBox(0,20,1,aptTool);
+	connect(config,SIGNAL(aptStartLength(int)),
+		aptStartLength,SLOT(setValue(int)));
+	connect(aptStartLength,SIGNAL(valueChanged(int)),
+		config,SLOT(setAptStartLength(int)));
+	aptStartLength->setSuffix(tr("s"));
+	QToolTip::add(aptStartLength,tr("length of the black/white pattern\n"
+					"at the beginning of a facsimile"));
+
+	QSpinBox* aptStartFreq=new QSpinBox(300,675,10,aptTool);
+	connect(config,SIGNAL(aptStartFreq(int)),
+		aptStartFreq,SLOT(setValue(int)));
+	connect(aptStartFreq,SIGNAL(valueChanged(int)),
+		config,SLOT(setAptStartFreq(int)));
+	aptStartFreq->setSuffix(tr("Hz"));
+	QToolTip::add(aptStartFreq,tr("frequency of the black/white pattern\n"
+				      "at the beginning of a facsimile"));
+	aptTool->addSeparator();
+
+	new QLabel(tr("apt stop"),aptTool);
+	QSpinBox* aptStopLength=new QSpinBox(0,20,1,aptTool);
+	connect(config,SIGNAL(aptStopLength(int)),
+		aptStopLength,SLOT(setValue(int)));
+	connect(aptStopLength,SIGNAL(valueChanged(int)),
+		config,SLOT(setAptStopLength(int)));
+	QToolTip::add(aptStopLength,tr("length of the black/white pattern\n"
+				       "at the end of a facsimile"));
+	aptStopLength->setSuffix(tr("s"));
+
+	QSpinBox* aptStopFreq=new QSpinBox(300,675,10,aptTool);
+	connect(config,SIGNAL(aptStopFreq(int)),
+		aptStopFreq,SLOT(setValue(int)));
+	connect(aptStopFreq,SIGNAL(valueChanged(int)),
+		config,SLOT(setAptStopFreq(int)));
+	aptStopFreq->setSuffix(tr("Hz"));
+	QToolTip::add(aptStopFreq,tr("frequency of the black/white pattern\n"
+				     "at the end of a facsimile"));
+	
+	faxTool=new QToolBar(tr("facsimile settings"),this);
+	new QLabel(tr("lpm"),faxTool);
+	QSpinBox* lpm=new QSpinBox(60,360,10,faxTool);
+	connect(config,SIGNAL(lpm(int)),lpm,SLOT(setValue(int)));
+	connect(lpm,SIGNAL(valueChanged(int)),config,SLOT(setLpm(int)));
+	QToolTip::add(lpm,tr("lines per minute"));
+	faxTool->addSeparator();
+
+	new QLabel(tr("phasing lines"),faxTool);
+	QSpinBox* phaseLines=new QSpinBox(0,50,1,faxTool);
+	connect(config,SIGNAL(phaseLines(int)),
+		phaseLines,SLOT(setValue(int)));
+	connect(phaseLines,SIGNAL(valueChanged(int)),
+		config,SLOT(setPhaseLines(int)));
+	QToolTip::add(phaseLines,tr("phasing lines mark the beginning\n"
+				    "of a line and the speed (lpm)"));
+
+	invertPhase=new QComboBox(false,faxTool);
+	connect(config,SIGNAL(phaseInvert(bool)),SLOT(setPhasingPol(bool)));
+	connect(invertPhase,SIGNAL(activated(int)),
+		config,SLOT(setPhaseInvert(int)));
+	invertPhase->insertItem(tr("normal"));
+	invertPhase->insertItem(tr("inverted"));
+	QToolTip::add(invertPhase,tr("normal means 2.5% white, 95% black\n"
+				     "and again 2.5% white"));
+
+	faxTool->addSeparator();
+	colorBox=new QComboBox(false,faxTool);
+	colorBox->insertItem(tr("mono"));
+	colorBox->insertItem(tr("color"));
+	connect(config,SIGNAL(color(bool)),SLOT(setColor(bool)));
+	connect(colorBox,SIGNAL(activated(int)),config,SLOT(setColor(int)));
+	connect(this,SIGNAL(color(bool)),config,SLOT(setColor(bool)));
+	QToolTip::add(colorBox,
+		      tr("In color mode each line\n"
+			 "is split in three lines:\n"
+			 "red, green and blue."));
 }
 
 void FaxWindow::help(void)
@@ -395,7 +404,7 @@ void FaxWindow::about(void)
 		   "\n\nThe demodulator is taken from ACfax"
 		   " by Andreas Czechanowski, DL4SDC"
 		   "\n\nLicense: GNU General Public License"
-		   "\nVersion: %1").arg(version));
+		   "\nVersion: %1").arg(caption()));
 }
 
 void FaxWindow::aboutQT(void)
@@ -756,4 +765,11 @@ void FaxWindow::selectFont(void)
 		QApplication::setFont(f,true);
 		emit fontSelected(f);
 	}
+}
+
+void FaxWindow::doOptions(void)
+{
+	OptionsDialog* o=new OptionsDialog(this);
+	o->exec();
+	delete o;
 }

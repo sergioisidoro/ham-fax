@@ -42,15 +42,12 @@ private:
 	int ioc;
 	QString getFileName(QString caption, QString filter);
 	virtual void closeEvent(QCloseEvent* close);
-	QString version;
 	enum { FILE, DSP, SCSPTC };
 	int interface;
 	QPopupMenu* imageMenu;
 	int slantID;
 	int colDrawID;
 	int monoDrawID;
-	int shift1ID;
-	int shift2ID;
 	QPopupMenu* optionsMenu;
 	int pttID;
 	int scrollID;
@@ -75,6 +72,8 @@ private:
 	CorrectDialog* correctDialog;
 	TransmitDialog* transmitDialog;
 	enum { WAITFIRST, WAITSECOND, NOTHING } slantState;
+	void createMenubar(void);
+	void createToolbars(void);
 signals:
 	void correctBegin(void);
 	void correctSlant(void);
@@ -123,6 +122,7 @@ private slots:
 	void aboutQT(void);
 	void newImageSize(int w, int h);
 	void selectFont(void);
+	void doOptions(void);
 };
 
 #endif

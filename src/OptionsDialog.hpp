@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -32,17 +33,6 @@ private:
 	QLineEdit* devPTT;
 	QLineEdit* devPTC;
 	QComboBox* speedPTC;
-signals:
-	void dsp(const QString&);
-	void ptt(const QString&);
-	void ptc(const QString&);
-	void ptcSpeed(int);
-public slots:
-        void setDSP(const QString& s);
-	void setPTT(const QString& s);
-	void setPTC(const QString& s);
-	void setPtcSpeed(int s);
-	void doDialog(void);
 private slots:
         void okClicked(void);
 	void cancelClicked(void);
