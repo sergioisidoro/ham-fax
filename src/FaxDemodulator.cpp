@@ -41,7 +41,7 @@ FaxDemodulator::FaxDemodulator(QObject* parent)
 		{  6, 20,  7,-42,-74,-12,159,353,440,353,159,-12,-74,-42,  7, 20,  6}};
 	for(size_t i=0; i<3; ++i) {
 		lowPassFilter[i].resize(17);
-		lowPassFilter[i]=LPF::coeff_t(lpf[i],17);
+		lowPassFilter[i]=valarray<double>(lpf[i],17);
 	}
 };
 

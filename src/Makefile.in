@@ -38,8 +38,36 @@ distclean:
 moc_%.cpp: %.hpp
 	$(QT_MOC) $< -o $@
 
-%.qm: %.po
-	msg2qm $< $@
+# modulator / demodulator
+
+ModulatorFm.o: ModulatorFm.cpp ModulatorFm.hpp Modulator.hpp
+
+ModulatorAm.o: ModulatorAm.cpp ModulatorAm.hpp Modulator.hpp
+
+DemodulatorFm.o: DemodulatorFm.cpp DemodulatorFm.hpp Demodulator.hpp
+
+DemodulatorAm.o: DemodulatorAm.cpp DemodulatorAm.hpp Demodulator.hpp
+
+# device interface
+
+InDeviceAudiofile.o: InDeviceAudiofile.cpp InDeviceAudiofile.hpp InDevice.hpp
+
+InDeviceOss.o: InDeviceOss.cpp InDeviceOss.hpp InDevice.hpp
+
+InDevicePtc.o: InDevicePtc.cpp InDevicePtc.hpp InDevice.hpp
+
+OutDeviceAudiofile.o: OutDeviceAudiofile.cpp OutDeviceAudiofile.hpp OutDevice.hpp
+
+OutDeviceOss.o: OutDeviceOss.cpp OutDeviceOss.hpp OutDevice.hpp
+
+OutDevicePtc.o: OutDevicePtc.cpp OutDevicePtc.hpp OutDevice.hpp
+
+DeviceInterface.o: DeviceInterface.cpp DeviceInterface.hpp\
+                   InDevice.hpp OutDevice.hpp\
+                   InDeviceAudiofile.hpp OutDeviceAudiofile.hpp\
+                   InDeviceOss.hpp OutDeviceOss.hpp\
+                   InDevicePtc.hpp OutDevicePtc.cpp
+
 
 Config.o: Config.cpp Config.hpp
 

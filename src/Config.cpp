@@ -21,8 +21,8 @@
 
 Config& Config::instance()
 {
-	static ConfigPtr _instance(new Config);
-	return *_instance;
+	static ConfigPtr i(new Config);
+	return *i;
 }
 
 Config::Config()

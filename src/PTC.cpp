@@ -47,7 +47,7 @@ void PTC::open(void)
 		if(device==-1) {
 			throw Error("could not open serial device");
 		}
-		speed=c.readNumEntry("ptcSpeed");
+		speed=c.readNumEntry("/hamfax/PTC/speed");
 		struct termios options;
 		tcgetattr(device,&options);
 		switch(speed) {

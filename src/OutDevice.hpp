@@ -16,13 +16,16 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#ifndef OUTDEVICE_HPP
+#define OUTDEVICE_HPP
+
 #include <valarray>
 
 /**
  * \class OutDevice is the public interface to all possible output devices.
  */
 
-class InDevice {
+class OutDevice {
 public:
 	enum Modulation { AM, FM };
 	
@@ -49,7 +52,19 @@ public:
 	virtual void transmit(valarray<unsigned char>)=0;
 
 	/**
+	 * Return output delay (maximum number of samples in out buffer)
+	 */
+	virtual unsigned int getOutputDelay()=0;
+
+	/**
 	 * Close the device.
 	 */
 	virtual void close()=0;
+
+	/**
+	 * Virtual destructor for correct destruction.
+	 */
+	virtual ~OutDevice();
 };
+
+#endif

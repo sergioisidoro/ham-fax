@@ -235,7 +235,7 @@
         <dia:real val="5"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#PtcIn#</dia:string>
+        <dia:string>#InDevicePtc#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string/>
@@ -477,7 +477,7 @@
         <dia:real val="5.8"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#OssIn#</dia:string>
+        <dia:string>#InDeviceOss#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string/>
@@ -652,7 +652,7 @@
         <dia:real val="5.8"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#AudiofileIn#</dia:string>
+        <dia:string>#InDeviceAudiofile#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string/>
@@ -1552,19 +1552,19 @@
     </dia:object>
     <dia:object type="UML - Class" version="0" id="O19">
       <dia:attribute name="obj_pos">
-        <dia:point val="29,14"/>
+        <dia:point val="29,13"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="28.95,13.95;52.6356,18.85"/>
+        <dia:rectangle val="28.95,12.95;52.6356,18.65"/>
       </dia:attribute>
       <dia:attribute name="elem_corner">
-        <dia:point val="29,14"/>
+        <dia:point val="29,13"/>
       </dia:attribute>
       <dia:attribute name="elem_width">
         <dia:real val="23.5856"/>
       </dia:attribute>
       <dia:attribute name="elem_height">
-        <dia:real val="4.8"/>
+        <dia:real val="5.6"/>
       </dia:attribute>
       <dia:attribute name="name">
         <dia:string>#OutDevice#</dia:string>
@@ -1680,6 +1680,24 @@
         </dia:composite>
         <dia:composite type="umloperation">
           <dia:attribute name="name">
+            <dia:string>#getOutputDelay#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="type">
+            <dia:string>#unsigned int#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="visibility">
+            <dia:enum val="0"/>
+          </dia:attribute>
+          <dia:attribute name="abstract">
+            <dia:boolean val="true"/>
+          </dia:attribute>
+          <dia:attribute name="class_scope">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+          <dia:attribute name="parameters"/>
+        </dia:composite>
+        <dia:composite type="umloperation">
+          <dia:attribute name="name">
             <dia:string>#close#</dia:string>
           </dia:attribute>
           <dia:attribute name="type">
@@ -1719,7 +1737,7 @@
         <dia:real val="5.8"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#OssOut#</dia:string>
+        <dia:string>#OutDeviceAudiofile#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string/>
@@ -1894,7 +1912,7 @@
         <dia:real val="5.8"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#AudiofileOut#</dia:string>
+        <dia:string>#OutDeviceAudiofile#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string/>
@@ -2069,7 +2087,7 @@
         <dia:real val="5"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#PtcOut#</dia:string>
+        <dia:string>#OutDevicePtc#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string/>
@@ -2209,13 +2227,13 @@
     </dia:object>
     <dia:object type="UML - Realizes" version="0" id="O23">
       <dia:attribute name="obj_pos">
-        <dia:point val="29,18.8"/>
+        <dia:point val="29,18.6"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="25.7428,18.8;29.85,21"/>
+        <dia:rectangle val="25.7428,18.6;29.85,21"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
-        <dia:point val="29,18.8"/>
+        <dia:point val="29,18.6"/>
         <dia:point val="29,20"/>
         <dia:point val="25.7928,20"/>
         <dia:point val="25.7928,21"/>
@@ -2238,13 +2256,13 @@
     </dia:object>
     <dia:object type="UML - Realizes" version="0" id="O24">
       <dia:attribute name="obj_pos">
-        <dia:point val="40.7928,18.8"/>
+        <dia:point val="40.7928,18.6"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="38.95,18.8;41.6428,21"/>
+        <dia:rectangle val="38.95,18.6;41.6428,21"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
-        <dia:point val="40.7928,18.8"/>
+        <dia:point val="40.7928,18.6"/>
         <dia:point val="40.7928,20"/>
         <dia:point val="39,20"/>
         <dia:point val="39,21"/>
@@ -2267,13 +2285,13 @@
     </dia:object>
     <dia:object type="UML - Realizes" version="0" id="O25">
       <dia:attribute name="obj_pos">
-        <dia:point val="52.5856,18.8"/>
+        <dia:point val="52.5856,18.6"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="51.7356,18.8;63.6356,31"/>
+        <dia:rectangle val="51.7356,18.6;63.6356,31"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
-        <dia:point val="52.5856,18.8"/>
+        <dia:point val="52.5856,18.6"/>
         <dia:point val="52.5856,20"/>
         <dia:point val="63.5856,20"/>
         <dia:point val="63.5856,31"/>
@@ -2311,7 +2329,7 @@
         <dia:real val="5.8"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#FmDemod#</dia:string>
+        <dia:string>#DemodulatorFm#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string/>
@@ -2459,7 +2477,7 @@
         <dia:real val="4.2"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#AmDemod#</dia:string>
+        <dia:string>#DemodulatorAm#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string/>
@@ -2567,7 +2585,7 @@
         <dia:real val="4.2"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#FmMod#</dia:string>
+        <dia:string>#ModulatorFm#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string/>
@@ -2675,7 +2693,7 @@
         <dia:real val="4.2"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#AmMod#</dia:string>
+        <dia:string>#ModulatorAm#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string/>
@@ -3170,13 +3188,13 @@
     </dia:object>
     <dia:object type="UML - Association" version="0" id="O39">
       <dia:attribute name="obj_pos">
-        <dia:point val="40.7928,14"/>
+        <dia:point val="40.7928,13"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="35.25,2.2;40.8428,15.6"/>
+        <dia:rectangle val="35.25,2.2;40.8428,14.6"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
-        <dia:point val="40.7928,14"/>
+        <dia:point val="40.7928,13"/>
         <dia:point val="40.7928,12"/>
         <dia:point val="36,12"/>
         <dia:point val="36,2.2"/>
@@ -3904,13 +3922,13 @@
         <dia:point val="-37,52"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="-37.05,51.25;-13.934,58.85"/>
+        <dia:rectangle val="-37.05,51.25;-11.9948,58.85"/>
       </dia:attribute>
       <dia:attribute name="elem_corner">
         <dia:point val="-37,52"/>
       </dia:attribute>
       <dia:attribute name="elem_width">
-        <dia:real val="22.616"/>
+        <dia:real val="24.5552"/>
       </dia:attribute>
       <dia:attribute name="elem_height">
         <dia:real val="6.8"/>
@@ -3999,7 +4017,7 @@
                 <dia:string>#coefficients#</dia:string>
               </dia:attribute>
               <dia:attribute name="type">
-                <dia:string>#const coeff_t&amp;#</dia:string>
+                <dia:string>#const valarray&lt;T&gt;&amp;#</dia:string>
               </dia:attribute>
               <dia:attribute name="value">
                 <dia:string/>
@@ -4029,7 +4047,7 @@
           <dia:attribute name="parameters">
             <dia:composite type="umlparameter">
               <dia:attribute name="name">
-                <dia:string>#const buffer_t&amp;#</dia:string>
+                <dia:string>#const valarray&lt;T&gt;&amp;#</dia:string>
               </dia:attribute>
               <dia:attribute name="type">
                 <dia:string>##</dia:string>
@@ -4099,7 +4117,7 @@
             <dia:string>#getBuffer#</dia:string>
           </dia:attribute>
           <dia:attribute name="type">
-            <dia:string>#buffer_t#</dia:string>
+            <dia:string>#valarray&lt;T&gt;#</dia:string>
           </dia:attribute>
           <dia:attribute name="visibility">
             <dia:enum val="0"/>
@@ -4514,14 +4532,14 @@
     </dia:object>
     <dia:object type="UML - Association" version="0" id="O56">
       <dia:attribute name="obj_pos">
-        <dia:point val="-25.692,52"/>
+        <dia:point val="-24.7224,52"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="-25.742,47.4;-22.25,53.6"/>
+        <dia:rectangle val="-24.7724,47.4;-22.25,53.6"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
-        <dia:point val="-25.692,52"/>
-        <dia:point val="-25.692,50"/>
+        <dia:point val="-24.7224,52"/>
+        <dia:point val="-24.7224,50"/>
         <dia:point val="-23,50"/>
         <dia:point val="-23,47.4"/>
       </dia:attribute>
@@ -4980,13 +4998,13 @@
     </dia:object>
     <dia:object type="UML - Class" version="0" id="O61">
       <dia:attribute name="obj_pos">
-        <dia:point val="8,16"/>
+        <dia:point val="8,14"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="7.95,15.95;26.3028,20.45"/>
+        <dia:rectangle val="7.95,13.95;26.3028,18.45"/>
       </dia:attribute>
       <dia:attribute name="elem_corner">
-        <dia:point val="8,16"/>
+        <dia:point val="8,14"/>
       </dia:attribute>
       <dia:attribute name="elem_width">
         <dia:real val="18.2528"/>
@@ -4995,7 +5013,7 @@
         <dia:real val="4.4"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#DeviceFactory#</dia:string>
+        <dia:string>#DeviceInterface#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>#Singleton#</dia:string>

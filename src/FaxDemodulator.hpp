@@ -40,7 +40,7 @@ private:
 	LookUpTable<double> arcSine;
 	double ifirold;
 	double qfirold;
-	LPF::coeff_t lowPassFilter[3];
+	valarray<double> lowPassFilter[3];
 public slots:
 	void newSamples(short* audio, int n);
 signals:
