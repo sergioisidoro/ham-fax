@@ -59,8 +59,8 @@ void Sound::startOutput(void)
 			throw Error(tr("could not set mono mode"));
 		}
 		int speed=sampleRate;
-		if(ioctl(devDSP,SNDCTL_DSP_SPEED,&speed)==-1
-		   ||speed!=sampleRate) {
+		ioctl(devDSP,SNDCTL_DSP_SPEED,&speed);
+		if(speed<sampleRate*0.99 || speed>sampleRate*1.01) {
 			throw Error(tr("could not set sample rate"));
 		}
 		notifier=new QSocketNotifier(devDSP,QSocketNotifier::Write,
@@ -93,8 +93,8 @@ void Sound::startInput(void)
 			throw Error(tr("could not set mono mode"));
 		}
 		int speed=sampleRate;
-		if(ioctl(devDSP,SNDCTL_DSP_SPEED,&speed)==-1
-		   ||speed!=sampleRate) {
+		ioctl(devDSP,SNDCTL_DSP_SPEED,&speed);
+		if(speed<sampleRate*0.99 || speed>sampleRate*1.01) {
 			throw Error(tr("could not set sample rate"));
 		}
 		notifier=new QSocketNotifier(devDSP,QSocketNotifier::Read,
@@ -146,10 +146,11 @@ void Sound::write(short* samples, int number)
 
 void Sound::read(int fd)
 {
-	int n=256;
-	short buffer[n];
-	n=::read(fd,buffer,n*sizeof(short))/sizeof(short);
-	if(n>0) {
+	const int max=256;
+	short buffer[max];
+	int n=::read(fd,buffer,max*sizeof(short))/sizeof(short);
+	//n=2147483647;
+	if(n>0 && n<=max) {
 		emit data(buffer,n);
 	}
 }

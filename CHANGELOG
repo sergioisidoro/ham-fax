@@ -1,3 +1,8 @@
+ * failed read on sound device no longer does crash the program :)
+ * minimal carrier frequency of 800Hz (1500Hz was a arbitrary restriction)
+ * the sound card may use a sample rate of 8000Hz+-1% (this should make
+     some cheap sound cards usable)
+
 HamFax 0.5.1
  * fixed segmentation fault on exit (closing of audio file)
  * fixed crash occuring while reception was cancelled immediately

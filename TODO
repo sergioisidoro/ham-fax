@@ -13,10 +13,6 @@ to do:
 - correct beginning of line out of stored samples
    (necessary for correction of color facsimile)
 - add slider to dialogs for selecting ioc
-- allow 1% deviation from set sample rate
-   (according to Franco Spinelli <fraspin@tin.it> some cheap sound cards
-    behave this way)
-- allow minimal carrier frequency of 800Hz (1500Hz is a arbitrary restriction)
 - possibility for permanent slant correction
 - frequency / brightness scale for spectrum
 - automatic reception (perhaps a background/daemon process doing the work)

@@ -67,7 +67,7 @@ FaxWindow::FaxWindow(const QString& version)
 	// build tool bars
 	modTool=new QToolBar(tr("modulation settings"),this);
 	new QLabel(tr("carrier"),modTool);
-	QSpinBox* carrier=new QSpinBox(1500,2400,100,modTool);
+	QSpinBox* carrier=new QSpinBox(800,2400,100,modTool);
 	carrier->setSuffix(tr("Hz"));
 	modTool->addSeparator();
 	QToolTip::add(carrier,tr("signal carrier for FM and AM"));
