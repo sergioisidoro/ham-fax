@@ -415,7 +415,7 @@ Bildbreite in Pixeln dividiert durch PI</translation>
     </message>
     <message>
         <source>&amp;Skip apt start</source>
-        <translation>Suche nach APT-Start &amp;abbrechen</translation>
+        <translation>&amp;Suche nach APT-Start abbrechen</translation>
     </message>
     <message>
         <source>searching APT start tone</source>

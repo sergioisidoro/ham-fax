@@ -77,7 +77,7 @@ void PTC::open(void)
 		s=QString("FAX DEVIATION %1\r")
 			.arg(c.readNumEntry("/hamfax/modulation/deviation"));
 		write(device,s,s.length());
-		fm=c.readBoolEntry("fm");
+		fm=c.readBoolEntry("/hamfax/modulation/FM");
 		s=QString("FAX %1\r").arg(fm ? "JVCOMM :HamFax FM":"AMFAX");
 		write(device,s,s.length());
 		usleep(300000);
