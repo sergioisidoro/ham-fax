@@ -1,7 +1,7 @@
 HamFax 0.4
  * received colors are displayed as spectrum in receive dialog
  * possible data rates for the PTC are now 38400, 57600 and 115200 bps
- * three low pass filters in demodulator, take from ACfax
+ * three low pass filters in demodulator, taken from ACfax
  * various small fixes
 
 HamFax 0.3
