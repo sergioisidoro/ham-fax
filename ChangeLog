@@ -1,9 +1,19 @@
-2003-01-30  Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+2004-10-11  Christof Schmitt, DH1CS  <cschmitt@users.sourceforge.net>
 
-	* src/FaxDemodulator.cpp, src/FaxDemodulator.hpp,
-	src/FirFilter.hpp, src/InDevice.hpp, src/Modulator.hpp,
-	src/OutDevice.hpp, src/hamfax.cpp, NEWS, README, configure.ac,
-	COPYING, Makefile.am:
+	* src/Config.hpp:
+	- Don't use typedef name as friend to allow compilation on GCC3.4
+
+2004-04-04  Christof Schmitt, DH1CS  <cschmitt@users.sourceforge.net>
+
+	* src/FaxReceiver.hpp, configure.ac:
+	- changed deprecated header qarray.h to qmemarray.h
+	- add error messages to configure for missing libaudiofile and soundfile.h
+
+2003-01-30  Christof Schmitt, DH1CS  <cschmitt@users.sourceforge.net>
+
+	* ChangeLog: Version 0.6.3
+
+	* src/FaxDemodulator.cpp, src/FaxDemodulator.hpp, src/FirFilter.hpp, src/InDevice.hpp, src/Modulator.hpp, src/OutDevice.hpp, src/hamfax.cpp, NEWS, README, configure.ac, COPYING, Makefile.am:
 	include hamfax_de.qm and HamFax.html in dist
 	make changes work with GCC 3.x (std::valarray)
 	use macros defined by automake (PACKAGE*)

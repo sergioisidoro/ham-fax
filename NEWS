@@ -1,3 +1,7 @@
+HamFax 0.6.4
+ * compilation with GCC 3.4 fixed
+ * removed dependency to deprecated header
+
 HamFax 0.6.3
  * build system now uses automake and autoconf
  * german translation is now included in tar-ball: recreation of
