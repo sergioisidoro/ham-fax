@@ -1,3 +1,7 @@
+First of all:
+- change internal code layout (class and object structure, ...);
+   the current one is not very nice for making changes
+
 Little fixes and easy features:
 - use correct types (size_t, ssize_t, ...)
 - possibility for selecting available input/output

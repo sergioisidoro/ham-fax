@@ -1,3 +1,15 @@
+HamFax 0.6
+ * Qt3 is required to compile and run the application
+ * new dialog for selecting font
+ * new handling of configuration (based on Qt3's QSettings class):
+    - system settings in /etc/hamfaxrc
+    - user settings in ~/.qt/hamfaxrc (created automatically)
+ * german translation of (hopefully all) visible strings
+    (ok, except the help dialog)
+ * should compile with g++ 3.0, too
+ * beginning of reworking the internals (filters, ...)
+ * use of doxygen for some classes
+
 HamFax 0.5.2
  * should now work with Qt 3.0 (one #include was missing)
  * failed read on sound device no longer does crash the program :)
