@@ -1,5 +1,5 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmit@suse.de>
+// Copyright (C) 2001 Christof Schmitt, DH1CS <christof.schmitt@gmx.de>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -454,8 +454,8 @@ void FaxWindow::about(void)
 	QMessageBox::information(
 		this,caption(),
 		tr("HamFax is a Qt application for transmitting and receiving"
-		   "\nham radio facsimiles and weather broadcasts."
-		   "\n\nAuthor: Christof Schmitt, DH1CS <cschmit@suse.de>"
+		   "\nham radio facsimiles and weather broadcasts.\n\n"
+		   "Author: Christof Schmitt, DH1CS <christof.schmitt@gmx.de>"
 		   "\n\nThe demodulator is taken from ACfax"
 		   " by Andreas Czechanowski, DL4SDC"
 		   "\n\nLicense: GNU General Public License"
