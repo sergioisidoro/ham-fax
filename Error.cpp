@@ -22,6 +22,10 @@ Error::Error(QString s)
 {
 }
 
+Error::Error(void)
+{
+}
+
 QString& Error::getText(void)
 {
 	return text;

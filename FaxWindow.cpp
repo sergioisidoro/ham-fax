@@ -545,7 +545,7 @@ void FaxWindow::initTransmit(int item)
 		}
 		faxTransmitter->startTransmission();
 	} catch (Error e) {
-		QMessageBox::warning(this,tr("error"),e.getText());
+		QMessageBox::warning(this,caption(),e.getText());
 	}
 }
 
@@ -610,7 +610,7 @@ void FaxWindow::initReception(int item)
 		}
 		faxReceiver->init();
 	} catch(Error e) {
-		QMessageBox::warning(this,tr("error"),e.getText());
+		QMessageBox::warning(this,caption(),e.getText());
 	}
 }
 

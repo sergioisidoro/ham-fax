@@ -29,7 +29,6 @@ public:
 	~File(void);
 	void startOutput(const QString& fileName);
 	void startInput(const QString& fileName);
-	void read(short* samples, int& number);
 	void end(void);
 private:
 	int sampleRate;

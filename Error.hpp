@@ -23,6 +23,7 @@
 class Error {
 public:
 	Error(QString s);
+	Error(void);
 	QString& getText(void);
 private:
 	QString text;

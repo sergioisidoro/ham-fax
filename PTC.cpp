@@ -134,14 +134,21 @@ void PTC::receive(int* samples, int& count)
 
 void PTC::transmit(double* samples, int count)
 {
-	notifier->setEnabled(false);
-	unsigned char buf[count];
-	for(int i=0; i<count; i++) {
-		buf[i]=static_cast<unsigned char>(samples[i]*(fm?240.0:63.0));
+	try {
+		notifier->setEnabled(false);
+		unsigned char buf[count];
+		for(int i=0; i<count; i++) {
+			buf[i]=static_cast<unsigned char>
+				(samples[i]*(fm?240.0:63.0));
+		}
+		tcflush(device,TCIFLUSH);
+		if(write(device,buf,count)!=count) {
+			throw Error();
+		}
+		notifier->setEnabled(true);
+	} catch(Error) {
+		close();
 	}
-	tcflush(device,TCIFLUSH);
-	write(device,buf,count);
-	notifier->setEnabled(true);
 }
 
 void PTC::setDeviation(int dev)

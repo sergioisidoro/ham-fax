@@ -135,13 +135,12 @@ void Sound::write(short* samples, int number)
 			notifier->setEnabled(false);
 			if((::write(devDSP,samples, number*sizeof(short)))
 			   !=static_cast<int>(number*sizeof(short))) {
-				throw Error(tr("could not write to DSP"));
+				throw Error();
 			}
 			notifier->setEnabled(true);
 		}
 	} catch(Error) {
 		close();
-		throw;
 	}
 }
 

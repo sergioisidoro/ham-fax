@@ -35,24 +35,29 @@ File::~File(void)
 
 void File::startOutput(const QString& fileName)
 {
-	AFfilesetup fs;
-	if((fs=afNewFileSetup())==AF_NULL_FILESETUP) {
-		throw Error(tr("could not allocate AFfilesetup"));
+	try {
+		AFfilesetup fs;
+		if((fs=afNewFileSetup())==AF_NULL_FILESETUP) {
+			throw Error(tr("could not allocate AFfilesetup"));
+		}
+		afInitFileFormat(fs,AF_FILE_NEXTSND);
+		afInitSampleFormat(fs,AF_DEFAULT_TRACK,AF_SAMPFMT_TWOSCOMP,16);
+		afInitByteOrder(fs,AF_DEFAULT_TRACK,AF_BYTEORDER_BIGENDIAN);
+		afInitChannels(fs,AF_DEFAULT_TRACK,1);
+		afInitRate(fs,AF_DEFAULT_TRACK,sampleRate=8000);
+		
+		if((aFile=afOpenFile(fileName,"w",fs))==AF_NULL_FILEHANDLE) {
+			aFile=0;
+			throw Error(tr("could not open file"));
+		}
+		afFreeFileSetup(fs);
+		timer->start(0);
+		connect(timer,SIGNAL(timeout()),this,SLOT(timerSignal()));
+		emit newSampleRate(sampleRate);
+	} catch(Error) {
+		end();
+		throw;
 	}
-	afInitFileFormat(fs,AF_FILE_NEXTSND);
-	afInitSampleFormat(fs,AF_DEFAULT_TRACK,AF_SAMPFMT_TWOSCOMP,16);
-	afInitByteOrder(fs,AF_DEFAULT_TRACK,AF_BYTEORDER_BIGENDIAN);
-	afInitChannels(fs,AF_DEFAULT_TRACK,1);
-	afInitRate(fs,AF_DEFAULT_TRACK,sampleRate);
-	
-	if((aFile=afOpenFile(fileName,"w",fs))==AF_NULL_FILEHANDLE) {
-		aFile=0;
-		throw Error(tr("could not open file"));
-	}
-	afFreeFileSetup(fs);
-	timer->start(0);
-	connect(timer,SIGNAL(timeout()),this,SLOT(timerSignal()));
-	emit newSampleRate(sampleRate);
 }
 
 void File::startInput(const QString& fileName)
@@ -91,27 +96,11 @@ void File::write(short* samples, int number)
 		if(aFile!=0) {
 			if((afWriteFrames(aFile,AF_DEFAULT_TRACK,
 					  samples,number))==AF_BAD_WRITE) {
-				throw Error(tr("could not write to file"));
+				throw Error();
 			}
 		}
 	} catch(Error) {
 		end();
-		throw;
-	}
-}
-
-void File::read(short* samples, int& number)
-{
-	try {
-		if(aFile!=0) {
-			if((number=afReadFrames(aFile,AF_DEFAULT_TRACK,
-						samples,number))<0) {
-				throw Error(tr("could not read from file"));
-			}
-		}
-	} catch(Error) {
-		end();
-		throw;
 	}
 }
 
