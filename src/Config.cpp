@@ -48,8 +48,7 @@ Config::Config()
 	setDefault("/hamfax/directories/doc","/usr/share/doc/hamfax");
 	setDefault("/hamfax/GUI/toolTips",true);
 	setDefault("/hamfax/GUI/autoScroll",true);
-	setDefault("/hamfax/GUI/font",
-	    "-adobe-helvetica-medium-r-normal--10-120-*-*-p-*-*-*");
+	setDefault("/hamfax/GUI/font","Helvetica,11,-1,5,50,0,0,0,0,0");
 }
 
 void Config::setDefault(const QString& key, const char* value)
