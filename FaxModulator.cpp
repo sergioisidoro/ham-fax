@@ -53,7 +53,7 @@ void FaxModulator::modulate(double* buffer, unsigned int number)
 	emit data(sample,number);
 }
 
-void FaxModulator::setSampleRate(unsigned int sr)
+void FaxModulator::setSampleRate(int sr)
 {
 	sampleRate=sr;
 }

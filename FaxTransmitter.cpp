@@ -192,3 +192,10 @@ void FaxTransmitter::setColor(bool b)
 {
 	color=b;
 }
+
+void FaxTransmitter::doAptStop(void)
+{
+	state=APTSTOP;
+	sampleNr=0;
+	emit aptStop();
+}

@@ -25,18 +25,18 @@ class FaxModulator : public QObject {
 public:
 	FaxModulator(QObject* parent);
 	~FaxModulator(void);
-	void setSampleRate(unsigned int sr);
 private:
 	static const unsigned int size_sine=8192;
 	signed short* sine;        // lookup table for sine
 	unsigned int phase;        // current phase of sine
-	unsigned int sampleRate;
+	int sampleRate;
 	bool fm;
 	unsigned int carrier;
 	unsigned int dev;
 signals:
 	void data(signed short*, unsigned int);
 public slots:
+	void setSampleRate(int sr);
         void setCarrier(int carrier);
 	void setDeviation(int dev);
 	void setFM(bool fm);

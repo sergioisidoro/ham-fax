@@ -32,7 +32,6 @@
 #include "OptionsDialog.hpp"
 #include "ScaleDialog.hpp"
 #include "ReceiveDialog.hpp"
-#include "TransmitDialog.hpp"
 #include "PTT.hpp"
 
 FaxWindow::FaxWindow(const QString& version)
@@ -48,7 +47,7 @@ FaxWindow::FaxWindow(const QString& version)
 	PTT* ptt=new PTT(this);
 	faxModulator=new FaxModulator(this);
 	faxDemodulator=new FaxDemodulator(this);
-	TransmitDialog* transmitDialog=new TransmitDialog(this);
+	transmitDialog=new TransmitDialog(this);
 	ReceiveDialog* receiveDialog=new ReceiveDialog(this);
 	correctDialog=new CorrectDialog(this);
 
@@ -226,6 +225,29 @@ FaxWindow::FaxWindow(const QString& version)
 		faxImage,SLOT(scale(int, int)));
 	connect(faxReceiver, SIGNAL(newSize(int, int, int, int)),
 		faxImage, SLOT(resize(int, int, int, int)));
+
+	connect(sound,SIGNAL(newSampleRate(int)),
+		faxModulator,SLOT(setSampleRate(int)));
+	connect(sound,SIGNAL(newSampleRate(int)),
+		faxDemodulator,SLOT(setSampleRate(int)));
+	connect(sound,SIGNAL(newSampleRate(int)),
+		faxReceiver,SLOT(setSampleRate(int)));
+	connect(sound,SIGNAL(newSampleRate(int)),
+		faxTransmitter,SLOT(setSampleRate(int)));
+	
+	connect(file,SIGNAL(newSampleRate(int)),
+		faxModulator,SLOT(setSampleRate(int)));
+	connect(file,SIGNAL(newSampleRate(int)),
+		faxDemodulator,SLOT(setSampleRate(int)));
+	connect(file,SIGNAL(newSampleRate(int)),
+		faxReceiver,SLOT(setSampleRate(int)));
+	connect(file,SIGNAL(newSampleRate(int)),
+		faxTransmitter,SLOT(setSampleRate(int)));
+	
+	connect(ptc,SIGNAL(newSampleRate(int)),
+		faxReceiver,SLOT(setSampleRate(int)));
+	connect(ptc,SIGNAL(newSampleRate(int)),
+		faxTransmitter,SLOT(setSampleRate(int)));
 	
 	// transmission
 	connect(faxTransmitter,SIGNAL(start()),transmitDialog,SLOT(start()));
@@ -238,13 +260,13 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(faxTransmitter,SIGNAL(aptStop()),
 		transmitDialog,SLOT(aptStop()));
 	connect(faxTransmitter,SIGNAL(end()),SLOT(endTransmission()));
-	connect(faxTransmitter,SIGNAL(end()),transmitDialog,SLOT(hide()));
-	connect(faxTransmitter,SIGNAL(end()),SLOT(enableControls()));
-	connect(faxTransmitter,SIGNAL(end()),ptt,SLOT(release()));
+	connect(sound,SIGNAL(deviceClosed()),transmitDialog,SLOT(hide()));
+	connect(ptc,SIGNAL(deviceClosed()),transmitDialog,SLOT(hide()));
+	connect(sound,SIGNAL(deviceClosed()),SLOT(enableControls()));
+	connect(ptc,SIGNAL(deviceClosed()),SLOT(enableControls()));
+	connect(sound,SIGNAL(deviceClosed()),ptt,SLOT(release()));
 	connect(transmitDialog,SIGNAL(cancelClicked()),
-		SLOT(enableControls()));
-	connect(transmitDialog,SIGNAL(cancelClicked()),
-		SLOT(endTransmission()));
+		faxTransmitter,SLOT(doAptStop()));
 
 	// reception
 	connect(faxReceiver,SIGNAL(startReception()),
@@ -299,11 +321,11 @@ FaxWindow::FaxWindow(const QString& version)
 	receiveMenu->insertItem(tr("Receive from f&ile"),FILE);
 	receiveMenu->insertItem(tr("Receive from P&TC"),SCSPTC);
 	imageMenu=new QPopupMenu(this);
-	imageMenu->insertItem(tr("&Scale image / adjust IOC"),
+	imageMenu->insertItem(tr("&Adjust IOC"),
 			      this,SLOT(doScaleDialog()));
-	imageMenu->insertItem(tr("Scale image to IOC &288"),
+	imageMenu->insertItem(tr("Adjust IOC tp &288"),
 			      faxReceiver,SLOT(correctToIOC288()));
-	imageMenu->insertItem(tr("Scale image to IOC &576"),
+	imageMenu->insertItem(tr("Adjust IOC to &576"),
 			      faxReceiver,SLOT(correctToIOC576()));
 	imageMenu->insertSeparator();
 	slantID=imageMenu->insertItem(tr("slant correction"),
@@ -351,7 +373,7 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(receiveMenu,SIGNAL(activated(int)),SLOT(initReception(int)));
 	
 	faxImage->create(904,904);
-	resize(640,480);
+	resize(600,440);
 	config->readFile();
 }
 
@@ -470,16 +492,14 @@ QString FaxWindow::getFileName(QString caption, QString filter)
 void FaxWindow::initTransmit(int item)
 {
 	try {
-		unsigned int sampleRate=0;
 		QString fileName;
 		switch(interface=item) {
 		case FILE:
-			sampleRate=8000;
 			fileName=getFileName(tr("output file name"),"*.au");
 			if(fileName.isEmpty()) {
 				return;
 			}
-			file->openOutput(fileName,sampleRate);
+			file->startOutput(fileName);
 			connect(file,SIGNAL(next(unsigned int)),
 				faxTransmitter,SLOT(doNext(unsigned int)));
 			connect(faxTransmitter,
@@ -492,8 +512,7 @@ void FaxWindow::initTransmit(int item)
 				SLOT(write(signed short*, unsigned int)));
 			break;
 		case DSP:
-			sampleRate=8000;
-			sound->openOutput(sampleRate);
+			sound->startOutput();
 			connect(sound,SIGNAL(spaceLeft(unsigned int)),
 				faxTransmitter,SLOT(doNext(unsigned int)));
 			connect(faxTransmitter,
@@ -506,8 +525,7 @@ void FaxWindow::initTransmit(int item)
 				SLOT(write(signed short*, unsigned int)));
 			break;
 		case SCSPTC:
-			sampleRate=5760/2;
-			ptc->openOutput();
+			ptc->startOutput();
 			connect(ptc,SIGNAL(spaceLeft(unsigned int)),
 				faxTransmitter,SLOT(doNext(unsigned int)));
 			connect(faxTransmitter,
@@ -515,8 +533,6 @@ void FaxWindow::initTransmit(int item)
 				ptc,SLOT(transmit(double*, unsigned int)));
 			break;
 		}
-		faxModulator->setSampleRate(sampleRate);
-		faxTransmitter->setSampleRate(sampleRate);
 		faxTransmitter->startTransmission();
 	} catch (Error e) {
 		QMessageBox::warning(this,tr("error"),e.getText());
@@ -527,7 +543,7 @@ void FaxWindow::endTransmission(void)
 {
 	switch(interface) {
 	case FILE:
-		file->close();
+		file->end();
 		disconnect(sound,SIGNAL(spaceLeft(unsigned int)),
 			   faxTransmitter,SLOT(doNext(unsigned int)));
 		disconnect(faxTransmitter,
@@ -540,7 +556,7 @@ void FaxWindow::endTransmission(void)
 			   SLOT(write(signed short*, unsigned int)));
 		break;
 	case DSP:
-		sound->close();
+		sound->end();
 		disconnect(sound,SIGNAL(spaceLeft(unsigned int)),
 			faxTransmitter,SLOT(doNext(unsigned int)));
 		disconnect(faxTransmitter,
@@ -553,7 +569,7 @@ void FaxWindow::endTransmission(void)
 			SLOT(write(signed short*,unsigned int)));
 		break;
 	case SCSPTC:
-		ptc->close();
+		ptc->end();
 		disconnect(ptc,SIGNAL(spaceLeft(unsigned int)),
 			   faxTransmitter,SLOT(doNext(unsigned int)));
 		disconnect(faxTransmitter,
@@ -565,7 +581,6 @@ void FaxWindow::endTransmission(void)
 void FaxWindow::initReception(int item)
 {
 	try {
-		unsigned int sampleRate;
 		QString fileName;
 		switch(interface=item) {
 		case FILE:
@@ -573,7 +588,7 @@ void FaxWindow::initReception(int item)
 			if(fileName.isEmpty()) {
 				return;
 			}
-			file->openInput(fileName,sampleRate);
+			file->startInput(fileName);
 			connect(file,
 				SIGNAL(data(signed short*,unsigned int)),
 				faxDemodulator,
@@ -584,8 +599,7 @@ void FaxWindow::initReception(int item)
 				SLOT(decode(unsigned int*,unsigned int)));
 			break;
 		case DSP:
-			sampleRate=8000;
-			sound->openInput(sampleRate);
+			sound->startInput();
 			connect(sound,
 				SIGNAL(data(signed short*,unsigned int)),
 				faxDemodulator,
@@ -596,15 +610,12 @@ void FaxWindow::initReception(int item)
 				SLOT(decode(unsigned int*,unsigned int)));
 			break;
 		case SCSPTC:
-			sampleRate=5760;
-			ptc->openInput();
+			ptc->startInput();
 			connect(ptc,SIGNAL(data(unsigned int*,unsigned int)),
 				faxReceiver,
 				SLOT(decode(unsigned int*, unsigned int)));
 			break;
 		}
-		faxDemodulator->setSampleRate(sampleRate);
-		faxReceiver->setSampleRate(sampleRate);
 		faxReceiver->init();
 	} catch(Error e) {
 		QMessageBox::warning(this,tr("error"),e.getText());
@@ -615,7 +626,7 @@ void FaxWindow::endReception(void)
 {
 	switch(interface) {
 	case FILE:
-		file->close();
+		file->end();
 		disconnect(file,
 			SIGNAL(data(signed short*, unsigned int)),
 			faxDemodulator,
@@ -626,7 +637,7 @@ void FaxWindow::endReception(void)
 			SLOT(decode(unsigned int*, unsigned int)));
 		break;
 	case DSP:
-		sound->close();
+		sound->end();
 		disconnect(sound,
 			SIGNAL(data(signed short*, unsigned int)),
 			faxDemodulator,
@@ -637,7 +648,7 @@ void FaxWindow::endReception(void)
 			SLOT(decode(unsigned int*, unsigned int)));
 		break;
 	case SCSPTC:
-		ptc->close();
+		ptc->end();
 		disconnect(ptc,SIGNAL(data(unsigned int*, unsigned int)),
 			   faxReceiver,
 			   SLOT(decode(unsigned int*, unsigned int)));

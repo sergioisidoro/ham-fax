@@ -20,11 +20,12 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <sys/soundcard.h>
+#include <qtimer.h>
 #include "Error.hpp"
 
 Sound::Sound(QObject* parent)
-	: QObject(parent), devDSP(-1), devDSPName("/dev/dsp"),
-	  notifier(0)
+	: QObject(parent), sampleRate(8000),
+	  devDSP(-1), devDSPName("/dev/dsp"), notifier(0)
 {
 }
 
@@ -38,12 +39,7 @@ void Sound::setDSPDevice(QString s)
 	devDSPName=s;
 }
 
-QString& Sound::getDSPDevice(void)
-{
-	return devDSPName;
-}
-
-void Sound::openOutput(unsigned int sampleRate)
+void Sound::startOutput(void)
 {
 	try {
 		if((devDSP=open(devDSPName,O_WRONLY|O_NONBLOCK))==-1) {
@@ -69,13 +65,14 @@ void Sound::openOutput(unsigned int sampleRate)
 					     this);
 		connect(notifier,SIGNAL(activated(int)),
 			this,SLOT(checkSpace(int)));
+		emit newSampleRate(sampleRate);
 	} catch(Error) {
 		close();
 		throw;
 	}
 }
 
-void Sound::openInput(unsigned int sampleRate)
+void Sound::startInput(void)
 {
 	try {
 		if((devDSP=open(devDSPName,O_RDONLY|O_NONBLOCK))==-1) {
@@ -100,26 +97,30 @@ void Sound::openInput(unsigned int sampleRate)
 		notifier=new QSocketNotifier(devDSP,QSocketNotifier::Read,
 					     this);
 		connect(notifier,SIGNAL(activated(int)),SLOT(read(int)));
+		emit newSampleRate(sampleRate);
 	} catch(Error) {
 		close();
 		throw;
 	}
 }
 
-void Sound::close(void)
+void Sound::end(void)
 {
 	if(devDSP!=-1) {
 		notifier->setEnabled(false);
-		ioctl(devDSP,SNDCTL_DSP_RESET);
 		if(notifier->type()==QSocketNotifier::Read) {
 			disconnect(notifier,SIGNAL(activated(int)),
 				   this,SLOT(read(int)));
+			close();
 		} else {
 			disconnect(notifier,SIGNAL(activated(int)),
 				   this,SLOT(checkSpace(int)));
+			int i;
+			ioctl(devDSP,SNDCTL_DSP_GETODELAY,&i);
+			QTimer::singleShot(1000*i
+					   /sampleRate/sizeof(signed short),
+					   this,SLOT(close()));
 		}
-		::close(devDSP);
-		devDSP=-1;
 		delete notifier;
 	}
 }
@@ -166,3 +167,21 @@ void Sound::checkSpace(int fd)
 	ioctl(fd,SNDCTL_DSP_GETOSPACE,&info);
 	emit spaceLeft(info.bytes/sizeof(signed short));
 }
+
+void Sound::close(void)
+{
+	ioctl(devDSP,SNDCTL_DSP_RESET);
+	::close(devDSP);
+	devDSP=-1;
+	emit deviceClosed();
+}
+
+void Sound::closeNow(void)
+{
+	if(devDSP!=-1) {
+		notifier->setEnabled(false);
+		delete notifier;
+		close();
+	}
+}
+

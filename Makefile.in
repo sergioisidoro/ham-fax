@@ -19,10 +19,13 @@ CXX=@CXX@
 CXXFLAGS=-Wall @QT_CXXFLAGS@ @CXXFLAGS@
 CPPFLAGS=@CPPFLAGS@
 LIBS=@QT_LIBS@ -laudiofile
-INSTALL=@INSTALL@
-INSTALLDIR=/usr/local/bin/
-DOCDIR=/usr/local/share/doc/HamFax/
 QT_MOC=@QT_MOC@
+INSTALL=@INSTALL@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+docdir=@datadir@/doc/HamFax
+defines=-DDOCDIR=\"$(docdir)\"
 
 all: hamfax
 
@@ -32,11 +35,13 @@ clean:
         doc/*~
 
 install: hamfax
-	$(INSTALL) -s hamfax $(INSTALLDIR)
-	$(INSTALL) HamFax.html $(DOCDIR)
+	$(INSTALL) -o root -g root -m 0755 -d $(bindir)
+	$(INSTALL) -o root -g root -m 0755 -s hamfax $(bindir)
+	$(INSTALL) -o root -g root -m 0755 -d $(docdir)
+	$(INSTALL) -o root -g root -m 0644 doc/HamFax.html $(docdir)
 
 .cpp.o:
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $<
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(defines) -c $<
 
 moc_%.cpp: %.hpp
 	$(QT_MOC) $< -o $@

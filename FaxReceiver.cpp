@@ -30,7 +30,7 @@ FaxReceiver::FaxReceiver(QObject* parent)
 	connect(timer,SIGNAL(timeout()),this,SLOT(adjustNext()));
 }
 
-void FaxReceiver::setSampleRate(unsigned int rate)
+void FaxReceiver::setSampleRate(int rate)
 {
 	sampleRate=rate;
 }

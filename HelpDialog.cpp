@@ -20,15 +20,18 @@
 #include <qlayout.h>
 #include <qtextbrowser.h>
 
+#ifndef DOCDIR
+#error "DOCDIR needs to be defined"
+#endif
+
 HelpDialog::HelpDialog(QWidget* parent)
 	: QDialog(parent,0,true)
 {
 	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
 	QTextBrowser* browser=new QTextBrowser(this);
 	layout->addWidget(browser);
-	browser->mimeSourceFactory()->addFilePath("/usr/share/doc/HamFax/");
-	browser->mimeSourceFactory()->
-		addFilePath("/usr/local/share/doc/HamFax/");
+	browser->mimeSourceFactory()->addFilePath(DOCDIR);
+
 	browser->setSource("HamFax.html");
 	QPushButton* button=new QPushButton(tr("&Close"),this);
 	layout->addWidget(button);

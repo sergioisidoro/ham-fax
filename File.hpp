@@ -27,14 +27,16 @@ class File : public QObject {
 public:
 	File(QObject* parent);
 	~File(void);
-	void openOutput(const QString& fileName,unsigned int sampleRate);
-	void openInput(const QString& fileName,unsigned int& sampleRate);
+	void startOutput(const QString& fileName);
+	void startInput(const QString& fileName);
 	void read(signed short* samples, unsigned int& number);
-	void close(void);
+	void end(void);
 private:
+	int sampleRate;
 	AFfilehandle aFile;
 	QTimer* timer;
 signals:
+	void newSampleRate(int);
 	void data(signed short* buffer, unsigned int n);
 	void next(unsigned int n);
 public slots:

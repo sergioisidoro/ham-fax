@@ -19,7 +19,7 @@
 #include "Error.hpp"
 
 File::File(QObject* parent)
-	: QObject(parent)
+	: QObject(parent), sampleRate(8000)
 {
 	afSetErrorHandler(0);
 	timer=new QTimer(this);
@@ -27,10 +27,10 @@ File::File(QObject* parent)
 
 File::~File(void)
 {
-	this->close();
+	this->end();
 }
 
-void File::openOutput(const QString& fileName, unsigned int sampleRate)
+void File::startOutput(const QString& fileName)
 {
 	AFfilesetup fs;
 	if((fs=afNewFileSetup())==AF_NULL_FILESETUP) {
@@ -49,9 +49,10 @@ void File::openOutput(const QString& fileName, unsigned int sampleRate)
 	afFreeFileSetup(fs);
 	timer->start(0);
 	connect(timer,SIGNAL(timeout()),this,SLOT(timerSignal()));
+	emit newSampleRate(sampleRate);
 }
 
-void File::openInput(const QString& fileName, unsigned int& sampleRate)
+void File::startInput(const QString& fileName)
 {
 	try {
 		AFfilesetup fs=0;
@@ -61,16 +62,16 @@ void File::openInput(const QString& fileName, unsigned int& sampleRate)
 		if(afGetFrameSize(aFile,AF_DEFAULT_TRACK,0)!=2) {
 			throw Error(tr("samples size not 16 bit"));
 		}
-		sampleRate=(unsigned int)afGetRate(aFile,AF_DEFAULT_TRACK);
+		emit newSampleRate(afGetRate(aFile,AF_DEFAULT_TRACK));
 		timer->start(0);
 		connect(timer,SIGNAL(timeout()),this,SLOT(read()));
 	} catch(Error) {
-		close();
+		end();
 		throw;
 	}
 }
 
-void File::close(void)
+void File::end(void)
 {
 	timer->stop();
 	disconnect(timer,SIGNAL(timeout()),this,SLOT(timerSignal()));
@@ -90,7 +91,7 @@ void File::write(signed short* samples, unsigned int number)
 			}
 		}
 	} catch(Error) {
-		close();
+		end();
 		throw;
 	}
 }
@@ -105,7 +106,7 @@ void File::read(signed short* samples, unsigned int& number)
 			}
 		}
 	} catch(Error) {
-		close();
+		end();
 		throw;
 	}
 }

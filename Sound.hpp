@@ -28,23 +28,27 @@ public:
 	Sound(QObject* parent);
 	~Sound(void);
 	void setDSPDevice(QString s);
-	QString& getDSPDevice(void);
-	void openOutput(unsigned int sampleRate);
-	void openInput(unsigned int sampleRate);
-	void close(void);
+	void startOutput(void);
+	void startInput(void);
 	bool outputBufferEmpty(void);
 private:
+	int sampleRate;
 	int devDSP;
 	QString devDSPName;
 	QSocketNotifier* notifier;
 signals:
-        void data(signed short*, unsigned int n);
-	void spaceLeft(unsigned int n);
+        void data(signed short*, unsigned int);
+	void deviceClosed(void);
+	void spaceLeft(unsigned int);
+	void newSampleRate(int);
 public slots:
+	void closeNow(void);
+	void end(void);
 	void write(signed short* samples, unsigned int number);
 private slots:
         void read(int fd);
 	void checkSpace(int fd);
+	void close(void);
 };
 
 #endif

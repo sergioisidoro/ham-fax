@@ -52,6 +52,7 @@ public slots:
 	void setSampleRate(int rate);
 	void setColor(bool b);
 	void doNext(unsigned int n);
+	void doAptStop(void);
 signals:
 	void aptStart(void);
 	void phasing(void);

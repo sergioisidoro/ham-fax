@@ -222,19 +222,13 @@ void FaxImage::correctBegin(void)
 	int n=slant2.x();
 	int h=image.height();
 	int w=image.width();
+	QImage tempImage(w,h,32);
 	for(int c=0; c<w; c++) {
 		for(int r=0; r<h; r++) {
-			QRgb pixel;
-			if(c+n<w) {
-				pixel=image.pixel(n+c,r);
-			} else if(r+1<h) {
-				pixel=image.pixel((n+c)%w,r+1);
-			} else {
-				pixel=qRgb(0,0,0);
-			}
-			image.setPixel(c,r,pixel);
+			tempImage.setPixel(c,r,image.pixel((n+c)%w,r));
 		}
 	}
+	image=tempImage;
 	updateContents(0,0,w,h);
 	emit newImage();
 }

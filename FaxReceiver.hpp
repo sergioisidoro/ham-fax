@@ -27,18 +27,17 @@ class FaxReceiver : public QObject {
 	Q_OBJECT
 public:
 	FaxReceiver(QObject* parent);
-	void setSampleRate(unsigned int rate);
 	void init(void);
 private:
 	void decodeApt(unsigned int& x);
 	void decodePhasing(unsigned int& x);
 	void decodeImage(unsigned int& x);
 	enum { APTSTART, PHASING, IMAGE, DONE } state;
-	unsigned int sampleRate;
+	int sampleRate;
 	unsigned int currentValue;
 	bool aptHigh;
 	unsigned int aptTrans;    // APT low-high transitions
-	unsigned int aptCount;    // samples counted for aptTrans
+	int aptCount;    // samples counted for aptTrans
 	unsigned int aptStartFreq;
 	unsigned int aptStopFreq;
 	bool aptStop;
@@ -77,6 +76,7 @@ signals:
 	void imageStarts(void);
 	void redrawStarts(void);
 public slots:
+        void setSampleRate(int rate);
 	void decode(unsigned int*, unsigned int n);
         void setAptStartFreq(int f);
 	void setAptStopFreq(int f);

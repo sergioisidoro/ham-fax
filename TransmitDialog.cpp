@@ -26,7 +26,6 @@ TransmitDialog::TransmitDialog(QWidget* parent)
 	status->setMinimumWidth(150);
 	layout->addWidget(cancel=new QPushButton(tr("&Cancel"),this));
 	connect(cancel,SIGNAL(clicked()),this,SIGNAL(cancelClicked()));
-	connect(cancel,SIGNAL(clicked()),this,SLOT(hide()));
 }
 
 void TransmitDialog::showText(const QString& s)
@@ -36,12 +35,15 @@ void TransmitDialog::showText(const QString& s)
 
 void TransmitDialog::closeEvent(QCloseEvent* close)
 {
-	close->accept();
-	emit cancelClicked();
+	close->ignore();
+	if(cancel->isEnabled()) {
+		emit cancelClicked();
+	}
 }
 
 void TransmitDialog::start(void)
 {
+	cancel->setEnabled(true);
 	show();
 	showText("transmitting APT start");
 }
@@ -59,4 +61,5 @@ void TransmitDialog::imageLine(int n)
 void TransmitDialog::aptStop(void)
 {
 	showText("transmitting APT stop");
+	cancel->setEnabled(false);
 }

@@ -29,11 +29,12 @@ public:
 	~PTC(void);
 	void setDeviceName(QString s);
 	QString& getDeviceName(void);
-	void openInput(void);
-	void openOutput(void);
-	void close(void);
+	void startInput(void);
+	void startOutput(void);
+	void end(void);
 	void receive(unsigned int* samples, unsigned int& count);
 private:
+	int sampleRate;
 	void open(void);
 	QString deviceName;
 	int device;
@@ -41,8 +42,10 @@ private:
 	unsigned int deviation;
 	QSocketNotifier* notifier;
 signals:
+	void newSampleRate(int);
 	void data(unsigned int*, unsigned int);
 	void spaceLeft(unsigned int);
+	void deviceClosed();
 public slots:
         void setDeviation(int dev);
 	void setFM(bool fm);
@@ -50,6 +53,7 @@ public slots:
 private slots:
         void read(int fd);
 	void checkSpace(int fd);
+	void close(void);
 };
 
 #endif

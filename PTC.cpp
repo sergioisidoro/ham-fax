@@ -20,11 +20,11 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include <qtimer.h>
 #include "Error.hpp"
 
 PTC::PTC(QObject* parent) 
-	: QObject(parent),
-	  deviceName("/dev/ttyS0"),
+	: QObject(parent), deviceName("/dev/ttyS0"),
 	  device(-1), fm(true), deviation(0), notifier(0)
 {
 }
@@ -66,40 +66,53 @@ void PTC::open(void)
 	write(device,s,s.length());
 	s=QString("FAX %1\r").arg(fm ? "JVCOMM :HamFax FM" : "AMFAX");
 	write(device,s,s.length());
-	usleep(200000);
+	usleep(300000);
 	tcflush(device,TCIOFLUSH);
+	emit newSampleRate(sampleRate);
 }
 
-void PTC::openInput(void)
+void PTC::startInput(void)
 {
+	sampleRate=57600/10;
 	open();
 	notifier=new QSocketNotifier(device,QSocketNotifier::Read);
 	connect(notifier,SIGNAL(activated(int)),this,SLOT(read(int)));
 }
 
-void PTC::openOutput(void)
+void PTC::startOutput(void)
 {
+	sampleRate=57600/20;
 	open();
 	notifier=new QSocketNotifier(device,QSocketNotifier::Write);
 	connect(notifier,SIGNAL(activated(int)),this,SLOT(checkSpace(int)));
 }
 
-void PTC::close(void)
+void PTC::end(void)
 {
 	if(device!=-1) {
 		notifier->setEnabled(false);
-		write(device,"\377",1); // return from fax mode
 		if(notifier->type()==QSocketNotifier::Read) {
 			disconnect(notifier,SIGNAL(activated(int)),
 				   this,SLOT(read(int)));
+			close();
 		} else {
 			disconnect(notifier,SIGNAL(activated(int)),
 				   this,SLOT(checkSpace(int)));
+			int i;
+			ioctl(device,TIOCOUTQ,&i);
+			QTimer::singleShot(1000*(i+8000)/sampleRate,
+					   this,SLOT(close()));
 		}
-		::close(device);
-		device=-1;
 		delete notifier;
 	}
+}
+
+void PTC::close(void)
+{
+	write(device,"\377",1); // return from fax mode
+	::close(device);
+	device=-1;
+	emit deviceClosed();
 }
 
 void PTC::receive(unsigned int* samples, unsigned int& count)

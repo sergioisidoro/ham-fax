@@ -45,8 +45,10 @@ void ReceiveDialog::apt(int f)
 
 void ReceiveDialog::closeEvent(QCloseEvent* close)
 {
-	close->accept();
-	emit cancelClicked();
+	close->ignore();
+	if(cancel->isEnabled()) {
+		emit cancelClicked();
+	}
 }
 
 void ReceiveDialog::show(void)
