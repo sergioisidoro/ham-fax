@@ -57,6 +57,7 @@ private:
 	QToolBar* faxTool;
 	QComboBox* modulation;
 	QComboBox* invertPhase;
+	QComboBox* color;
 	QLabel* sizeText;
 	QLabel* iocText;
 	Config* config;
@@ -83,6 +84,7 @@ signals:
 public slots:
         void setModulation(bool b);
 	void setPhasingPol(bool b);
+	void setColor(bool b);
 	void endTransmission(void);
 	void endReception(void);
 	void slantWaitSecond(void);

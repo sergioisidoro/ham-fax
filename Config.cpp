@@ -38,6 +38,7 @@ Config::Config(QObject* parent)
 	value["phaseInvert"]="0";
 	value["fm"]="1";
 	value["autoScroll"]="1";
+	value["color"]="0";
 }
 
 void Config::readFile(void)
@@ -67,7 +68,8 @@ void Config::readFile(void)
 				   key=="phaseLines" ||
 				   key=="phaseInvert" ||
 				   key=="fm" ||
-				   key=="autoScroll") {
+				   key=="autoScroll" ||
+				   key=="color") {
 					value[key]=data;
 				}
 			};
@@ -89,6 +91,7 @@ void Config::readFile(void)
 	emit phaseInvert(value["phaseInvert"]=="1" ? true : false);
 	emit useFM(value["fm"]=="1" ? true : false);
 	emit autoScroll(value["autoScroll"]=="1" ? true : false);
+	emit color(value["color"]=="1" ? true : false);
 }
 
 void Config::writeFile(void)
@@ -253,4 +256,17 @@ void Config::setAutoScroll(bool b)
 		value["autoScroll"]=QString().sprintf("%u",(int)b);
 		emit autoScroll(b);
 	}
+}
+
+void Config::setColor(bool b)
+{
+	if(value["color"]!=b) {
+		value["color"]=QString().sprintf("%u",(int)b);
+		emit color(b);
+	}
+}
+
+void Config::setColor(int i)
+{
+	setColor(i==1 ? true : false);
 }

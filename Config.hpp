@@ -52,6 +52,7 @@ signals:
 	void phaseInvert(bool b);
 	void useFM(bool b);
 	void autoScroll(bool b);
+	void color(bool b);
 public slots:
         void setPTC(QString s);
 	void setPTT(QString s);
@@ -70,6 +71,8 @@ public slots:
 	void setUseFM(bool b);
 	void setUseFM(int i);
 	void setAutoScroll(bool b);
+	void setColor(bool b);
+	void setColor(int i);
 };
 
 #endif

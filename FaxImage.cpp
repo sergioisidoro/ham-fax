@@ -40,21 +40,21 @@ unsigned int FaxImage::getPixelGray(unsigned int col, unsigned int row)
 
 unsigned int FaxImage::getPixelRed(unsigned int col, unsigned int row)
 {
-	return qGray(image.pixel(col,row));
+	return qRed(image.pixel(col,row));
 }
 
 unsigned int FaxImage::getPixelGreen(unsigned int col, unsigned int row)
 {
-	return qGray(image.pixel(col,row));
+	return qGreen(image.pixel(col,row));
 }
 
 unsigned int FaxImage::getPixelBlue(unsigned int col, unsigned int row)
 {
-	return qGray(image.pixel(col,row));
+	return qBlue(image.pixel(col,row));
 }
 
-bool FaxImage::setPixelGray(unsigned int col, unsigned int row,
-			    unsigned int value)
+bool FaxImage::setPixel(unsigned int col, unsigned int row,
+			unsigned int value, unsigned int rgbg)
 {
 	if(col>=(unsigned int)image.width() ||
 	   row>=(unsigned int)image.height()+1) {
@@ -63,39 +63,31 @@ bool FaxImage::setPixelGray(unsigned int col, unsigned int row,
 	if(row>=(unsigned int)image.height()) {
 		resize(0,0,image.width(),image.height()+50);
 	}
-	image.setPixel(col,row,qRgb(value,value,value));
+	switch(rgbg) {
+	case 0:
+		image.setPixel(col,row,qRgb(value,
+					    getPixelGreen(col,row),
+					    getPixelBlue(col,row)));
+		break;
+	case 1:
+		image.setPixel(col,row,qRgb(getPixelRed(col,row),
+					    value,
+					    getPixelBlue(col,row)));
+		break;
+	case 2:
+		image.setPixel(col,row,qRgb(getPixelRed(col,row),
+					    getPixelGreen(col,row),
+					    value));
+		break;
+	case 3:
+		image.setPixel(col,row,qRgb(value,value,value));
+		break;
+	};
 	emit contentUpdated(col,row,1,1);
 	if(autoScroll) {
 		emit scrollTo(0,row);
 	}
 	return true;
-}
-
-void FaxImage::setPixelRed(unsigned int col, unsigned int row,
-				  unsigned int value)
-{
-	image.setPixel(col,row,qRgb(value,
-				    getPixelBlue(col,row),
-				    getPixelGreen(col,row)));
-	emit contentUpdated(col,row,1,1);
-}
-
-void FaxImage::setPixelGreen(unsigned int col, unsigned int row,
-				    unsigned int value)
-{
-	image.setPixel(col,row,qRgb(getPixelRed(col,row),
-				    value,
-				    getPixelBlue(col,row)));
-	emit contentUpdated(col,row,1,1);
-}
-
-void FaxImage::setPixelBlue(unsigned int col, unsigned int row,
-				   unsigned int value)
-{
-	image.setPixel(col,row,qRgb(getPixelRed(col,row),
-				    getPixelGreen(col,row),
-				    value));
-	emit contentUpdated(col,row,1,1);
 }
 
 void FaxImage::create(unsigned int cols, unsigned int rows)

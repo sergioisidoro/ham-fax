@@ -17,7 +17,6 @@
 
 #include "FaxWindow.hpp"
 #include <qpopupmenu.h>
-#include <qcombobox.h>
 #include <qfiledialog.h>
 #include <qstring.h>
 #include <qlayout.h>
@@ -92,6 +91,10 @@ FaxWindow::FaxWindow(const QString& version)
 	invertPhase=new QComboBox(false,faxTool);
 	invertPhase->insertItem(tr("normal"));
 	invertPhase->insertItem(tr("inverted"));
+	faxTool->addSeparator();
+	color=new QComboBox(false,faxTool);
+	color->insertItem(tr("mono"));
+	color->insertItem(tr("color"));
 
 	connect(config,SIGNAL(carrier(int)),carrier,SLOT(setValue(int)));
 	connect(carrier,SIGNAL(valueChanged(int)),
@@ -180,6 +183,15 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(config,SIGNAL(autoScroll(bool)),
 		this,SLOT(setAutoScroll(bool)));
 
+	connect(config,SIGNAL(color(bool)),
+		this,SLOT(setColor(bool)));
+	connect(color,SIGNAL(activated(int)),
+		config,SLOT(setColor(int)));
+	connect(config,SIGNAL(color(bool)),
+		faxTransmitter,SLOT(setColor(bool)));
+	connect(config,SIGNAL(color(bool)),
+		faxReceiver,SLOT(setColor(bool)));
+
 	// FaxWindow -- FaxImage -- FaxView
 	connect(this,SIGNAL(loadFile(QString)),faxImage,SLOT(load(QString)));
 	connect(this,SIGNAL(saveFile(QString)),faxImage,SLOT(save(QString)));
@@ -199,10 +211,10 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(faxReceiver,
 		SIGNAL(newImageHeight(unsigned int, unsigned int)),
 		faxImage,SLOT(resizeHeight(unsigned int, unsigned int)));
-	connect(faxReceiver,
-		SIGNAL(newGrayPixel(unsigned int,unsigned int,unsigned int)),
-		faxImage,
-		SLOT(setPixelGray(unsigned int,unsigned int,unsigned int)));
+	connect(faxReceiver,SIGNAL(newPixel(unsigned int,unsigned int,
+					    unsigned int,unsigned int)),
+		faxImage,SLOT(setPixel(unsigned int,unsigned int,
+				       unsigned int,unsigned int)));
 
 	// FaxTransmitter -- TransmitDialog
 	connect(faxTransmitter,SIGNAL(aptStart()),
@@ -638,6 +650,11 @@ void FaxWindow::setModulation(bool b)
 void FaxWindow::setPhasingPol(bool b)
 {
 	invertPhase->setCurrentItem(b ? 1 : 0);
+}
+
+void FaxWindow::setColor(bool b)
+{
+	color->setCurrentItem(b ? 1 : 0);
 }
 
 void FaxWindow::slantWaitFirst(void)

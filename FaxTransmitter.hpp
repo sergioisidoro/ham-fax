@@ -41,6 +41,7 @@ private:
 	bool phaseInvers;
 	unsigned int stopLength;
 	unsigned int stopFreq;
+	bool color;
 public slots:
         void setLPM(int lpm);
 	void setAptStartFreq(int f);
@@ -50,6 +51,7 @@ public slots:
 	void setPhasingLines(int n);
 	void setPhasePol(bool pol);
 	void setSampleRate(int rate);
+	void setColor(bool b);
 signals:
 	void aptStart(void);
 	void phasing(void);

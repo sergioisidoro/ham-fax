@@ -56,11 +56,13 @@ private:
 	unsigned int currRow;
 	unsigned int pixel;
 	unsigned int pixelSamples;
+	bool color;
 signals:
 	void aptFound(unsigned int f);
 	void aptStopDetected(void);
 	void newImageHeight(unsigned int y, unsigned int h);
-	void newGrayPixel(unsigned int x, unsigned int y,  unsigned int c);
+	void newPixel(unsigned int c, unsigned int h, 
+		      unsigned int v, unsigned int rgbg);
 	void searchingAptStart(void);
 	void startingPhasing(void);
 	void phasingLine(double lpm);
@@ -73,6 +75,7 @@ public slots:
 	void setPhasePol(bool pol);
 	void startPhasing(void);
 	void endReception(void);
+	void setColor(bool b);
 };
 
 #endif

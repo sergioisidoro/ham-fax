@@ -28,7 +28,8 @@ FaxTransmitter::FaxTransmitter(QObject* parent, FaxImage* faxImage)
 	startFreq(0),
 	phasingLines(0),
 	stopLength(0), 
-	stopFreq(0)
+	stopFreq(0),
+	color(false)
 {
 }
 
@@ -89,7 +90,10 @@ void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples)
 			}
 		}
 		if(state==IMAGE) {
-			if(sampleNr>=sampleRate*faxImage->getRows()*60/lpm) {
+			if(!color&&sampleNr
+			   >=sampleRate*faxImage->getRows()*60/lpm ||
+			   color&&sampleNr
+			   >=3*sampleRate*faxImage->getRows()*60/lpm) {
 				state=APTSTOP;
 				sampleNr=0;
 				emit aptStop();
@@ -101,8 +105,25 @@ void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples)
 					(pos*faxImage->getCols());
 				unsigned int r=sampleNr*lpm
 					/60/sampleRate;
-				buf[i]=(double)
-					faxImage->getPixelGray(c,r)/255.0;
+				if(color) {
+					switch(r%3) {
+					case 0:
+						buf[i]=faxImage->
+							getPixelRed(c,r/3);
+						break;
+					case 1:
+						buf[i]=faxImage->
+							getPixelGreen(c,r/3);
+						break;
+					case 2:
+						buf[i]=faxImage->
+							getPixelBlue(c,r/3);
+						break;
+					}
+				} else {
+				buf[i]=faxImage->getPixelGray(c,r);
+				}
+				buf[i]=buf[i]/255.0;
 				sampleNr++;
 			}
 		}
@@ -119,7 +140,9 @@ void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples)
 		}
 	}
 	if(state==IMAGE) {
-		emit imageLine(sampleNr*lpm/60/sampleRate);
+		emit imageLine(color ?
+			       sampleNr*lpm/60/sampleRate/3 :
+			       sampleNr*lpm/60/sampleRate);
 	}
 }
 
@@ -161,4 +184,9 @@ void FaxTransmitter::setPhasePol(bool pol)
 void FaxTransmitter::setSampleRate(int rate)
 {
 	sampleRate=rate;
+}
+
+void FaxTransmitter::setColor(bool b)
+{
+	color=b;
 }

@@ -44,14 +44,8 @@ signals:
 	void contentUpdated(int x, int y, int w, int h);
 	void scrollTo(int x, int y);
 public slots:
-	bool setPixelGray(unsigned int col, unsigned int row,
-			  unsigned int value);
-	void setPixelRed(unsigned int col, unsigned int row,
-			 unsigned int value);
-	void setPixelGreen(unsigned int col, unsigned int row,
-			   unsigned int value);
-	void setPixelBlue(unsigned int col, unsigned int row,
-			  unsigned int value);
+        bool setPixel(unsigned int col, unsigned int row,
+		      unsigned int value, unsigned int rgbg);
         void create(unsigned int cols, unsigned int rows);
 	void load(QString fileName);
 	void save(QString fileName);

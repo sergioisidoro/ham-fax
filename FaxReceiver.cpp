@@ -23,7 +23,7 @@ FaxReceiver::FaxReceiver(QObject* parent)
 	  currentValue(0),
 	  aptHigh(false), aptTrans(0), aptCount(0),
 	  aptStartFreq(0), aptStopFreq(0), aptStop(false),
-	  phaseHigh(false), currPhaseLength(0)
+	  phaseHigh(false), currPhaseLength(0), color(false)
 {
 }
 
@@ -116,7 +116,7 @@ void FaxReceiver::decodePhasing(unsigned int& x)
 			lpmSum+=l;
 			++phaseLines;
 			lpm=lpmSum/(double)phaseLines;
-			imageSample=(int)(0.025*60.0/lpm*(double)sampleRate);
+			imageSample=(int)(1.025*60.0/lpm*(double)sampleRate);
 			
 			noPhaseLines=0;
 		} else if(phaseLines>0 && ++noPhaseLines>=5) {
@@ -145,9 +145,19 @@ void FaxReceiver::decodeImage(unsigned int& x)
 		} else  {
 			if(pixelSamples>0 && imageSample>0) {
 				pixel/=pixelSamples;
-				emit newGrayPixel(lastCol,currRow,pixel);
+				if(color) {
+					emit newPixel(lastCol,
+						      currRow/3,
+						      pixel,
+						      currRow%3);
+				} else {
+					emit newPixel(lastCol,currRow,
+						      pixel,3);
+				}
 				if(lastRow!=currRow && state==IMAGE) {
-					emit imageRow(lastRow=currRow);
+					lastRow=currRow;
+					emit imageRow(color ?
+						      currRow/3 : currRow);
 				}
 			}
 			lastCol=col;
@@ -195,8 +205,13 @@ void FaxReceiver::endReception(void)
 {
 	int h=currRow-(int)(lpm/60.0)-1;
 	if(h>0) {
-		emit newImageHeight(2,h);
+		emit newImageHeight(2,color ? h/3 : h);
 	}
 	state=DONE;
 	emit receptionEnded();
+}
+
+void FaxReceiver::setColor(bool b)
+{
+	color=b;
 }
