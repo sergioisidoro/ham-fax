@@ -16,31 +16,31 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include "Config.hpp"
 #include "OptionsDialog.hpp"
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
-#include "Config.hpp"
 
 OptionsDialog::OptionsDialog(QWidget* parent)
 	: QDialog(parent,0,true)
 {
-	Config& config=Config::instance();
+	Config& c=Config::instance();
 	setCaption(parent->caption());
 	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
 
 	QGridLayout* settings=new QGridLayout(layout,3,2);
 	settings->addWidget(new QLabel(tr("dsp device"),this),1,1);
 	settings->addWidget(devDSP=new QLineEdit(this),1,2);
-	devDSP->setText(config.getDSP());
+	devDSP->setText(c.readEntry("/hamfax/sound/device"));
 
 	settings->addWidget(new QLabel(tr("ptt device"),this),2,1);
 	settings->addWidget(devPTT=new QLineEdit(this),2,2);
-	devPTT->setText(config.getPTT());
+	devPTT->setText(c.readEntry("/hamfax/PTT/device"));
 
 	settings->addWidget(new QLabel(tr("ptc device"),this),3,1);
 	settings->addWidget(devPTC=new QLineEdit(this),3,2);
-	devPTC->setText(config.getPTC());
+	devPTC->setText(c.readEntry("/hamfax/PTC/device"));
 
 	settings->addWidget(new QLabel(tr("ptc speed"),this),4,1);
 	settings->addWidget(speedPTC=new QComboBox(this),4,2);
@@ -48,7 +48,7 @@ OptionsDialog::OptionsDialog(QWidget* parent)
 	speedPTC->insertItem(tr("57600bps"));
 	speedPTC->insertItem(tr("115200bps"));
 	int i=0;
-	switch(config.getPtcSpeed()) {
+	switch(c.readNumEntry("/hamfax/PTC/speed")) {
 	case 115200: i=2; break;
 	case 57600:  i=1; break;
 	default:          break;
@@ -67,19 +67,18 @@ OptionsDialog::OptionsDialog(QWidget* parent)
 
 void OptionsDialog::okClicked(void)
 {
-	Config& config=Config::instance();
 	done(1);
-
+	Config& c=Config::instance();
 	int s=38400;
 	switch (speedPTC->currentItem()) {
 	case 2: s=115200; break;
 	case 1: s=57600;  break;
 	default:          break;
 	};
-	config.setPtcSpeed(s);
-	config.setDSP(devDSP->text());
-	config.setPTT(devPTT->text());
-	config.setPTC(devPTC->text());
+	c.writeEntry("/hamfax/PTC/speed",s);
+	c.writeEntry("/hamfax/PTC/device",devPTC->text());
+	c.writeEntry("/hamfax/sound/device",devDSP->text());
+	c.writeEntry("/hamfax/PTT/device",devPTT->text());
 }
 
 void OptionsDialog::cancelClicked(void)

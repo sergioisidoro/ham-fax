@@ -31,8 +31,7 @@ public:
 	void startInput(void);
 private:
 	int sampleRate;
-	int devDSP;
-	QString devDSPName;
+	int dsp;
 	QSocketNotifier* notifier;
 signals:
         void data(short*, int);
@@ -41,7 +40,6 @@ signals:
 	void spaceLeft(int);
 	void newSampleRate(int);
 public slots:
-        void setDSPDevice(const QString& s);
 	void closeNow(void);
 	void end(void);
 	void write(short* samples, int number);

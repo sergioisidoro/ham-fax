@@ -1,3 +1,5 @@
+- handling of sample rate
+
 Little fixes and easy features:
 - use correct types (size_t, ssize_t, ...)
 - possibility for selecting available input/output

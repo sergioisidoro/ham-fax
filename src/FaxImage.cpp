@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,13 +20,11 @@
 #include "Config.hpp"
 
 FaxImage::FaxImage(QWidget* parent)
-	: QScrollView(parent,0,WResizeNoErase|WNorthWestGravity),
-	  autoScroll(true)
+	: QScrollView(parent,0,WResizeNoErase|WNorthWestGravity)
 {
 	setResizePolicy(Manual);
 	viewport()->setBackgroundMode(PaletteMid);
-	Config* config=&Config::instance();
-	connect(config,SIGNAL(autoScroll(bool)),SLOT(setAutoScroll(bool)));
+	autoScroll=Config::instance().readBoolEntry("autoScroll");
 }
 
 int FaxImage::getRows(void)

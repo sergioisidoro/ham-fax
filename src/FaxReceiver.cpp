@@ -20,17 +20,10 @@
 #include <cmath>
 
 FaxReceiver::FaxReceiver(QObject* parent)
-	: QObject(parent), sampleRate(0), aptStartFreq(0), aptStopFreq(0), 
-	color(false), rawData(0)
+	: QObject(parent), sampleRate(0), rawData(0)
 {
 	timer=new QTimer(this);
 	connect(timer,SIGNAL(timeout()),this,SLOT(adjustNext()));
-	Config* config=&Config::instance();
-	connect(config,SIGNAL(aptStartFreq(int)),SLOT(setAptStartFreq(int)));
-	connect(config,SIGNAL(aptStopFreq(int)),SLOT(setAptStopFreq(int)));
-	connect(config,SIGNAL(lpm(int)),SLOT(setTxLPM(int)));
-	connect(config,SIGNAL(phaseInvert(bool)),SLOT(setPhasePol(bool)));
-	connect(config,SIGNAL(color(bool)),SLOT(setColor(bool)));
 }
 
 void FaxReceiver::setSampleRate(int rate)
@@ -40,6 +33,13 @@ void FaxReceiver::setSampleRate(int rate)
 
 void FaxReceiver::init(void)
 {
+	Config& config=Config::instance();
+	aptStartFreq=config.readNumEntry("/hamfax/APT/startFrequency");
+	aptStopFreq=config.readNumEntry("/hamfax/APT/stopFrequency");
+	lpm=config.readNumEntry("/hamfax/fax/lpm");
+	phaseInvers=config.readNumEntry("/hamfax/phasing/invert");
+	color=config.readBoolEntry("/hamfax/fax/color");
+
 	state=APTSTART;
 	aptCount=aptTrans=0;
 	aptStop=aptHigh=false;

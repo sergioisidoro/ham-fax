@@ -28,11 +28,8 @@ public:
 	PTT(QObject* parent);
 	~PTT(void);
 private:
-	bool usePTT;
 	QFile device;
 public slots:
-	void setDeviceName(const QString& s);
-        void setUse(bool use);
 	void set(void);
 	void release(void);
 };

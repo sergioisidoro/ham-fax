@@ -25,49 +25,42 @@
 #include "Error.hpp"
 
 Sound::Sound(QObject* parent)
-	: QObject(parent), sampleRate(8000),
-	  devDSP(-1), devDSPName("/dev/dsp"), notifier(0)
+	: QObject(parent), sampleRate(8000), dsp(-1), notifier(0)
 {
-	connect(&Config::instance(),SIGNAL(DSPDevice(const QString&)),
-		SLOT(setDSPDevice(const QString&)));
 }
 
 Sound::~Sound(void)
 {
-	if(devDSP!=-1) {
-		::close(devDSP);
+	if(dsp!=-1) {
+		::close(dsp);
 	}
-}
-
-void Sound::setDSPDevice(const QString& s)
-{
-	devDSPName=s;
 }
 
 void Sound::startOutput(void)
 {
 	try {
-		if((devDSP=open(devDSPName,O_WRONLY|O_NONBLOCK))==-1) {
+		QString devDSPName=Config::instance().
+			readEntry("/hamfax/sound/device");
+		if((dsp=open(devDSPName,O_WRONLY|O_NONBLOCK))==-1) {
 			throw Error(tr("could not open dsp device"));
 		}
 		int format=AFMT_S16_NE;
-		if(ioctl(devDSP,SNDCTL_DSP_SETFMT,&format)==-1
+		if(ioctl(dsp,SNDCTL_DSP_SETFMT,&format)==-1
 		   ||format!=AFMT_S16_NE) {
 			throw Error(
 				tr("could not set audio format to S16_NE"));
 		}
 		int channels=1;
-		if(ioctl(devDSP,SNDCTL_DSP_CHANNELS,&channels)==-1
+		if(ioctl(dsp,SNDCTL_DSP_CHANNELS,&channels)==-1
 		   ||channels!=1) {
 			throw Error(tr("could not set mono mode"));
 		}
 		int speed=sampleRate;
-		ioctl(devDSP,SNDCTL_DSP_SPEED,&speed);
+		ioctl(dsp,SNDCTL_DSP_SPEED,&speed);
 		if(speed<sampleRate*0.99 || speed>sampleRate*1.01) {
 			throw Error(tr("could not set sample rate"));
 		}
-		notifier=new QSocketNotifier(devDSP,QSocketNotifier::Write,
-					     this);
+		notifier=new QSocketNotifier(dsp,QSocketNotifier::Write,this);
 		connect(notifier,SIGNAL(activated(int)),
 			this,SLOT(checkSpace(int)));
 		emit newSampleRate(sampleRate);
@@ -81,27 +74,27 @@ void Sound::startOutput(void)
 void Sound::startInput(void)
 {
 	try {
-		if((devDSP=open(devDSPName,O_RDONLY|O_NONBLOCK))==-1) {
+		QString devDSPName=Config::instance().readEntry("DSP");
+		if((dsp=open(devDSPName,O_RDONLY|O_NONBLOCK))==-1) {
 			throw Error(tr("could not open dsp device"));
 		}
 		int format=AFMT_S16_LE;
-		if(ioctl(devDSP,SNDCTL_DSP_SETFMT,&format)==-1
+		if(ioctl(dsp,SNDCTL_DSP_SETFMT,&format)==-1
 		   ||format!=AFMT_S16_LE) {
 			throw Error(
 				tr("could not set audio format S16_LE"));
 		}
 		int channels=1;
-		if(ioctl(devDSP,SNDCTL_DSP_CHANNELS,&channels)==-1
+		if(ioctl(dsp,SNDCTL_DSP_CHANNELS,&channels)==-1
 		   ||channels!=1) {
 			throw Error(tr("could not set mono mode"));
 		}
 		int speed=sampleRate;
-		ioctl(devDSP,SNDCTL_DSP_SPEED,&speed);
+		ioctl(dsp,SNDCTL_DSP_SPEED,&speed);
 		if(speed<sampleRate*0.99 || speed>sampleRate*1.01) {
 			throw Error(tr("could not set sample rate"));
 		}
-		notifier=new QSocketNotifier(devDSP,QSocketNotifier::Read,
-					     this);
+		notifier=new QSocketNotifier(dsp,QSocketNotifier::Read,this);
 		connect(notifier,SIGNAL(activated(int)),SLOT(read(int)));
 		emit newSampleRate(sampleRate);
 	} catch(Error) {
@@ -112,7 +105,7 @@ void Sound::startInput(void)
 
 void Sound::end(void)
 {
-	if(devDSP!=-1) {
+	if(dsp!=-1) {
 		notifier->setEnabled(false);
 		if(notifier->type()==QSocketNotifier::Read) {
 			disconnect(notifier,SIGNAL(activated(int)),
@@ -122,7 +115,7 @@ void Sound::end(void)
 			disconnect(notifier,SIGNAL(activated(int)),
 				   this,SLOT(checkSpace(int)));
 			int i;
-			ioctl(devDSP,SNDCTL_DSP_GETODELAY,&i);
+			ioctl(dsp,SNDCTL_DSP_GETODELAY,&i);
 			QTimer::singleShot(1000*i
 					   /sampleRate/sizeof(short),
 					   this,SLOT(close()));
@@ -134,9 +127,9 @@ void Sound::end(void)
 void Sound::write(short* samples, int number)
 {
 	try {
-		if(devDSP!=-1) {
+		if(dsp!=-1) {
 			notifier->setEnabled(false);
-			if((::write(devDSP,samples, number*sizeof(short)))
+			if((::write(dsp,samples, number*sizeof(short)))
 			   !=static_cast<int>(number*sizeof(short))) {
 				throw Error();
 			}
@@ -166,15 +159,15 @@ void Sound::checkSpace(int fd)
 
 void Sound::close(void)
 {
-	ioctl(devDSP,SNDCTL_DSP_RESET);
-	::close(devDSP);
-	devDSP=-1;
+	ioctl(dsp,SNDCTL_DSP_RESET);
+	::close(dsp);
+	dsp=-1;
 	emit deviceClosed();
 }
 
 void Sound::closeNow(void)
 {
-	if(devDSP!=-1) {
+	if(dsp!=-1) {
 		notifier->setEnabled(false);
 		delete notifier;
 		close();

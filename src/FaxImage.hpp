@@ -31,6 +31,8 @@ public:
 	int getRows(void);
 	int getCols(void);
 	int getPixel(int col, int row, int rgbg);
+	void load(QString fileName);
+	void save(QString fileName);
 private:
 	void drawContents(QPainter* p, int x,int y,int w,int h);
 	virtual void contentsMousePressEvent(QMouseEvent* m);
@@ -48,8 +50,6 @@ signals:
 public slots:
         bool setPixel(int col, int row, int value, int rgbg);
         void create(int cols, int rows);
-	void load(QString fileName);
-	void save(QString fileName);
 	void scale(int width, int height);
 	void scale(int width);
 	void resize(int x, int y, int w, int h=0);

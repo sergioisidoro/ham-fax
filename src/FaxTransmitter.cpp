@@ -20,31 +20,21 @@
 #include <cmath>
 
 FaxTransmitter::FaxTransmitter(QObject* parent, FaxImage* faxImage)
-	: QObject(parent), 
-	image(faxImage),
-	state(IDLE),
-	sampleNr(0),
-	lpm(0),
-	startLength(0),
-	startFreq(0),
-	phasingLines(0),
-	stopLength(0), 
-	stopFreq(0),
-	color(false)
+	: QObject(parent), image(faxImage)
 {
-	Config* config=&Config::instance();
-	connect(config,SIGNAL(aptStartLength(int)),SLOT(setAptStartLength(int)));
-	connect(config,SIGNAL(aptStartFreq(int)),SLOT(setAptStartFreq(int)));
-	connect(config,SIGNAL(aptStopLength(int)),SLOT(setAptStopLength(int)));
-	connect(config,SIGNAL(aptStopFreq(int)),SLOT(setAptStopFreq(int)));
-	connect(config,SIGNAL(lpm(int)),SLOT(setLPM(int)));
-	connect(config,SIGNAL(phaseLines(int)),SLOT(setPhasingLines(int)));
-	connect(config,SIGNAL(phaseInvert(bool)),SLOT(setPhasePol(bool)));
-	connect(config,SIGNAL(color(bool)),SLOT(setColor(bool)));
 }
 
 void FaxTransmitter::startTransmission(void)
 {
+	Config& config=Config::instance();
+	startLength=config.readNumEntry("/hamfax/APT/startLength");
+	startFreq=config.readNumEntry("/hamfax/APT/startFrequency");
+	stopLength=config.readNumEntry("/hamfax/APT/stopLength");
+	stopFreq=config.readNumEntry("/hamfax/APT/stopFrequency");
+	lpm=config.readNumEntry("/hamfax/fax/lpm");
+	phasingLines=config.readNumEntry("/hamfax/phasing/lines");
+	phaseInvers=config.readNumEntry("/hamfax/phasing/invert");
+	color=config.readBoolEntry("/hamfax/fax/color");
 	state=APTSTART;
 	sampleNr=0;
 	emit start();

@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -27,13 +28,9 @@ static const double lowPassFilter[3][17]={
 };
 
 
-FaxDemodulator::FaxDemodulator(QObject* parent)
-	: QObject(parent),
-	  carrier(0), rate(1), deviation(0), fm(true), 
-	  iFir(17), qFir(17), sine(8192), cosine(8192), arcSine(256)
+FaxDemodulator::FaxDemodulator(QObject* parent)	
+	:QObject(parent),iFir(17),qFir(17),sine(8192),cosine(8192),arcSine(256)
 {
-	iFir.setCoefficients(lowPassFilter[1]);
-	qFir.setCoefficients(lowPassFilter[1]);
 	for(size_t i=0; i<sine.size(); i++) {
 		sine[i]=std::sin(2.0*M_PI*i/sine.size());
 	}
@@ -43,44 +40,27 @@ FaxDemodulator::FaxDemodulator(QObject* parent)
 	for(size_t i=0; i<arcSine.size(); i++) {
 		arcSine[i]=std::asin(2.0*i/arcSine.size()-1.0)/2.0/M_PI;
 	}
-	Config* config=&Config::instance();
-	connect(config,SIGNAL(carrier(int)),SLOT(setCarrier(int)));
-	connect(config,SIGNAL(deviation(int)),SLOT(setDeviation(int)));
-	connect(config,SIGNAL(useFM(bool)),SLOT(setFM(bool)));
-	connect(config,SIGNAL(filter(int)),SLOT(setFilter(int)));
-
-	init();
 };
 
 void FaxDemodulator::init(void)
 {
+	Config& config=Config::instance();
+	size_t filter=config.readNumEntry("/hamfax/modulation/filter");
+	iFir.setCoefficients(lowPassFilter[filter]);
+	qFir.setCoefficients(lowPassFilter[filter]);
+	deviation=config.readNumEntry("/hamfax/modulation/deviation");
+	int carrier=config.readNumEntry("/hamfax/modulation/carrier");
+	fm=config.readBoolEntry("/hamfax/modulation/FM");
+	sine.setIncrement(sine.size()*carrier/rate);
+	cosine.setIncrement(cosine.size()*carrier/rate);
 	sine.reset();
 	cosine.reset();
 	ifirold=qfirold=0;
 }
 
-void FaxDemodulator::setCarrier(int carrier)
-{
-	this->carrier=carrier;
-	sine.setIncrement(sine.size()*carrier/rate);
-	cosine.setIncrement(cosine.size()*carrier/rate);
-}
-
 void FaxDemodulator::setSampleRate(int sampleRate)
 {
 	rate=sampleRate;
-	sine.setIncrement(sine.size()*carrier/rate);
-	cosine.setIncrement(cosine.size()*carrier/rate);
-}
-
-void FaxDemodulator::setDeviation(int dev)
-{
-	deviation=dev;
-}
-
-void FaxDemodulator::setFM(bool fm)
-{
-	this->fm=fm;
 }
 
 void FaxDemodulator::newSamples(short* audio, int n)
@@ -118,10 +98,4 @@ void FaxDemodulator::newSamples(short* audio, int n)
 		qfirold=qfirout;
 	}
 	emit data(demod,n);
-}
-
-void FaxDemodulator::setFilter(int n)
-{
-	iFir.setCoefficients(lowPassFilter[static_cast<size_t>(n)]);
-	qFir.setCoefficients(lowPassFilter[static_cast<size_t>(n)]);
 }

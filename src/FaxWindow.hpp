@@ -39,11 +39,8 @@ class FaxWindow : public QMainWindow {
 public:
 	FaxWindow(const QString& version);
 private:
-	int ioc;
-	QString getFileName(QString caption, QString filter);
-	virtual void closeEvent(QCloseEvent* close);
-	enum { FILE, DSP, SCSPTC };
-	int interface;
+	// menus
+	void createMenubar(void);
 	QPopupMenu* imageMenu;
 	int slantID;
 	int colDrawID;
@@ -52,6 +49,9 @@ private:
 	int pttID;
 	int scrollID;
 	int toolTipID;
+
+	// tool bars
+	void createToolbars(void);
 	QToolBar* modTool;
 	QComboBox* modulation;
 	QComboBox* filter;
@@ -59,8 +59,12 @@ private:
 	QToolBar* faxTool;
 	QComboBox* invertPhase;
 	QComboBox* colorBox;
+
+	// status bar
 	QLabel* sizeText;
 	QLabel* iocText;
+
+	// child objects
 	File* file;
 	FaxDemodulator* faxDemodulator;
 	FaxModulator* faxModulator;
@@ -71,29 +75,19 @@ private:
 	Sound* sound;
 	CorrectDialog* correctDialog;
 	TransmitDialog* transmitDialog;
+
+	int ioc;
+	virtual void closeEvent(QCloseEvent* close);
+	enum { FILE, DSP, SCSPTC };
+	int interface;
 	enum { WAITFIRST, WAITSECOND, NOTHING } slantState;
-	void createMenubar(void);
-	void createToolbars(void);
-signals:
-	void correctBegin(void);
-	void correctSlant(void);
-	void loadFile(QString fileName);
-	void saveFile(QString fileName);
-	void newWidth(int);
-	void scaleToWidth(int);
-	void usePTT(bool);
-	void autoScroll(bool);
-	void color(bool);
-	void toolTip(bool);
-	void fontSelected(QFont);
 public slots:
-        void setUsePTT(bool);
+        // part of set begin of line
 	void setBeginEnd(void);
-	void setColor(bool b);
+
+	// set if menu items are available
 	void setImageAdjust(bool b);
-        void setModulation(bool b);
-	void setFilter(int n);
-	void setPhasingPol(bool b);
+
 	void endReception(void);
 	void endTransmission(void);
 	void slantEnd(void);
@@ -101,28 +95,58 @@ public slots:
 	void enableControls(void);
 	void disableControls(void);
 private slots:
-        void scaleToIOC(void);
-        void adjustIOC(void);
+	// slots for menu items
+        // File
         void load(void);
         void save(void);
 	void quickSave(void);
+
+	// Transmit and Receive
 	void initTransmit(int item);
 	void initReception(int item);
+
+	// Image
+        void adjustIOC(void);
+        void scaleToIOC(void);
+	void slantWaitFirst(void);
 	void redrawColor(void);
 	void redrawMono(void);
+	// shiftColors is in FaxImage
 	void setBegin(void);
-	void slantWaitFirst(void);
+
+	// Options
+	void doOptions(void);
+	void selectFont(void);
 	void changePTT(void);
 	void changeScroll(void);
-	void setAutoScroll(bool b);
 	void changeToolTip(void);
-	void setToolTip(bool b);
+
+	// Help
 	void help(void);
         void about(void);
 	void aboutQT(void);
+
+	// from FaxImage
 	void newImageSize(int w, int h);
-	void selectFont(void);
-	void doOptions(void);
+
+	// slots for toolbar objects
+	// modulation
+	void setCarrier(int c);
+	void setDeviation(int d);
+	void setUseFM(int f);
+	void setFilter(int n);
+
+	// apt
+	void setAptStartLength(int l);
+	void setAptStartFreq(int f);
+	void setAptStopLength(int l);
+	void setAptStopFreq(int f);
+
+	// facsimile
+	void setLpm(int l);
+	void setPhaseLines(int l);
+	void setPhaseInvert(int i);
+	void setColor(int c);
 };
 
 #endif

@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -25,15 +26,8 @@
 #include "Error.hpp"
 
 PTC::PTC(QObject* parent) 
-	: QObject(parent), deviceName("/dev/ttyS0"),
-	  device(-1), fm(true), speed(38400), deviation(0), notifier(0)
+	: QObject(parent), device(-1), notifier(0)
 {
-	Config* config=&Config::instance();
-	connect(config,SIGNAL(deviation(int)),SLOT(setDeviation(int)));
-	connect(config,SIGNAL(useFM(bool)),SLOT(setFM(bool)));
-	connect(config,SIGNAL(PTCDevice(const QString&)),
-		SLOT(setDeviceName(const QString&)));
-	connect(config,SIGNAL(ptcSpeed(int)),SLOT(setSpeed(int)));
 }
 
 PTC::~PTC(void)
@@ -44,33 +38,30 @@ PTC::~PTC(void)
 	}
 }
 
-void PTC::setDeviceName(const QString& s)
-{
-	deviceName=s;
-}
-
 void PTC::open(void)
 {
 	try {
-		device=::open(deviceName,O_RDWR|O_NOCTTY|O_NONBLOCK);
+		Config& c=Config::instance();
+		device=::open(c.readEntry("/hamfax/PTC/device")
+			      ,O_RDWR|O_NOCTTY|O_NONBLOCK);
 		if(device==-1) {
 			throw Error("could not open serial device");
 		}
-		
+		speed=c.readNumEntry("ptcSpeed");
 		struct termios options;
 		tcgetattr(device,&options);
 		switch(speed) {
-		case 38400:
-			cfsetispeed(&options,B38400);
-			cfsetospeed(&options,B38400);
+		case 115200:
+			cfsetispeed(&options,B115200);
+			cfsetospeed(&options,B115200);
 			break;
 		case 57600:
 			cfsetispeed(&options,B57600);
 			cfsetospeed(&options,B57600);
 			break;
-		case 115200:
-			cfsetispeed(&options,B115200);
-			cfsetospeed(&options,B115200);
+		default:
+			cfsetispeed(&options,B38400);
+			cfsetospeed(&options,B38400);
 			break;
 		}
 		options.c_cflag|=CRTSCTS;
@@ -83,8 +74,10 @@ void PTC::open(void)
 		write(device,"\r\r",2);
 		QString s=QString("FAX MBAUD %1\r").arg(speed);
 		write(device,s,s.length());
-		s=QString("FAX DEVIATION %1\r").arg(deviation);
+		s=QString("FAX DEVIATION %1\r")
+			.arg(c.readNumEntry("/hamfax/modulation/deviation"));
 		write(device,s,s.length());
+		fm=c.readBoolEntry("fm");
 		s=QString("FAX %1\r").arg(fm ? "JVCOMM :HamFax FM":"AMFAX");
 		write(device,s,s.length());
 		usleep(300000);
@@ -158,21 +151,6 @@ void PTC::transmit(double* samples, int count)
 	} catch(Error) {
 		close();
 	}
-}
-
-void PTC::setDeviation(int dev)
-{
-	deviation=dev;
-}
-
-void PTC::setFM(bool fm)
-{
-	this->fm=fm;
-}
-
-void PTC::setSpeed(int s)
-{
-	speed=s;
 }
 
 void PTC::read(int fd)

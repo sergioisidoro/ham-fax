@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -32,11 +33,9 @@ public:
 	void end(void);
 private:
 	void open(void);
-	QString deviceName;
 	int device;
-	bool fm;
 	int speed;
-	int deviation;
+	bool fm;
 	QSocketNotifier* notifier;
 signals:
 	void newSampleRate(int);
@@ -44,10 +43,6 @@ signals:
 	void spaceLeft(int);
 	void deviceClosed();
 public slots:
-        void setDeviceName(const QString& s);
-        void setDeviation(int dev);
-	void setSpeed(int s);
-	void setFM(bool fm);
 	void transmit(double* samples, int count);
 private slots:
         void read(int fd);

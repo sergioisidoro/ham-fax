@@ -22,13 +22,8 @@
 
 class Error {};
 
-PTT::PTT(QObject* parent)
-	: QObject(parent), usePTT(false)
+PTT::PTT(QObject* parent) : QObject(parent)
 {
-	Config* config=&Config::instance();
-	connect(config,SIGNAL(PTTDevice(const QString&)),
-		SLOT(setDeviceName(const QString&)));
-	connect(config,SIGNAL(keyPTT(bool)),SLOT(setUse(bool)));
 }
 
 PTT::~PTT(void)
@@ -36,15 +31,12 @@ PTT::~PTT(void)
 	device.close();
 }
 
-void PTT::setDeviceName(const QString& s)
-{
-	device.setName(s);
-}
-
 void PTT::set(void)
 {
-	if(usePTT) {
+	Config& c=Config::instance();
+	if(c.readBoolEntry("/hamfax/PTT/use")) {
 		try {
+			device.setName(c.readEntry("/hamfax/PTT/device"));
 			if(!device.open(IO_WriteOnly)) {
 				throw Error();
 			}
@@ -79,9 +71,4 @@ void PTT::release(void)
 			device.close();
 		}
 	}
-}
-
-void PTT::setUse(bool use)
-{
-	usePTT=use;
 }

@@ -15,14 +15,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include "Config.hpp"
 #include "HelpDialog.hpp"
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qtextbrowser.h>
-
-#ifndef DOCDIR
-#error "DOCDIR needs to be defined"
-#endif
 
 HelpDialog::HelpDialog(QWidget* parent)
 	: QDialog(parent,0,true)
@@ -32,8 +29,9 @@ HelpDialog::HelpDialog(QWidget* parent)
 	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
 	QTextBrowser* browser=new QTextBrowser(this);
 	layout->addWidget(browser);
-	browser->mimeSourceFactory()->addFilePath(DOCDIR);
-
+	browser->mimeSourceFactory()
+		->addFilePath(Config::instance().
+			      readEntry("/hamfax/directories/doc"));
 	browser->setSource("HamFax.html");
 	QPushButton* button=new QPushButton(tr("&Close"),this);
 	layout->addWidget(button);

@@ -95,7 +95,7 @@ TransmitDialog.o: TransmitDialog.cpp TransmitDialog.hpp
 
 hamfax.o: hamfax.cpp FaxWindow.hpp
 
-hamfax: Config.o moc_Config.o\
+hamfax: Config.o\
         CorrectDialog.o moc_CorrectDialog.o\
         DisplayLevel.o moc_DisplayLevel.o\
         Error.o\

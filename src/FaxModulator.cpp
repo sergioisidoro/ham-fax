@@ -21,19 +21,19 @@
 #include <cmath>
 
 FaxModulator::FaxModulator(QObject* parent)
-	: QObject(parent), sampleRate(0), carrier(0), dev(0), sine(8192)
+	: QObject(parent), sine(8192)
 {
 	for(size_t i=0; i<sine.size(); i++) {
 		sine[i]=static_cast<short>(32767*std::sin(2.0*M_PI*i/sine.size()));
 	}
-	Config* config=&Config::instance();
-	connect(config,SIGNAL(carrier(int)),SLOT(setCarrier(int)));
-	connect(config,SIGNAL(deviation(int)),SLOT(setDeviation(int)));
-	connect(config,SIGNAL(useFM(bool)),SLOT(setFM(bool)));
 }
 
 void FaxModulator::init(void)
 {
+	Config& config=Config::instance();
+	carrier=config.readNumEntry("/hamfax/modulation/carrier");
+	dev=config.readNumEntry("/hamfax/modulation/deviation");
+	fm=config.readBoolEntry("/hamfax/modulation/FM");
 	sine.reset();
 	if(!fm) {
 		sine.setIncrement(sine.size()*carrier/sampleRate);
@@ -58,19 +58,4 @@ void FaxModulator::modulate(double* buffer, int number)
 void FaxModulator::setSampleRate(int sr)
 {
 	sampleRate=sr;
-}
-
-void FaxModulator::setCarrier(int carrier)
-{
-	this->carrier=carrier;
-}
-
-void FaxModulator::setDeviation(int dev)
-{
-	this->dev=dev;
-}
-
-void FaxModulator::setFM(bool fm)
-{
-	this->fm=fm;
 }

@@ -58,21 +58,6 @@ public slots:
 	/**
 	 * Set the carrier frequency of the signal to create.
 	 */
-        void setCarrier(int carrier);
-	/**
-	 * Set the deviation of the signal to create.
-	 * Of course, this only applies to FM.
-	 */
-	void setDeviation(int dev);
-	/**
-	 * Set FM or AM.
-	 */
-	void setFM(bool fm);
-	/**
-	 * \param buffer holds an array with 
-	 * \param n values ranging from 
-	 * 0.0=black til 1.0=white and emit signal data with modulated signal
-	 */
 	void modulate(double* buffer, int n);
 };
 

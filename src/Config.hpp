@@ -20,75 +20,31 @@
 #define CONFIG_HPP
 
 #include <memory>
-#include <qobject.h>
-#include <qmap.h>
+#include <qsettings.h>
 #include <qstring.h>
-#include <qfont.h>
 
-class Config : public QObject {
-	Q_OBJECT
+/**
+ * This class is implemented as a Singleton and provides a global interface to 
+ * configuration data. It is derived from QSettings, so see the Qt documentation
+ * for specific member functions.
+ * The constructor initializes everything with default values in case there is 
+ * no item found in the configuration file.
+ */
+
+class Config : public QSettings {
 public:
+        /**
+	 * Only possible access to the Singleton
+	 */
+	static Config& instance(void);
+private:
 	typedef std::auto_ptr<Config> ConfigPtr;
 	friend class ConfigPtr;
-	static Config& instance(void);
-
-	void readFile(void);
-	bool getKeyPTT(void);
-	const QString& getDSP(void);
-	const QString& getPTT(void);
-	const QString& getPTC(void);
-	const int getPtcSpeed(void);
-private:
-	Config(void);
-	~Config(void);
-
-	typedef QMap<QString,QString> ValueMap;
-	ValueMap value;
-	QString fileName;
-signals:
-	void PTCDevice(const QString& s);
-	void PTTDevice(const QString& s);
-	void DSPDevice(const QString& s);
-	void keyPTT(bool b);
-	void carrier(int c);
-	void deviation(int d);
-	void lpm(int l);
-	void aptStartFreq(int f);
-	void aptStartLength(int l);
-	void aptStopFreq(int f);
-	void aptStopLength(int l);
-	void phaseLines(int n);
-	void phaseInvert(bool b);
-	void useFM(bool b);
-	void autoScroll(bool b);
-	void color(bool b);
-	void toolTip(bool b);
-	void ptcSpeed(int s);
-	void filter(int);
-public slots:
-        void setPTC(const QString& s);
-	void setPTT(const QString& s);
-	void setDSP(const QString& s);
-	void setKeyPTT(bool b);
-	void setCarrier(int c);
-	void setDeviation(int d);
-	void setLpm(int l);
-	void setAptStartFreq(int f);
-	void setAptStartLength(int l);
-	void setAptStopFreq(int f);
-	void setAptStopLength(int l);
-	void setPhaseLines(int n);
-	void setPhaseInvert(bool b);
-	void setPhaseInvert(int i);
-	void setUseFM(bool b);
-	void setUseFM(int i);
-	void setAutoScroll(bool b);
-	void setColor(bool b);
-	void setColor(int i);
-	void setToolTip(bool b);
-	void setPtcSpeed(int s);
-	void setFilter(int n);
-	void setFont(QFont f);
+	Config();
+	~Config() {};
+	void setDefault(const QString& key, const char* value);
+	void setDefault(const QString& key, const int value);
+	void setDefault(const QString& key, const bool value);
 };
 
 #endif

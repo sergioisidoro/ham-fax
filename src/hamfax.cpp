@@ -22,20 +22,20 @@
 #include "Config.hpp"
 #include "FaxWindow.hpp"
 
-#ifndef QMDIR
-#error "QMDIR needs to be defined"
-#endif
-
 int main(int argc, char* argv[])
 {
-	const QString version="HamFax 0.5.2";
-	QApplication app(argc, argv);
+	const QString version="HamFax 0.6";
+	Config& config=config.instance();
+
 	QTranslator translator(0);
-	translator.load(QString("hamfax_")+QTextCodec::locale(),QMDIR);
-	app.installTranslator(&translator);
+	translator.load(QString("hamfax_")+QTextCodec::locale(),
+			config.readEntry("/hamfax/directories/qm"));
+
+	QApplication app(argc, argv);
 	FaxWindow* faxWindow=new FaxWindow(version);
+	app.installTranslator(&translator);
+	app.setFont(config.readEntry("/hamfax/GUI/font"));
 	app.setMainWidget(faxWindow);
-	Config::instance().readFile();
 	faxWindow->show();
 	return app.exec();
 }
