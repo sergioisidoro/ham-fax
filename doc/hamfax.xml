@@ -1,9 +1,15 @@
-<?xml version='1.0'?>
+<?xml version='1.0' encoding="utf-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "docbookx.dtd">
-<book>
-  <title>HamFax Documentation</title>
+<book xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title><command>hamfax</command>documentation</title>
 
   <bookinfo>
+    <abstract>
+      <para><command>hamfax</command> is an application for sending
+      and receiving radio facsimiles. It is available under the terms
+      of the <glossterm>GPL</glossterm> and shoule work on all
+      unix-like systems.</para>
+    </abstract>
     <authorgroup>
       <author>
         <firstname>Christof</firstname><surname>Schmitt</surname>
@@ -19,14 +25,58 @@
   <chapter>
     <title>About</title>
 
-    <para>HamFax is an application for sending and receiving facsimilies in
-    amateur radio. You can either use a sound card as interface to the
-    transceiver or a SCS-PTC-II. Receiving of weather facsimile broadcasts 
-    is also possible.</para>
+    <section>
+      <title>The application</title>
 
-    <para>The program is licensed under the terms of the GNU General
-    Public License. See <ulink url="http://hamfax.sourceforge.net/"/>
-    for further information and new releases.</para>
+      <para><command>hamfax</command> is an application for sending
+      and receiving facsimilies in amateur radio. You can either use a
+      sound card as interface to the transceiver or a SCS-PTC-II.
+      Receiving of weather facsimile broadcasts is also
+      possible.</para>
+
+      <para>The program is licensed under the terms of the GNU General
+      Public License. See <ulink url="http://hamfax.sourceforge.net/"/>
+      for further information and new releases.</para>
+    </section>
+
+    <section>
+      <title>Software dependencies</title>
+      <itemizedlist>
+        <listitem>
+          <simpara><glossterm>audiofile</glossterm> library for
+          locally testing input and output.</simpara>
+        </listitem>
+        <listitem>
+          <simpara><glossterm>Qt toolkit</glossterm></simpara>
+        </listitem>
+        <listitem>
+          <simpara>Support for <glossterm>OSS</glossterm> or something
+          compatible.</simpara>
+        </listitem>
+      </itemizedlist>
+
+      <para>These dependencies are nothing to worry about, since they
+      have been included in Linux distributions for several years now.
+      Probably <command>hamfax</command> is even included in your
+      current distribution or operating system.</para>
+
+    </section>
+    <section>
+      <title>Supported interfaces</title>
+
+      <para>Currently these interfaces for sending and receiving are
+      supported:</para>
+
+      <itemizedlist>
+        <listitem>
+          <simpara>Soundcard supported by <glossterm>OSS</glossterm>.</simpara>
+        </listitem>
+        <listitem>
+          <simpara><glossterm>PTC</glossterm> from
+          <glossterm>SCS</glossterm> as external interface.</simpara>
+        </listitem>
+      </itemizedlist>
+    </section>
   </chapter>
 
   <chapter>
@@ -34,14 +84,14 @@
 
     <para>Facsimiles are pictures which are transmitted line by line.
     The sending and receiving station have to agree on the
-    transmission speed (LPM stands for lines per minute) and the IOC
-    (index of cooperation) which corresponds the line width. The
+    transmission speed (<glossterm>LPM</glossterm>) and the
+    <glossterm>IOC</glossterm> which corresponds the line width. The
     information transmitted is the brightness of the current
     position.</para>
 
-    <para>The beginning of a transmission is marked with a APT start
-    signal (APT stands for automatic picture transmission). Usually this
-    is a black/white pattern which changes between black and white at
+    <para>The beginning of a transmission is marked with a
+    <glossterm>APT</glossterm> start signal. Usually this is a
+    black/white pattern which changes between black and white at
     300Hz.</para>
   </chapter>
 
@@ -50,12 +100,7 @@
 
     <figure float="1" id="example">
       <title>Example</title>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="example.png" format="PNG"
-                     scalefit="1" align="center"/>
-        </imageobject>
-      </mediaobject>
+      <graphic fileref="example.png" scalefit="1" align="center"/>
     </figure>
 
     <para>Facsimiles on short wave are frequency modulated, that means
@@ -67,6 +112,28 @@
     <para><xref linkend="example"/> shows an example weather map. For
     information about stations broadcasting weather maps, see the
     program's homepage.</para>
+
+    <figure float="1">
+      <title>demod</title>
+      <literallayout class="monospaced">
+                                    I_t       I_{t-1}
+             +----------+  +-------+     +----+  +---+
+          +->|*sin(f_c) |->|FIR-LPF|--*->|z^-1|->|mul|--+
+          |  +----------+  +-------+  |  +----+  +---+  |
+          |                           *-->--     /      |
+          |                           |     \   /       |+  y_{t-1}
+          |                  +-------------+ \ /      +---+   +----+
+   input--+                  |normalization|  X       |add|-->|asin|--out
+          |                  +-------------+ / \      +---+   +----+       
+          |                           |     /   \       |-
+          |                           *-->--     \      |
+          |  +----------+  +-------+  |  +----+  +---+  |
+          +->|*cos(f_c )|->|FIR-LPF|--*->|z^-1|->|mul|--+
+             +----------+  +-------+     +----+  +---+
+                                    Q_t       Q_{t-1}
+        
+      </literallayout>
+    </figure>
   </chapter>
 
   <chapter>
@@ -79,7 +146,7 @@
   </chapter>
 
   <chapter>
-    <title>Using HamFax</title>
+    <title>Using <command>hamfax</command></title>
 
     <section>
       <title>Interface Setup</title>
@@ -95,8 +162,9 @@
       is often enough to do the job.</para>
 
       <para>For both interfaces you have to switch your transceiver to
-      USB (upper side band). In HamFax set carrier to 1900kHz and tune
-      your transceiver 1900kHz below the desired frequency.</para>
+      USB (upper side band). In <command>hamfax</command> set carrier
+      to 1900kHz and tune your transceiver 1900kHz below the desired
+      frequency.</para>
     </section>
 
     <section>
@@ -129,41 +197,78 @@
     </section>
   </chapter>
 
-  <appendix>
-    <title>References</title>
-    <refentry>
-      <refnamediv>
-        <refname>hamfax</refname>
-        <refpurpose>Send and receive radio facsimiles.</refpurpose>
-      </refnamediv>
-      <refsynopsisdiv>
-        <cmdsynopsis>
-          <command>hamfax</command>
-        </cmdsynopsis>
-      </refsynopsisdiv>
-      <refsect1>
-        <title>Options</title>
+  <chapter>
+    <title>Communication with drivers</title>
+    <section>
+      <title>Purpose</title>
 
-        <para><command>hamfax</command> provides no special command
-        line options, but the ones inherited from the Qt toolkit and
-        from X11 apply.</para>
+      <para>Drivers here refer to small helper programs that
+      implemented the low level part of external communication. For
+      transmitting they read unmodulated image data on stdin for
+      sending it as facsimile. For receiption they write demodulated
+      data to stdout.</para>
 
-      </refsect1>
-      <refsect1>
-        <title>Description</title>
+      <para>To ease debugging and for the possible access from
+      scripting language a simple text based protocol is used.</para>
 
-        <para><command>hamfax</command> is an application for sending
-        and receiving radio facsimile transmissions.</para>
+      <para>Each driver expects parameters on its command line on
+      startup. Then it prints the chosen sample rate on stdout
+      (because the value might be chosen from the driver for some
+      reason) and finally starts transmitting or receiving, depending
+      on the current mode.</para>
 
-      </refsect1>
-      <refsect1>
-        <title>See also</title>
+    </section>
 
-        <para>User documentation is provided as docbook based manual.
-        It is available as html pages that can be viewed from within
-        the Qt GUI.</para>
+    <section>
+      <title>Format</title>
 
-      </refsect1>
-    </refentry>
-  </appendix>
+      <para>The first lines report current parameters:</para>
+
+      <screen>
+        hamfax hamfaxdsp
+        mode receive
+        rate 8000
+      </screen>
+
+      <para>The first line is <quote>hamfax</quote> followed by the
+      name of the driver. The second line is <quote>mode</quote>
+      followed by <quote>receive</quote> or <quote>transmit</quote> to
+      indicate the current mode of operation. The third line is
+      <quote>rate</quote> followed by the sample rate of the data
+      (samples per second).</para>
+
+      <para>On receiption this is followed by the real data. The
+      samplerate has been defined by the header above. Each sample is
+      in the range from 0 to 255 and is printed as two hex digits. One
+      whitespace or a newline seperates the samples. Using less than
+      80 character per column also makes the format fit on text
+      terminals (useful for debugging). So the data looks like
+      this:</para>
+
+      <screen>
+        FA BC 78 23 9B
+      </screen>
+
+      <para>For transmitting the same data format is used, the data is
+      only passed to the driver on stdin.</para>
+
+      <para>Errors are printed on stdout instead of the
+      <quote>rate</quote> parameter. The format is
+      <quote>error</quote> followed by the failed function and the
+      error description (usually obtained from
+      <function>strerror()</function>), e.g.:</para>
+
+      <screen>
+        hamfax hamfaxdsp
+        mode transmit
+        error open No such file or directory
+      </screen>
+
+    </section>
+  </chapter>
+
+  <xi:include href="manpages.xml"/>
+
+  <xi:include href="glossary.xml"/>
+
 </book>

@@ -51,6 +51,8 @@ if test x$am_cv_sys_posix_termios = xyes; then
    AC_DEFINE(USE_PTC)
 fi
 
+AC_PATH_PROG(XMLTO, xmlto)
+
 AC_PATH_PROG(LRELEASE, lrelease)
 AM_CONDITIONAL(USE_LRELEASE, test -n $LRELEASE)
 

@@ -28,6 +28,11 @@ hamfax_SOURCES = \
         src/FirFilter.hpp\
         src/LookUpTable.hpp\
         src/hamfax.cpp
+
+hamfax_LDFLAGS = @QT_LIBS@
+hamfax_CXXFLAGS = @QT_CXXFLAGS@ -Wall
+hamfax_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\"
+
 nodist_hamfax_SOURCES = \
 	src/moc_Config.cpp\
 	src/moc_CorrectDialog.cpp\
@@ -48,13 +53,8 @@ nodist_hamfax_SOURCES = \
 	src/moc_Sound.cpp\
 	src/moc_PTT.cpp
 
-hamfax_LDFLAGS = @QT_LIBS@
-hamfax_CXXFLAGS = @QT_CXXFLAGS@ -Wall
-
 moc_%.cpp: %.hpp
 	$(QT_MOC) $< -o $@
-
-AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\"
 
 if USE_LRELEASE
 TRANSLATION = po/hamfax_de.qm
@@ -67,3 +67,14 @@ EXTRA_DIST = po/hamfax_de.qm po/hamfax_de.ts doc/HamFax.html
 po/hamfax_de.qm: po/hamfax_de.ts
 	$(LRELEASE) $< -qm $@
 
+.xml.html:
+	xmlto html-nochunks -o doc $<
+
+.xml.1:
+	xmlto man -o doc $<
+
+.xml.pdf:
+	xmlto pdf --extensions -o doc $<
+
+.xml.txt:
+	xmlto txt -o doc $<
