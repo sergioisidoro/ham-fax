@@ -19,6 +19,7 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
+#include "Config.hpp"
 
 OptionsDialog::OptionsDialog(QWidget* parent)
 	: QDialog(parent,0,true)
@@ -48,6 +49,24 @@ OptionsDialog::OptionsDialog(QWidget* parent)
 
 	connect(ok,SIGNAL(clicked()),this,SLOT(okClicked()));
 	connect(cancel,SIGNAL(clicked()),this,SLOT(cancelClicked()));
+
+	Config* config=&Config::instance();
+	connect(config,SIGNAL(DSPDevice(const QString&)),
+		SLOT(setDSP(const QString&)));
+	connect(this,SIGNAL(dsp(const QString&)),
+		config,SLOT(setDSP(const QString&)));
+	connect(config,SIGNAL(PTCDevice(const QString&)),
+		SLOT(setPTC(const QString&)));
+	connect(this,SIGNAL(ptc(const QString&)),
+		config,SLOT(setPTC(const QString&)));
+	connect(config,SIGNAL(PTTDevice(const QString&)),
+		SLOT(setPTT(const QString&)));
+	connect(this,SIGNAL(ptt(const QString&)),
+		config,SLOT(setPTT(const QString&)));
+	connect(config,SIGNAL(ptcSpeed(int)),
+		SLOT(setPtcSpeed(int)));
+	connect(this,SIGNAL(ptcSpeed(int)),
+		config,SLOT(setPtcSpeed(int)));
 }
 
 void OptionsDialog::okClicked(void)

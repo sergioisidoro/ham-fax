@@ -15,6 +15,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include "Config.hpp"
 #include "FaxReceiver.hpp"
 #include <math.h>
 
@@ -24,6 +25,12 @@ FaxReceiver::FaxReceiver(QObject* parent)
 {
 	timer=new QTimer(this);
 	connect(timer,SIGNAL(timeout()),this,SLOT(adjustNext()));
+	Config* config=&Config::instance();
+	connect(config,SIGNAL(aptStartFreq(int)),SLOT(setAptStartFreq(int)));
+	connect(config,SIGNAL(aptStopFreq(int)),SLOT(setAptStopFreq(int)));
+	connect(config,SIGNAL(lpm(int)),SLOT(setTxLPM(int)));
+	connect(config,SIGNAL(phaseInvert(bool)),SLOT(setPhasePol(bool)));
+	connect(config,SIGNAL(color(bool)),SLOT(setColor(bool)));
 }
 
 void FaxReceiver::setSampleRate(int rate)

@@ -22,8 +22,13 @@
 #include <qdir.h>
 #include <qapplication.h>
 
-Config::Config(QObject* parent)
-	: QObject(parent)
+Config& Config::instance(void)
+{
+	static ConfigPtr _instance(new Config);
+	return *_instance;
+}
+
+Config::Config(void)
 {
 	value["PTC"]="/dev/ttyS0";
 	value["PTT"]="/dev/ttyS1";

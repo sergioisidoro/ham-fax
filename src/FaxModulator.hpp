@@ -26,7 +26,6 @@ class FaxModulator : public QObject {
 	Q_OBJECT
 public:
 	FaxModulator(QObject* parent);
-	~FaxModulator(void);
 private:
 	int sampleRate;
 	bool fm;

@@ -18,12 +18,17 @@
 #include "PTT.hpp"
 #include <termios.h>
 #include <sys/ioctl.h>
+#include "Config.hpp"
 
 class Error {};
 
 PTT::PTT(QObject* parent)
 	: QObject(parent), usePTT(false)
-{	
+{
+	Config* config=&Config::instance();
+	connect(config,SIGNAL(PTTDevice(const QString&)),
+		SLOT(setDeviceName(const QString&)));
+	connect(config,SIGNAL(keyPTT(bool)),SLOT(setUse(bool)));
 }
 
 PTT::~PTT(void)

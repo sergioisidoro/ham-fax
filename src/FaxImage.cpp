@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "FaxImage.hpp"
+#include "Config.hpp"
 #include <math.h>
 
 FaxImage::FaxImage(QWidget* parent)
@@ -24,6 +25,8 @@ FaxImage::FaxImage(QWidget* parent)
 {
 	setResizePolicy(Manual);
 	viewport()->setBackgroundMode(PaletteMid);
+	Config* config=&Config::instance();
+	connect(config,SIGNAL(autoScroll(bool)),SLOT(setAutoScroll(bool)));
 }
 
 int FaxImage::getRows(void)

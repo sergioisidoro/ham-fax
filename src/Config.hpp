@@ -19,6 +19,7 @@
 #ifndef CONFIG_HPP
 #define CONFIG_HPP
 
+#include <memory>
 #include <qobject.h>
 #include <qmap.h>
 #include <qstring.h>
@@ -27,11 +28,16 @@
 class Config : public QObject {
 	Q_OBJECT
 public:
-	Config(QObject* parent);
+	typedef std::auto_ptr<Config> ConfigPtr;
+	friend class ConfigPtr;
+	static Config& instance(void);
+
 	void readFile(void);
-	~Config(void);
 	bool getKeyPTT(void);
 private:
+	Config(void);
+	~Config(void);
+
 	typedef QMap<QString,QString> ValueMap;
 	ValueMap value;
 	QString fileName;

@@ -21,12 +21,15 @@
 #include <unistd.h>
 #include <sys/soundcard.h>
 #include <qtimer.h>
+#include "Config.hpp"
 #include "Error.hpp"
 
 Sound::Sound(QObject* parent)
 	: QObject(parent), sampleRate(8000),
 	  devDSP(-1), devDSPName("/dev/dsp"), notifier(0)
 {
+	connect(&Config::instance(),SIGNAL(DSPDevice(const QString&)),
+		SLOT(setDSPDevice(const QString&)));
 }
 
 Sound::~Sound(void)

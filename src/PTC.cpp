@@ -15,6 +15,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include "Config.hpp"
 #include "PTC.hpp"
 #include <termios.h>
 #include <unistd.h>
@@ -27,6 +28,12 @@ PTC::PTC(QObject* parent)
 	: QObject(parent), deviceName("/dev/ttyS0"),
 	  device(-1), fm(true), speed(38400), deviation(0), notifier(0)
 {
+	Config* config=&Config::instance();
+	connect(config,SIGNAL(deviation(int)),SLOT(setDeviation(int)));
+	connect(config,SIGNAL(useFM(bool)),SLOT(setFM(bool)));
+	connect(config,SIGNAL(PTCDevice(const QString&)),
+		SLOT(setDeviceName(const QString&)));
+	connect(config,SIGNAL(ptcSpeed(int)),SLOT(setSpeed(int)));
 }
 
 PTC::~PTC(void)

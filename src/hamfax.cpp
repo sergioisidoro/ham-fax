@@ -19,6 +19,7 @@
 #include <qtextcodec.h>
 #include <qtranslator.h>
 #include <qstring.h>
+#include "Config.hpp"
 #include "FaxWindow.hpp"
 
 #ifndef QMDIR
@@ -34,6 +35,7 @@ int main(int argc, char* argv[])
 	app.installTranslator(&translator);
 	FaxWindow* faxWindow=new FaxWindow(version);
 	app.setMainWidget(faxWindow);
+	Config::instance().readFile();
 	faxWindow->show();
 	return app.exec();
 }

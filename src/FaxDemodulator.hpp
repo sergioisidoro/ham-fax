@@ -26,7 +26,6 @@ class FaxDemodulator : public QObject {
 	Q_OBJECT
 public:
 	FaxDemodulator(QObject* parent);
-	~FaxDemodulator(void);
 private:
 	int carrier;
 	int rate;

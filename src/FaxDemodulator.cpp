@@ -15,6 +15,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include "Config.hpp"
 #include "FaxDemodulator.hpp"
 #include <math.h>
 
@@ -42,12 +43,14 @@ FaxDemodulator::FaxDemodulator(QObject* parent)
 	for(size_t i=0; i<arcSine.size(); i++) {
 		arcSine[i]=asin(2.0*i/arcSine.size()-1.0)/2.0/M_PI;
 	}
+	Config* config=&Config::instance();
+	connect(config,SIGNAL(carrier(int)),SLOT(setCarrier(int)));
+	connect(config,SIGNAL(deviation(int)),SLOT(setDeviation(int)));
+	connect(config,SIGNAL(useFM(bool)),SLOT(setFM(bool)));
+	connect(config,SIGNAL(filter(int)),SLOT(setFilter(int)));
+
 	init();
 };
-
-FaxDemodulator::~FaxDemodulator(void)
-{
-}
 
 void FaxDemodulator::init(void)
 {

@@ -16,6 +16,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include "Config.hpp"
 #include "FaxModulator.hpp"
 #include <math.h>
 
@@ -25,10 +26,10 @@ FaxModulator::FaxModulator(QObject* parent)
 	for(size_t i=0; i<sine.size(); i++) {
 		sine[i]=static_cast<short>(32767*sin(2.0*M_PI*i/sine.size()));
 	}
-}
-
-FaxModulator::~FaxModulator(void)
-{
+	Config* config=&Config::instance();
+	connect(config,SIGNAL(carrier(int)),SLOT(setCarrier(int)));
+	connect(config,SIGNAL(deviation(int)),SLOT(setDeviation(int)));
+	connect(config,SIGNAL(useFM(bool)),SLOT(setFM(bool)));
 }
 
 void FaxModulator::init(void)
