@@ -1,5 +1,5 @@
 dnl HamFax -- an application for sending and receiving amateur radio facsimiles
-dnl Copyright (C) 2001--2003
+dnl Copyright (C) 2001, 2002, 2003, 2004
 dnl Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 dnl  
 dnl This program is free software; you can redistribute it and/or
@@ -29,12 +29,20 @@ BNV_HAVE_QT
 
 AH_TEMPLATE(USE_FILE, [Build with support for audio files.])
 AC_CHECK_LIB(audiofile, afOpenFile,
-                        [AC_DEFINE(USE_FILE) USE_FILE="1" LIBS="$LIBS -laudiofile"])
+             [AC_DEFINE(USE_FILE) USE_FILE="1" LIBS="$LIBS -laudiofile"])
 AM_CONDITIONAL(USE_FILE, test x$USE_FILE = x1)
+
+if test "x$USE_FILE" != "x1"; then
+  AC_MSG_ERROR([libaudiofile not found])
+fi
 
 AH_TEMPLATE(USE_OSS, [Build with support for the open sound system (OSS).])
 AC_CHECK_HEADER(sys/soundcard.h, [AC_DEFINE(USE_OSS) USE_OSS="1"])
 AM_CONDITIONAL(USE_OSS, test x$USE_OSS = x1)
+
+if test "x$USE_OSS" != "x1"; then
+  AC_MSG_ERROR([OSS file sys/soundcard.h not found])
+fi
 
 AH_TEMPLATE(USE_PTC, [Build with support for the PTC-II])
 AC_SYS_POSIX_TERMIOS

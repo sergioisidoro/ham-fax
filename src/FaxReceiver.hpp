@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001, 2004
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,7 +21,7 @@
 
 #include <qobject.h>
 #include <qstring.h>
-#include <qarray.h>
+#include <qmemarray.h>
 #include <qtimer.h>
 
 class FaxReceiver : public QObject {
