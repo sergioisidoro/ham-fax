@@ -1,0 +1,131 @@
+<?xml version='1.0'?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "docbookx.dtd">
+<book>
+  <title>HamFax Documentation</title>
+
+  <bookinfo>
+    <authorgroup>
+      <author>
+        <firstname>Christof</firstname><surname>Schmitt</surname>
+        <othername>&ldquo;DH1CS&rdquo;</othername>
+        <affiliation>
+          <jobtitle>initial author</jobtitle>
+          <address><email>cschmitt@users.sourceforge.net</email></address>
+        </affiliation>
+      </author>
+    </authorgroup>
+  </bookinfo>
+
+  <chapter>
+    <title>about HamFax</title>
+
+    <para>HamFax is an application for sending and receiving facsimilies in
+    amateur radio. You can either use a sound card as interface to the
+    transceiver or a SCS-PTC-II. Receiving of weather facsimile broadcasts 
+    is also possible.</para>
+
+    <para>The program is licensed under the terms of the GNU General
+    Public License. See <ulink url="http://hamfax.sourceforge.net/"/>
+    for further information and new releases.</para>
+  </chapter>
+
+  <chapter>
+    <title>general</title>
+
+    <para>Facsimiles are pictures which are transmitted line by line.
+    The sending and receiving station have to agree on the
+    transmission speed (LPM stands for lines per minute) and the IOC
+    (index of cooperation) which corresponds the line width. The
+    information transmitted is the brightness of the current
+    position.</para>
+
+    <para>The beginning of a transmission is marked with a APT start
+    signal (APT stands for automatic picture transmission). Usually this
+    is a black/white pattern which changes between black and white at
+    300Hz.</para>
+  </chapter>
+
+  <chapter>
+    <title>short wave facsimiles</title> 
+
+    <figure float="1" id="example">
+      <title>Example</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="example.png" format="PNG"
+                     scalefit="1" align="center"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Facsimiles on short wave are frequency modulated, that means
+    the frequency of the carrier is changing with the transmitted
+    information (the current brightness). Usually the deviation is
+    400Hz, so the frequency for white is 800Hz higher than the one for
+    black.</para>
+
+    <para><xref linkend="example"/> shows an example weather map. For
+    information about stations broadcasting weather maps, see the
+    program's homepage.</para>
+  </chapter>
+
+  <chapter>
+    <title>weather satellites</title>
+
+    <para>For receiving facsimiles from a weather satellite a suitable
+    FM receiver is needed. The output of this receiver is a amplitude
+    modulated signal where the maximum amplitude corresponds to white
+    and no amplitude means black.</para>
+  </chapter>
+
+  <chapter>
+    <title>using HamFax</title>
+
+    <section>
+      <title>interface setup</title>
+
+      <para>You can either use a SCS PTC-II as modulator and
+      demodulator or connect a sound card to your transceiver. For the
+      PTC refer to the manual, especially the chapter about
+      interfacing transceiver, PTC and computer. When using a sound
+      card you need to connect line-out to the microphone input (or
+      something similar) of the transceiver and line-in to some output
+      of the transceiver. The RTS signal of a serial port can be used
+      to key the PTT as it is often use for PSK31. A simple transistor
+      is often enough to do the job.</para>
+
+      <para>For both interfaces you have to switch your transceiver to
+      USB (upper side band). In HamFax set carrier to 1900kHz and tune
+      your transceiver 1900kHz below the desired frequency.</para>
+    </section>
+
+    <section>
+      <title>receiving facsimiles</title>
+
+      <para>Set deviation, modulation apt start and stop frequencies,
+      lpm, the type of phasing lines (normal or inverted) and the
+      mono/color switch to the appropriate values. Then choose the
+      desired interface in the receive menu and see what happens.
+      :)</para>
+
+      <para>If the apt start tone is not detected properly or you
+      missed it you can skip it by clicking the skip button. If you
+      missed the phasing lines you can skip the phasing detection and
+      the value from the lpm checkbox is used.</para>
+
+      <para>While receiving the raw data is stored in memory. So it is
+      possible to correct the received image with the menu items in
+      the Image menu. The image can be saved in any format supported
+      by Qt.</para>
+    </section>
+
+    <section>
+      <title>sending facsimiles</title>
+
+      <para>Load the image from somewhere. Then set the control items
+      to the desired values and scale the image to the desired IOC.
+      Just select the right item from the transmit menu and you are on
+      the way.</para>
+    </section>
+  </chapter>
+</book>
