@@ -21,6 +21,7 @@
 #include <qstring.h>
 #include <qlayout.h>
 #include <qmessagebox.h>
+#include <qdatetime.h>
 #include "Error.hpp"
 #include "FaxView.hpp"
 #include "OptionsDialog.hpp"
@@ -186,6 +187,7 @@ void FaxWindow::buildMenuBar(void)
 	QPopupMenu* fileMenu=new QPopupMenu(this);
 	fileMenu->insertItem(tr("&Open"),this,SLOT(load()));
 	fileMenu->insertItem(tr("&Save"),this,SLOT(save()));
+	fileMenu->insertItem(tr("&Quick save"),this,SLOT(quickSave()));
 	fileMenu->insertSeparator();
 	fileMenu->insertItem(tr("&Exit"),this,SLOT(close()));
 
@@ -526,4 +528,15 @@ void FaxWindow::scaleImage(int item)
 	default:
 		break;
 	}
+}
+
+void FaxWindow::quickSave(void)
+{
+	QDateTime dt=QDateTime::currentDateTime();
+	QDate date=dt.date();
+	QTime time=dt.time();
+	emit saveFile(QString().
+		      sprintf("%04d-%02d-%02d-%02d-%02d-%02d.png",
+			      date.year(),date.month(),date.day(),
+			      time.hour(),time.minute(),time.second()));
 }

@@ -23,14 +23,14 @@
 
 int main(int argc, char* argv[])
 {
-	const QString version="0.0";
-
+	const QString version="0.1";
 	QApplication app(argc, argv);
 	QTranslator translator(0);
 	translator.load(QString("hamfax.")+setlocale(LC_MESSAGES,0),".");
-	FaxWindow* faxWindow=new FaxWindow(version);
 	app.installTranslator(&translator);
+	FaxWindow* faxWindow=new FaxWindow(version);
 	app.setMainWidget(faxWindow);
+	faxWindow->setCaption("HamFax");
 	faxWindow->show();
 	return app.exec();
 }

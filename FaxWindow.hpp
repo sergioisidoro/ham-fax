@@ -83,6 +83,7 @@ private slots:
 	void doScaleDialog(void);
 	void changePTT(void);
 	void scaleImage(int item);
+	void quickSave(void);
 };
 
 #endif

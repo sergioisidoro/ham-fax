@@ -1,4 +1,4 @@
-HamFax v0.0
+HamFax v0.1
 ***********
 
 Copyright (C) 2001 Christof Schmittt, DH1CS <cschmit@suse.de>
@@ -9,6 +9,9 @@ see the file COPYING for the complete text.
 
 If your have questions or comments please send them to me
 (cschmit@suse.de). I want to have some feedback on this program.
+
+New versions of this program can be found at
+http://hamfax.sourceforge.net/
 
 Requirements:
 ************
@@ -30,12 +33,13 @@ Notes / Features:
 
  - The supported image format for loading and saving is PNG.
  - Facsimiles written to a AU-file have a sample rate of 8000Hz and
-   16Bit/sample. This is the same format as used for reading and
-   writing from the sound interface.
+   16Bit/sample. This is the same format as used for reading from and
+   writing to the sound interface.
  - The data rate between the SCS-PTC and the computer is
    57600bit/s. With the start of transmission or reception the PTC is
    expected to be in the main menu. If HamFax does not put the PTC in
    fax mode, just turn it off and on, and it should work. ;-)
+ - Serial communication to the SCS-PTC is not perfect, data might get lost...
  - Transmitting:
     - Set the appropiate devices in Options->'Device Settings'
       (they are not saved at the moment)
