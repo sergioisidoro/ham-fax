@@ -20,37 +20,36 @@
 #include <math.h>
 
 FaxModulator::FaxModulator(QObject* parent)
-	: QObject(parent), sampleRate(0), carrier(0), dev(0)
+	: QObject(parent), sampleRate(0), carrier(0), dev(0), sine(8192)
 {
-	sine=new short[size_sine];
-	for(size_t i=0; i<size_sine; i++) {
-		sine[i]=static_cast<short>(32767*sin(2.0*M_PI*i/size_sine));
+	for(size_t i=0; i<sine.size(); i++) {
+		sine[i]=static_cast<short>(32767*sin(2.0*M_PI*i/sine.size()));
 	}
 }
 
 FaxModulator::~FaxModulator(void)
 {
-	delete[] sine;
 }
 
 void FaxModulator::init(void)
 {
-	phase=0;
+	sine.reset();
+	if(!fm) {
+		sine.setIncrement(sine.size()*carrier/sampleRate);
+	}
 }
 
-void FaxModulator::modulate(double* buffer, size_t number)
+void FaxModulator::modulate(double* buffer, int number)
 {
 	short sample[number];
-	for(size_t i=0; i<number; i++) {
+	for(size_t i=0; i<static_cast<size_t>(number); i++) {
 		if(fm) {
-			sample[i]=sine[phase];
 			int f=static_cast<int>(carrier+2.*(buffer[i]-0.5)*dev);
-			phase+=size_sine*f/sampleRate;
+			sine.setIncrement(sine.size()*f/sampleRate);
+			sample[i]=sine.nextValue();
 		} else {
-			sample[i]=static_cast<short>(buffer[i]*sine[phase]);
-			phase+=size_sine*carrier/sampleRate;
+			sample[i]=static_cast<short>(sine.nextValue()*buffer[i]);
 		}
-		phase%=size_sine;
 	}
 	emit data(sample,number);
 }

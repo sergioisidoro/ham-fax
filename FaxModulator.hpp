@@ -20,6 +20,7 @@
 #define FAXMODULATOR_HPP
 
 #include <qobject.h>
+#include "LookUpTable.hpp"
 
 class FaxModulator : public QObject {
 	Q_OBJECT
@@ -27,22 +28,20 @@ public:
 	FaxModulator(QObject* parent);
 	~FaxModulator(void);
 private:
-	static const size_t size_sine=8192;
-	short* sine;        // lookup table for sine
-	size_t phase;       // current phase of sine
 	int sampleRate;
 	bool fm;
 	int carrier;
 	int dev;
+	LookUpTable<short> sine;
 signals:
-	void data(short*, size_t);
+	void data(short*, int);
 public slots:
         void init(void);
 	void setSampleRate(int sr);
         void setCarrier(int carrier);
 	void setDeviation(int dev);
 	void setFM(bool fm);
-	void modulate(double* buffer, size_t n);
+	void modulate(double* buffer, int n);
 };
 
 #endif
