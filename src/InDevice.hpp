@@ -22,7 +22,7 @@
 #include <valarray>
 
 /**
- * \class InDevice is the public interface to all possible input devices.
+ * InDevice is the public interface to all possible input devices.
  */
 
 class InDevice {

@@ -23,6 +23,33 @@
 #include "FirFilter.hpp"
 #include "LookUpTable.hpp"
 
+/**
+ * AM and FM demodulator. The demodulator takes the raw stream from
+ * the sound device as input and outputs the black/white signal.
+ *
+ * \htmlonly <pre> \htmlonly
+ * \verbatim
+ *                                    I_t       I_{t-1}
+ *             +----------+  +-------+     +----+  +---+
+ *          +->|*sin(f_c) |->|FIR-LPF|--*->|z^-1|->|mul|--+
+ *          |  +----------+  +-------+  |  +----+  +---+  |
+ *          |                           *-->--     /      |
+ *          |                           |     \   /       |+  y_{t-1}
+ *          |                  +-------------+ \ /      +---+   +----+
+ * <input>--+                  |normalization|  X       |add|-->|asin|--<out>
+ *          |                  +-------------+ / \      +---+   +----+       
+ *          |                           |     /   \       |-
+ *          |                           *-->--     \      |
+ *          |  +----------+  +-------+  |  +----+  +---+  |
+ *          +->|*cos(f_c )|->|FIR-LPF|--*->|z^-1|->|mul|--+
+ *             +----------+  +-------+     +----+  +---+
+ *                                    Q_t       Q_{t-1}
+ * \endverbatim
+ *
+ * \f[ y_{t-1} = I_{t-1} Q_t - Q_{t-1} I_t \f]
+ * \f[ y_{t-1} = sin(2\pi ft - 2\pi f) \f]
+ */
+
 class FaxDemodulator : public QObject {
 	Q_OBJECT
 public:

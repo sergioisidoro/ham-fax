@@ -16,6 +16,13 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+/**
+ * \file
+ *
+ * HamFax main file. This file implements the main function where
+ * everything begins.
+ */
+
 #include "config.h"
 #include <qapplication.h>
 #include <qfont.h>
@@ -25,7 +32,34 @@
 #include "Config.hpp"
 #include "FaxWindow.hpp"
 
-int main(int argc, char* argv[])
+/**
+ * \mainpage HamFax inline documentation
+ *
+ * \author Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+ *
+ * \section about What is it?
+ *
+ * The low level documentation is kept (you might have guessed it) as
+ * inline comments that can be extracted by doxygen. This approach
+ * increases the chances of having current documentation in contrast
+ * to the additional work of updating external documents.
+ *
+ * \todo Split the code in some reusable modules. Namespaces (and
+ *       directory names) DSP, QtGUI and Fax?
+ */
+
+/**
+ * Start here. Only the high level invocations for starting the GUI
+ * are here. As much as possible is hidden in appropriate modules and
+ * classes.
+ *
+ * Command line argument are currently used only by Qt.
+ *
+ * \param argc Argument count.
+ * \param argv Argument vector.
+ * \return Exit code, also provided by the Qt framework.
+ */
+ int main(int argc, char* argv[])
 {
 	const QString version(PACKAGE_STRING);
 	Config& config=config.instance();

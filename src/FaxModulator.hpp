@@ -23,19 +23,24 @@
 #include "LookUpTable.hpp"
 
 /**
- * FaxModulator is the place for creating the modulated signal.
+ * Create modulated signal. This class creates the modulated FM or AM
+ * signal, ready for transmitting.
+ *
+ * \todo The Qt signal and slot mechanism does not belong here.
  */
-
 class FaxModulator : public QObject {
 	Q_OBJECT
 public:
 	/**
-	 * Constructor
+	 * Constructor.
+         *
 	 * \param parent is either a pointer to the Qt parent window or 0
 	 */
 	FaxModulator(QObject* parent);
+    
         /**
 	 * Initialize everything to get ready for transmission.
+         *
 	 * \param sampleRate sets the sample rate for the transmission
 	 */
         void init(int sampleRate);

@@ -24,7 +24,7 @@
 #include "OutDevice.hpp"
 
 /**
- * \class DeviceFactory is the only (therefore a Singleton) place for creating 
+ * DeviceFactory is the only (therefore a Singleton) place for creating 
  * input and output objects. Just call the appropiate method, use the new object
  * and don't forget to delete it: It is yours.
  */

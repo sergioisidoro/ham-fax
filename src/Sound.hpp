@@ -19,6 +19,11 @@
 #ifndef SOUND_HPP
 #define SOUND_HPP
 
+/**
+ * \file
+ * Soundcard interface definition.
+ */
+
 #include <qobject.h>
 #include <qstring.h>
 #include <qsocketnotifier.h>

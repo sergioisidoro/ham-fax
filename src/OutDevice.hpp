@@ -22,7 +22,7 @@
 #include <valarray>
 
 /**
- * \class OutDevice is the public interface to all possible output devices.
+ * OutDevice is the public interface to all possible output devices.
  */
 
 class OutDevice {
