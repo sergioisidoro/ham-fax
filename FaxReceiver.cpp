@@ -41,9 +41,8 @@ void FaxReceiver::init(void)
 	phaseLines=noPhaseLines=0;
 	lpm=lpmSum=0;
 	imageSample=0;
-	emit searchingAptStart();
+	lastCol=lastRow=currRow=0;
 	pixelSamples=pixel=0;
-	lastRow=currRow=0;
 }
 
 void FaxReceiver::decode(unsigned int* buf, unsigned int n)
@@ -115,11 +114,13 @@ void FaxReceiver::decodePhasing(unsigned int& x)
 		   (double)currPhaseLength/sampleRate>=0.09) {
 			double l=60.0*(double)sampleRate
 				/(double)currPhaseLength;
+			qDebug("phasing line, lpm=%f",l);
 			emit phasingLine(l);
 			lpmSum+=l;
 			++phaseLines;
 			lpm=lpmSum/(double)phaseLines;
 			imageSample=(int)(0.025*60.0/lpm*(double)sampleRate);
+			qDebug("setting image sample to %d",imageSample);
 			noPhaseLines=0;
 		} else if(phaseLines>0) {
 			if(++noPhaseLines>=5) {
@@ -175,7 +176,7 @@ void FaxReceiver::setWidth(unsigned int width)
 
 void FaxReceiver::setPhasePol(bool pol)
 {
-	this->phaseNormal=pol;
+	phaseNormal=pol;
 }
 
 void FaxReceiver::startPhasing(void)

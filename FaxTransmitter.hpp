@@ -29,7 +29,7 @@ public:
 	void getValues(double* buffer, unsigned int& maxSamples);
 private:
 	FaxImage* faxImage;
-	enum { APTSTART, PHASING, IMAGE, APTSTOP, IDLE } state;
+	enum { APTSTART, PHASING, ENDPHASING, IMAGE, APTSTOP, IDLE } state;
 	unsigned int sampleNr;
 	unsigned int sampleRate;
 	unsigned int lpm;

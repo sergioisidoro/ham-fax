@@ -7,8 +7,8 @@ to fix:
 - smarter handling of init, tr/rx, end, make use of Qt's connect
 - read sound device without blocking , Qtimer=1 (?), QSocketNotifier
 - better handling of phasing (tr AND rcp)
-- have a look at image resize at various lpms
 - fix input overruns while using PTC (better handling of serial data)
+- while sending and receiving with lpm>=310 the received image is shifted right
 
 features:
 - CW id before and after transmission

@@ -85,6 +85,7 @@ private slots:
 	void doScaleDialog(void);
 	void changePTT(void);
 	void changeScroll(void);
+	void setAutoScroll(bool b);
 	void quickSave(void);
 	void newImageSize(unsigned int w, unsigned int h);
 };

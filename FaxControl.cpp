@@ -70,7 +70,7 @@ FaxControl::FaxControl(QWidget* parent)
 	QGridLayout* phsLayout=new QGridLayout(phs,2,2,10,10);
 	phsLayout->addMultiCellWidget(
 		new QLabel(tr("phasing lines"),phs),1,1,1,2);
-	phsLayout->addWidget(phasing=new QSpinBox(0,20,1,phs),2,1);
+	phsLayout->addWidget(phasing=new QSpinBox(0,50,1,phs),2,1);
 	phsLayout->addWidget(phasePol=new QComboBox(false,phs),2,2);
 	phasePol->insertItem(tr("normal"));
 	phasePol->insertItem(tr("inverted"));

@@ -119,7 +119,11 @@ void FaxImage::save(QString fileName)
 
 void FaxImage::scale(unsigned int width, unsigned int height)
 {
-	image=image.smoothScale(width,height);
+	if(image.width()==0 || image.height()==0) {
+		create(width==0?1:width,height==0?1:height);
+	} else {
+		image=image.smoothScale(width,height);
+	}
 	emit sizeUpdated(image.width(),image.height());
 }
 

@@ -23,14 +23,14 @@
 #include <qmessagebox.h>
 #include <qdatetime.h>
 #include <qimage.h>
-#include "Error.hpp"
-#include "FaxView.hpp"
-#include "OptionsDialog.hpp"
-#include "ScaleDialog.hpp"
 #include <qhbox.h>
 #include <qstatusbar.h>
 #include <qmenubar.h>
 #include <math.h>
+#include "Error.hpp"
+#include "FaxView.hpp"
+#include "OptionsDialog.hpp"
+#include "ScaleDialog.hpp"
 
 FaxWindow::FaxWindow(const QString& version)
 	: version(version)
@@ -150,6 +150,8 @@ FaxWindow::FaxWindow(const QString& version)
 
 	connect(config,SIGNAL(autoScroll(bool)),
 		faxImage,SLOT(setAutoScroll(bool)));
+	connect(config,SIGNAL(autoScroll(bool)),
+		this,SLOT(setAutoScroll(bool)));
 
 	// FaxWindow -- FaxImage -- FaxView
 	connect(this,SIGNAL(loadFile(QString)),faxImage,SLOT(load(QString)));
@@ -205,8 +207,8 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(faxReceiver,SIGNAL(receptionEnded()),
 		this,SLOT(endReception()));
 
-	config->readFile();
 	buildMenuBar();
+	config->readFile();
 	resize(650,0);
 }
 
@@ -360,6 +362,11 @@ void FaxWindow::changeScroll(void)
 		optionsMenu->setItemChecked(scrollID,true);
 		config->setAutoScroll(true);
 	}
+}
+
+void FaxWindow::setAutoScroll(bool b)
+{
+	optionsMenu->setItemChecked(scrollID,b);
 }
 
 QString FaxWindow::getFileName(QString caption, QString filter)

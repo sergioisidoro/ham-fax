@@ -61,25 +61,30 @@ void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples)
 		}
 		if(state==PHASING) {
 			if(sampleNr>=sampleRate*phasingLines*60/lpm) {
-				state=IMAGE;
+				state=ENDPHASING;
 				sampleNr=0;
 			} else {
 				// determine current position in line
                                 // (0.0 ... 1.0) and build line with
 				// 2.5% white, 95% black and 2.5% white
-                                // last line is completely white
-                                // or everything inverted if phasePol==false
 				double pos=fmod(sampleNr,
 						sampleRate*60/lpm);
 				pos/=(double)sampleRate*60.0/(double)lpm;
-
-				if(sampleNr<=sampleRate*(phasingLines-1)*60/lpm) {
-					buf[i] = pos<0.025||pos>=0.975 
-						? phasePol?1.0:0.0 
-						: phasePol?0.0:1.0;
-				} else {
-					buf[i] = phasePol?1.0:0.0;
-				}
+				buf[i] = pos<0.025||pos>=0.975 
+					? phasePol?1.0:0.0 
+					: phasePol?0.0:1.0;
+				sampleNr++;
+			}
+		}
+		if(state==ENDPHASING) {
+			if(sampleNr>=sampleRate*60/lpm) {
+				state=IMAGE;
+				sampleNr=0;
+			} else {
+				double pos=fmod(sampleNr,
+						sampleRate*60/lpm);
+				pos/=(double)sampleRate*60.0/(double)lpm;
+				buf[i]= phasePol?1.0:0.0;
 				sampleNr++;
 			}
 		}
