@@ -276,6 +276,7 @@ FaxWindow::FaxWindow(const QString& version)
 		SLOT(setImageAdjust(bool)));
 	connect(faxImage,SIGNAL(newImage()), 
 		faxReceiver,SLOT(releaseBuffer()));
+	connect(faxReceiver,SIGNAL(redrawStarts()),SLOT(disableControls()));
 
 	connect(this,SIGNAL(correctSlant()),faxImage,SLOT(correctSlant()));
 	connect(faxImage,SIGNAL(widthAdjust(double)),
@@ -334,7 +335,8 @@ FaxWindow::FaxWindow(const QString& version)
 			   this,SLOT(changeToolTip()));
 	QPopupMenu* helpMenu=new QPopupMenu(this);
 	helpMenu->insertItem(tr("&Help"),this,SLOT(help()));
-	helpMenu->insertItem(tr("&About"),this,SLOT(about()));
+	helpMenu->insertSeparator();
+	helpMenu->insertItem(tr("&About HamFax"),this,SLOT(about()));
 	helpMenu->insertItem(tr("About &QT"),this,SLOT(aboutQT()));
 
 	menuBar()->insertItem(tr("&File"),fileMenu);

@@ -52,6 +52,7 @@ void PTC::open(void)
 	tcgetattr(device,&options);
 	cfsetispeed(&options,B57600);
 	cfsetospeed(&options,B57600);
+	options.c_cflag|=CRTSCTS;
 	options.c_cc[VMIN]=0;
 	options.c_cc[VTIME]=0;
 	cfmakeraw(&options);

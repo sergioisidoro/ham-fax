@@ -96,12 +96,15 @@ void FaxImage::resizeHeight(int h)
 	int imageW=image.width();
 	int imageH=image.height();
 	image=image.copy(0,0,imageW,imageH+h);
-	resizeContents(imageW,imageH+h);
-	if(h>0) {
-		updateContents(0,imageH,imageW,imageH+h);
-	}
-	if(h<0) {
-		updateContents(0,imageH+h,imageW,imageH);
+	if(imageH+h>=1) {
+		resizeContents(imageW,imageH+h);
+		if(h>0) {
+			updateContents(0,imageH,imageW,imageH+h);
+		}
+		if(h<0) {
+			updateContents(0,imageH+h,imageW,imageH);
+		}
+		emit sizeUpdated(imageW,imageH+h);
 	}
 }
 

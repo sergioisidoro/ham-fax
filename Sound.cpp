@@ -99,8 +99,7 @@ void Sound::openInput(unsigned int sampleRate)
 		}
 		notifier=new QSocketNotifier(devDSP,QSocketNotifier::Read,
 					     this);
-		connect(notifier,SIGNAL(activated(int)),
-			this,SLOT(read(int)));
+		connect(notifier,SIGNAL(activated(int)),SLOT(read(int)));
 	} catch(Error) {
 		close();
 		throw;

@@ -75,6 +75,7 @@ signals:
 	void scaleImage(int w, int h);
 	void newSize(int x, int y, int w, int h);
 	void imageStarts(void);
+	void redrawStarts(void);
 public slots:
 	void decode(unsigned int*, unsigned int n);
         void setAptStartFreq(int f);

@@ -103,8 +103,8 @@ void FaxReceiver::decodePhasing(unsigned int& x)
 	if(x>128) {
 		currPhaseHigh++;
 	}
-	if((!phaseInvers && x>230 && !phaseHigh) ||
-	   ( phaseInvers && x<22  && phaseHigh)) {
+	if((!phaseInvers && x>220 && !phaseHigh) ||
+	   ( phaseInvers && x<42  && phaseHigh)) {
 		phaseHigh=phaseInvers?false:true;
 	} else if((!phaseInvers && x<=128 && phaseHigh) ||
 		  ( phaseInvers && x>=128 && !phaseHigh)) {
@@ -199,6 +199,7 @@ void FaxReceiver::correctWidth(int w)
 		rawIt=rawData.begin();
 		timer->start(0);
 		emit newSize(0,0,w,0);
+		emit redrawStarts();
 	}
 }
 

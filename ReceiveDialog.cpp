@@ -21,6 +21,7 @@
 ReceiveDialog::ReceiveDialog(QWidget* parent)
 	: QDialog(parent)
 {
+        setCaption(parent->caption());
 	QGridLayout* layout=new QGridLayout(this,5,1,15,15);
 	layout->addWidget(status=new QLabel(this),1,1);
 	status->setMinimumWidth(200);
