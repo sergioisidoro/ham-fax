@@ -92,15 +92,11 @@ void File::end(void)
 
 void File::write(short* samples, int number)
 {
-	try {
-		if(aFile!=0) {
-			if((afWriteFrames(aFile,AF_DEFAULT_TRACK,
-					  samples,number))==AF_BAD_WRITE) {
-				throw Error();
+	if(aFile!=0) {
+		if((afWriteFrames(aFile,AF_DEFAULT_TRACK,
+				  samples,number))==AF_BAD_WRITE) {
+			end();
 			}
-		}
-	} catch(Error) {
-		end();
 	}
 }
 

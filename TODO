@@ -7,3 +7,4 @@ to do:
 - switch for deciding wheter to determine the lpm from phasing
    lines or use a fixed value
 - move correct dialog, etc. to FaxImage (?)
+- is correcting the image without redraw possible (and faster)?

@@ -58,9 +58,9 @@ void FaxTransmitter::doNext(int n)
 			if(sampleNr<sampleRate*phasingLines*60/lpm) {
 				double pos=fmod(sampleNr,sampleRate*60/lpm)
 					/sampleRate/60.0*lpm;
-				buf[i] = pos<0.025||pos>=0.975 
-					? phaseInvers?0.0:1.0 
-					: phaseInvers?1.0:0.0;
+				buf[i] = (pos<0.025||pos>=0.975 )
+					? (phaseInvers?0.0:1.0) 
+					: (phaseInvers?1.0:0.0);
 				sampleNr++;
 			} else {
 				state=ENDPHASING;
