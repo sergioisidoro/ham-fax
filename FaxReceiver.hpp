@@ -59,8 +59,8 @@ private:
 	unsigned int pixelSamples;
 	bool color;
 	QTimer* timer;
-	QArray<unsigned int> rawData;
-	QArray<unsigned int>::Iterator rawIt;
+	QArray<unsigned char> rawData;
+	QArray<unsigned char>::Iterator rawIt;
 signals:
 	void aptFound(unsigned int f);
 	void aptStopDetected(void);

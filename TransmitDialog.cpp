@@ -29,6 +29,7 @@ TransmitDialog::TransmitDialog(QWidget* parent)
 	cancel=new QPushButton(tr("&Cancel"),this);
 	layout->addWidget(cancel);
 	connect(cancel,SIGNAL(clicked()),this,SIGNAL(cancelClicked()));
+	connect(cancel,SIGNAL(clicked()),this,SLOT(hide()));
 }
 
 void TransmitDialog::showText(const QString& s)
@@ -43,8 +44,9 @@ void TransmitDialog::closeEvent(QCloseEvent* close)
 	emit cancelClicked();
 }
 
-void TransmitDialog::aptStart(void)
+void TransmitDialog::start(void)
 {
+	show();
 	showText("Transmitting APT start");
 }
 

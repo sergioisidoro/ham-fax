@@ -32,7 +32,7 @@ private:
 	QLabel* status;
 	QPushButton* cancel;
 public slots:
-        void aptStart(void);
+        void start(void);
 	void phasing(void);
 	void imageLine(unsigned int n);
 	void aptStop(void);

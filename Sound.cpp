@@ -110,9 +110,8 @@ void Sound::openInput(unsigned int sampleRate)
 void Sound::close(void)
 {
 	if(devDSP!=-1) {
+		notifier->setEnabled(false);
 		ioctl(devDSP,SNDCTL_DSP_RESET);
-		::close(devDSP);
-		devDSP=-1;
 		if(notifier->type()==QSocketNotifier::Read) {
 			disconnect(notifier,SIGNAL(activated(int)),
 				   this,SLOT(read(int)));
@@ -120,6 +119,8 @@ void Sound::close(void)
 			disconnect(notifier,SIGNAL(activated(int)),
 				   this,SLOT(checkSpace(int)));
 		}
+		::close(devDSP);
+		devDSP=-1;
 		delete notifier;
 	}
 }
@@ -128,11 +129,13 @@ void Sound::write(signed short* samples, unsigned int number)
 {
 	try {
 		if(devDSP!=-1) {
+			notifier->setEnabled(false);
 			if((::write(devDSP,samples,
 				    number*sizeof(signed short)))
 			   !=(int)(number*sizeof(signed short))) {
 				throw Error(tr("could not write to DSP"));
 			}
+			notifier->setEnabled(true);
 		}
 	} catch(Error) {
 		close();
@@ -160,9 +163,7 @@ void Sound::read(int fd)
 
 void Sound::checkSpace(int fd)
 {
-	int n;
-	ioctl(fd,SNDCTL_DSP_GETISPACE,&n);
-	notifier->setEnabled(false);
-	emit spaceLeft(n>512 ? 512 : n);
-	notifier->setEnabled(true);
+	audio_buf_info info;
+	ioctl(fd,SNDCTL_DSP_GETOSPACE,&info);
+	emit spaceLeft(info.bytes/sizeof(signed short));
 }

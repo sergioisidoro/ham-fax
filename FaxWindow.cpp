@@ -29,6 +29,8 @@
 #include "Error.hpp"
 #include "OptionsDialog.hpp"
 #include "ScaleDialog.hpp"
+#include "ReceiveDialog.hpp"
+#include "TransmitDialog.hpp"
 
 FaxWindow::FaxWindow(const QString& version)
 	: version(version)
@@ -44,8 +46,8 @@ FaxWindow::FaxWindow(const QString& version)
 	ptc=new PTC(this);
 	faxModulator=new FaxModulator(this);
 	faxDemodulator=new FaxDemodulator(this);
-	transmitDialog=new TransmitDialog(this);
-	receiveDialog=new ReceiveDialog(this);
+	TransmitDialog* transmitDialog=new TransmitDialog(this);
+	ReceiveDialog* receiveDialog=new ReceiveDialog(this);
 
 	sizeText=new QLabel(statusBar());
 	iocText=new QLabel(statusBar());
@@ -198,7 +200,7 @@ FaxWindow::FaxWindow(const QString& version)
 		this,SLOT(newImageSize(unsigned int, unsigned int)));
 	connect(faxImage,SIGNAL(sizeUpdated(unsigned int,unsigned int)),
 		faxReceiver,SLOT(setWidth(unsigned int)));
-	faxImage->create(904,904);
+	faxImage->create(904,1);
 
 	// FaxReceiver -- FaxImage
 	connect(faxReceiver,
@@ -210,8 +212,8 @@ FaxWindow::FaxWindow(const QString& version)
 				       unsigned int,unsigned int)));
 
 	// FaxTransmitter -- TransmitDialog
-	connect(faxTransmitter,SIGNAL(aptStart()),
-		transmitDialog,SLOT(aptStart()));
+	connect(faxTransmitter,SIGNAL(start()),
+		transmitDialog,SLOT(start()));
 	connect(faxTransmitter,SIGNAL(phasing()),
 		transmitDialog,SLOT(phasing()));
 	connect(faxTransmitter,SIGNAL(imageLine(unsigned int)),
@@ -220,9 +222,18 @@ FaxWindow::FaxWindow(const QString& version)
 		transmitDialog,SLOT(aptStop()));
 	connect(transmitDialog,SIGNAL(cancelClicked()),
 		this,SLOT(endTransmission()));
-
 	connect(faxTransmitter,SIGNAL(end()),
 		this,SLOT(endTransmission()));
+
+	connect(faxTransmitter,SIGNAL(end()),
+		transmitDialog,SLOT(hide()));
+
+	connect(faxTransmitter,SIGNAL(start()),
+		this,SLOT(disableControls()));
+	connect(faxTransmitter,SIGNAL(end()),
+		this,SLOT(enableControls()));
+	connect(transmitDialog,SIGNAL(cancelClicked()),
+		this,SLOT(enableControls()));
 
 	// FaxReceiver -- ReceiveDialog
 	connect(faxReceiver,SIGNAL(aptFound(unsigned int)),
@@ -244,8 +255,12 @@ FaxWindow::FaxWindow(const QString& version)
 
 	connect(faxReceiver,SIGNAL(start()),
 		this,SLOT(disableControls()));
+	connect(faxReceiver,SIGNAL(start()),
+		receiveDialog,SLOT(show()));
 	connect(faxReceiver,SIGNAL(end()),
 		this,SLOT(enableControls()));
+	connect(faxReceiver,SIGNAL(end()),
+		receiveDialog,SLOT(hide()));
 
 	connect(this,SIGNAL(correctSlant()),faxImage,SLOT(correctSlant()));
 	connect(faxImage,SIGNAL(widthAdjust(double)),
@@ -481,8 +496,6 @@ void FaxWindow::initTransmit(int item)
 		faxModulator->setSampleRate(sampleRate);
 		faxTransmitter->setSampleRate(sampleRate);
 		faxTransmitter->startTransmission();
-		transmitDialog->show();
-
 	} catch (Error e) {
 		QMessageBox::warning(this,tr("error"),e.getText());
 	}
@@ -505,6 +518,9 @@ void FaxWindow::endTransmission(void)
 			   SLOT(write(signed short*, unsigned int)));
 		break;
 	case DSP:
+		ptt->set(false);
+		sound->close();
+		ptt->closeDevice();
 		disconnect(sound,SIGNAL(spaceLeft(unsigned int)),
 			faxTransmitter,SLOT(doNext(unsigned int)));
 		disconnect(faxTransmitter,
@@ -515,9 +531,6 @@ void FaxWindow::endTransmission(void)
 			SIGNAL(data(signed short*,unsigned int)),
 			sound,
 			SLOT(write(signed short*,unsigned int)));
-		ptt->set(false);
-		sound->close();
-		ptt->closeDevice();
 		break;
 	case SCSPTC:
 		ptc->close();
@@ -527,7 +540,6 @@ void FaxWindow::endTransmission(void)
 			   SIGNAL(data(double*, unsigned int)),
 			   ptc,SLOT(transmit(double*, unsigned int)));
 	}
-	transmitDialog->hide();
 }
 
 void FaxWindow::initReception(int item)
@@ -574,11 +586,6 @@ void FaxWindow::initReception(int item)
 		faxDemodulator->setSampleRate(sampleRate);
 		faxReceiver->setSampleRate(sampleRate);
 		faxReceiver->init();
-		menuBar()->setDisabled(true);
-		modTool->setDisabled(true);
-		aptTool->setDisabled(true);
-		faxTool->setDisabled(true);
-		receiveDialog->show();
 	} catch(Error e) {
 		QMessageBox::warning(this,tr("error"),e.getText());
 	}
@@ -616,11 +623,6 @@ void FaxWindow::endReception(void)
 			SLOT(decode(unsigned int*, unsigned int)));
 		break;
 	}
-	menuBar()->setDisabled(false);
-	modTool->setDisabled(false);
-	aptTool->setDisabled(false);
-	faxTool->setDisabled(false);
-	receiveDialog->hide();
 }
 
 void FaxWindow::closeEvent(QCloseEvent* close)

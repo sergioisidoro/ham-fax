@@ -65,7 +65,6 @@ bool FaxImage::setPixel(unsigned int col, unsigned int row,
 	}
 	if(row>=(unsigned int)image.height()) {
 		resize(0,0,image.width(),image.height()+50);
-		emit sizeUpdated(image.width(),image.height());
 	}
 	switch(rgbg) {
 	case 0:
@@ -89,7 +88,7 @@ bool FaxImage::setPixel(unsigned int col, unsigned int row,
 	};
 	updateContents(col,row,1,1);
 	if(autoScroll) {
-		ensureVisible(0,row);
+		ensureVisible(0,row,0,0);
 	}
 	return true;
 }
@@ -140,7 +139,6 @@ void FaxImage::resize(unsigned int x, unsigned int y,
 	image=image.copy(x,y,w,h);
 	resizeContents(w,h);
 	emit sizeUpdated(w,h);
-	viewport()->update();
 }
 
 void FaxImage::resizeHeight(unsigned int y, unsigned int h)
@@ -181,6 +179,16 @@ void FaxImage::rotateLeft(void)
 	int h=image.height();
 	int w=image.width();
 	QImage newImage(h,w,32);
+
+
+
+
+
+
+
+
+
+
 	for(int y=0; y<h; y++) {
 		for(int x=0; x<w; x++) {
 			newImage.setPixel(y,w-x-1,image.pixel(x,y));

@@ -26,7 +26,6 @@ class FaxTransmitter : public QObject {
 public:
 	FaxTransmitter(QObject* parent, FaxImage* faxImage);
 	void startTransmission(void);
-	void getValues(double* buffer, unsigned int& maxSamples);
 private:
 	FaxImage* faxImage;
 	enum { APTSTART, PHASING, ENDPHASING, IMAGE, APTSTOP, IDLE } state;
@@ -59,6 +58,7 @@ signals:
 	void imageLine(unsigned int n);
 	void aptStop(void);
 	void data(double* buf, unsigned int n);
+	void start(void);
 	void end(void);
 };
 

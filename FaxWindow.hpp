@@ -33,9 +33,7 @@
 #include "File.hpp"
 #include "PTC.hpp"
 #include "PTT.hpp"
-#include "ReceiveDialog.hpp"
 #include "Sound.hpp"
-#include "TransmitDialog.hpp"
 
 class FaxWindow : public QMainWindow {
 	Q_OBJECT
@@ -69,8 +67,6 @@ private:
 	File* file;
 	PTT* ptt;
 	PTC* ptc;
-	TransmitDialog* transmitDialog;
-	ReceiveDialog* receiveDialog;
 	QMessageBox* slantDialog;
 	enum { WAITFIRST, WAITSECOND, NOTHING } slantState;
 signals:

@@ -37,11 +37,7 @@ void FaxTransmitter::startTransmission(void)
 {
 	state=APTSTART;
 	sampleNr=0;
-	emit aptStart();
-}
-
-void FaxTransmitter::getValues(double* buf, unsigned int& maxSamples) 
-{
+	emit start();
 }
 
 void FaxTransmitter::doNext(unsigned int n)
