@@ -19,6 +19,7 @@
 #define FAXIMAGE_HPP
 
 #include <qimage.h>
+#include <qpainter.h>
 #include <qpoint.h>
 #include <qscrollview.h>
 #include <qstring.h>
