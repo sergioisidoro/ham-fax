@@ -34,7 +34,7 @@
 class Config : public QSettings {
 public:
         /**
-	 * Only possible access to the Singleton
+	 * Only possible access to Singleton
 	 */
 	static Config& instance(void);
 private:

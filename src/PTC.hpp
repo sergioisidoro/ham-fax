@@ -28,8 +28,8 @@ class PTC : public QObject {
 public:
 	PTC(QObject* parent);
 	~PTC(void);
-	void startInput(void);
-	void startOutput(void);
+	int startInput(void);
+	int startOutput(void);
 	void end(void);
 private:
 	void open(void);
@@ -38,7 +38,6 @@ private:
 	bool fm;
 	QSocketNotifier* notifier;
 signals:
-	void newSampleRate(int);
 	void data(int*, int);
 	void spaceLeft(int);
 	void deviceClosed();

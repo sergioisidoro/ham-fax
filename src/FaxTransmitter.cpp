@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,20 +25,20 @@ FaxTransmitter::FaxTransmitter(QObject* parent, FaxImage* faxImage)
 {
 }
 
-void FaxTransmitter::startTransmission(void)
+void FaxTransmitter::start(int sampleRate)
 {
 	Config& config=Config::instance();
 	startLength=config.readNumEntry("/hamfax/APT/startLength");
 	startFreq=config.readNumEntry("/hamfax/APT/startFrequency");
 	stopLength=config.readNumEntry("/hamfax/APT/stopLength");
 	stopFreq=config.readNumEntry("/hamfax/APT/stopFrequency");
-	lpm=config.readNumEntry("/hamfax/fax/lpm");
+	lpm=config.readNumEntry("/hamfax/fax/LPM");
 	phasingLines=config.readNumEntry("/hamfax/phasing/lines");
-	phaseInvers=config.readNumEntry("/hamfax/phasing/invert");
+	phaseInvers=config.readBoolEntry("/hamfax/phasing/invert");
 	color=config.readBoolEntry("/hamfax/fax/color");
+	this->sampleRate=sampleRate;
 	state=APTSTART;
 	sampleNr=0;
-	emit start();
 }
 
 void FaxTransmitter::doNext(int n)
@@ -113,51 +114,6 @@ void FaxTransmitter::doNext(int n)
 		}
 	}
 	emit data(buf,n);
-}
-
-void FaxTransmitter::setLPM(int lpm)
-{
-	this->lpm=lpm;
-}
-
-void FaxTransmitter::setAptStartFreq(int f)
-{
-	startFreq=f;
-}
-
-void FaxTransmitter::setAptStartLength(int t)
-{
-	startLength=t;
-}
-
-void FaxTransmitter::setAptStopFreq(int f)
-{
-	stopFreq=f;
-}
-
-void FaxTransmitter::setAptStopLength(int t)
-{
-	stopLength=t;
-}
-
-void FaxTransmitter::setPhasingLines(int n)
-{
-	phasingLines=n;
-}
-
-void FaxTransmitter::setPhasePol(bool pol)
-{
-	phaseInvers=pol;
-}
-
-void FaxTransmitter::setSampleRate(int rate)
-{
-	sampleRate=rate;
-}
-
-void FaxTransmitter::setColor(bool b)
-{
-	color=b;
 }
 
 void FaxTransmitter::setImageSize(int cols, int rows)

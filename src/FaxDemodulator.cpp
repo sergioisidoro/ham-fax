@@ -42,8 +42,9 @@ FaxDemodulator::FaxDemodulator(QObject* parent)
 	}
 };
 
-void FaxDemodulator::init(void)
+void FaxDemodulator::init(int sampleRate)
 {
+	rate=sampleRate;
 	Config& config=Config::instance();
 	size_t filter=config.readNumEntry("/hamfax/modulation/filter");
 	iFir.setCoefficients(lowPassFilter[filter]);
@@ -56,11 +57,6 @@ void FaxDemodulator::init(void)
 	sine.reset();
 	cosine.reset();
 	ifirold=qfirold=0;
-}
-
-void FaxDemodulator::setSampleRate(int sampleRate)
-{
-	rate=sampleRate;
 }
 
 void FaxDemodulator::newSamples(short* audio, int n)

@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,24 +22,24 @@
 #include <qobject.h>
 #include <qstring.h>
 #include <qsocketnotifier.h>
+#include "PTT.hpp"
 
 class Sound : public QObject {
 	Q_OBJECT
 public:
 	Sound(QObject* parent);
 	~Sound(void);
-	void startOutput(void);
-	void startInput(void);
+	int startOutput(void);
+	int startInput(void);
 private:
 	int sampleRate;
 	int dsp;
 	QSocketNotifier* notifier;
+	PTT ptt;
 signals:
         void data(short*, int);
-	void openForWriting(void);
 	void deviceClosed(void);
 	void spaceLeft(int);
-	void newSampleRate(int);
 public slots:
 	void closeNow(void);
 	void end(void);

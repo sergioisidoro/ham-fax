@@ -34,6 +34,11 @@ public:
 	 * \param parent is either a pointer to the Qt parent window or 0
 	 */
 	FaxModulator(QObject* parent);
+        /**
+	 * Initialize everything to get ready for transmission.
+	 * \param sampleRate sets the sample rate for the transmission
+	 */
+        void init(int sampleRate);
 private:
 	int sampleRate;
 	bool fm;
@@ -47,16 +52,10 @@ signals:
 	 */
 	void data(short*, int);
 public slots:
-        /**
-	 * Initialize everything to get ready for transmission.
-	 */
-        void init(void);
 	/**
-	 * Set the sample rate of the signal to create.
-	 */
-	void setSampleRate(int sr);
-	/**
-	 * Set the carrier frequency of the signal to create.
+	 * \param buffer is an array of the length
+	 * \param n and holds the signal to be modulated.
+	 * After that the signal data is emitted.
 	 */
 	void modulate(double* buffer, int n);
 };

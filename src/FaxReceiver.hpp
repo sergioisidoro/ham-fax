@@ -27,7 +27,7 @@ class FaxReceiver : public QObject {
 	Q_OBJECT
 public:
 	FaxReceiver(QObject* parent);
-	void init(void);
+	void init(int sampleRate);
 private:
 	void decodeApt(const int& x);
 	void decodePhasing(const int& x);
@@ -75,7 +75,6 @@ signals:
 	void imageStarts(void);
 	void redrawStarts(void);
 public slots:
-        void setSampleRate(int rate);
 	void decode(int*, int n);
         void setAptStartFreq(int f);
 	void setAptStopFreq(int f);

@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -27,15 +28,14 @@ class File : public QObject {
 public:
 	File(QObject* parent);
 	~File(void);
-	void startOutput(const QString& fileName);
-	void startInput(const QString& fileName);
+	int startOutput(const QString& fileName);
+	int startInput(const QString& fileName);
 	void end(void);
 private:
 	static const int blockSize=512;
 	AFfilehandle aFile;
 	QTimer* timer;
 signals:
-	void newSampleRate(int);
 	void data(short* buffer, int n);
 	void next(int n);
 	void deviceClosed(void);

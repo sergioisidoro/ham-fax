@@ -24,7 +24,7 @@ FaxImage::FaxImage(QWidget* parent)
 {
 	setResizePolicy(Manual);
 	viewport()->setBackgroundMode(PaletteMid);
-	autoScroll=Config::instance().readBoolEntry("autoScroll");
+	autoScroll=Config::instance().readBoolEntry("/hamfax/GUI/autoScroll");
 }
 
 int FaxImage::getRows(void)

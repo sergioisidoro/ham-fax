@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -36,7 +37,7 @@ Sound::~Sound(void)
 	}
 }
 
-void Sound::startOutput(void)
+int Sound::startOutput(void)
 {
 	try {
 		QString devDSPName=Config::instance().
@@ -63,18 +64,19 @@ void Sound::startOutput(void)
 		notifier=new QSocketNotifier(dsp,QSocketNotifier::Write,this);
 		connect(notifier,SIGNAL(activated(int)),
 			this,SLOT(checkSpace(int)));
-		emit newSampleRate(sampleRate);
-		emit openForWriting();
+		ptt.set();
 	} catch(Error) {
 		close();
 		throw;
 	}
+	return sampleRate;
 }
 
-void Sound::startInput(void)
+int Sound::startInput(void)
 {
 	try {
-		QString devDSPName=Config::instance().readEntry("DSP");
+		QString devDSPName=Config::instance().
+			readEntry("/hamfax/sound/device");
 		if((dsp=open(devDSPName,O_RDONLY|O_NONBLOCK))==-1) {
 			throw Error(tr("could not open dsp device"));
 		}
@@ -96,11 +98,11 @@ void Sound::startInput(void)
 		}
 		notifier=new QSocketNotifier(dsp,QSocketNotifier::Read,this);
 		connect(notifier,SIGNAL(activated(int)),SLOT(read(int)));
-		emit newSampleRate(sampleRate);
 	} catch(Error) {
 		close();
 		throw;
 	}
+	return sampleRate;
 }
 
 void Sound::end(void)
@@ -163,6 +165,7 @@ void Sound::close(void)
 	::close(dsp);
 	dsp=-1;
 	emit deviceClosed();
+	ptt.release();
 }
 
 void Sound::closeNow(void)

@@ -20,26 +20,21 @@
 #include <cmath>
 
 FaxReceiver::FaxReceiver(QObject* parent)
-	: QObject(parent), sampleRate(0), rawData(0)
+	: QObject(parent), rawData(0)
 {
 	timer=new QTimer(this);
 	connect(timer,SIGNAL(timeout()),this,SLOT(adjustNext()));
 }
 
-void FaxReceiver::setSampleRate(int rate)
-{
-	sampleRate=rate;
-}
-
-void FaxReceiver::init(void)
+void FaxReceiver::init(int sampleRate)
 {
 	Config& config=Config::instance();
 	aptStartFreq=config.readNumEntry("/hamfax/APT/startFrequency");
 	aptStopFreq=config.readNumEntry("/hamfax/APT/stopFrequency");
-	lpm=config.readNumEntry("/hamfax/fax/lpm");
-	phaseInvers=config.readNumEntry("/hamfax/phasing/invert");
+	lpm=config.readNumEntry("/hamfax/fax/LPM");
+	phaseInvers=config.readBoolEntry("/hamfax/phasing/invert");
 	color=config.readBoolEntry("/hamfax/fax/color");
-
+	this->sampleRate=sampleRate;
 	state=APTSTART;
 	aptCount=aptTrans=0;
 	aptStop=aptHigh=false;
@@ -171,6 +166,9 @@ void FaxReceiver::decodeImage(const int& x)
 
 void FaxReceiver::correctLPM(double d)
 {
+	// the setting could have changed
+	color=Config::instance().readBoolEntry("/hamfax/fax/color");
+
 	pixel=pixelSamples=imageSample=0;
 	lastCol=99;
 	lpm*= 1.0 + (color ? d/3.0 : d);

@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -30,7 +31,7 @@ File::~File(void)
 	end();
 }
 
-void File::startOutput(const QString& fileName)
+int File::startOutput(const QString& fileName)
 {
 	try {
 		AFfilesetup fs;
@@ -50,14 +51,14 @@ void File::startOutput(const QString& fileName)
 		afFreeFileSetup(fs);
 		timer->start(0);
 		connect(timer,SIGNAL(timeout()),this,SLOT(timerSignal()));
-		emit newSampleRate(8000);
 	} catch(Error) {
 		end();
 		throw;
 	}
+	return 8000;
 }
 
-void File::startInput(const QString& fileName)
+int File::startInput(const QString& fileName)
 {
 	try {
 		AFfilesetup fs=0;
@@ -70,13 +71,13 @@ void File::startInput(const QString& fileName)
 		if(afGetRate(aFile,AF_DEFAULT_TRACK)!=8000) {
 			throw Error(tr("sample rate is not 8000 Hz"));
 		}
-		emit newSampleRate(8000);
 		timer->start(0);
 		connect(timer,SIGNAL(timeout()),this,SLOT(read()));
 	} catch(Error) {
 		end();
 		throw;
 	}
+	return 8000;
 }
 
 void File::end(void)

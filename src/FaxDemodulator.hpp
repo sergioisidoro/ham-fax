@@ -27,6 +27,7 @@ class FaxDemodulator : public QObject {
 	Q_OBJECT
 public:
 	FaxDemodulator(QObject* parent);
+        void init(int sampleRate);
 private:
 	int rate;
 	int deviation;
@@ -41,8 +42,6 @@ private:
 signals:
 	void data(int* buffer, int n);
 public slots:
-        void init(void);
-	void setSampleRate(int sampleRate);
 	void newSamples(short* audio, int n);
 };
 

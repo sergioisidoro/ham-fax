@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,6 +27,7 @@ class TransmitDialog : public QDialog {
 	Q_OBJECT
 public:
 	TransmitDialog(QWidget* parent);
+        void start(void);
 private:
 	virtual void closeEvent(QCloseEvent* close);
 	virtual void reject(void);
@@ -33,7 +35,6 @@ private:
 	QLabel* status;
 	QPushButton* cancel;
 public slots:
-        void start(void);
 	void phasing(void);
 	void imageLine(int n);
 	void aptStop(void);

@@ -28,12 +28,13 @@ FaxModulator::FaxModulator(QObject* parent)
 	}
 }
 
-void FaxModulator::init(void)
+void FaxModulator::init(int sampleRate)
 {
 	Config& config=Config::instance();
 	carrier=config.readNumEntry("/hamfax/modulation/carrier");
 	dev=config.readNumEntry("/hamfax/modulation/deviation");
 	fm=config.readBoolEntry("/hamfax/modulation/FM");
+	this->sampleRate=sampleRate;
 	sine.reset();
 	if(!fm) {
 		sine.setIncrement(sine.size()*carrier/sampleRate);
@@ -53,9 +54,4 @@ void FaxModulator::modulate(double* buffer, int number)
 		}
 	}
 	emit data(sample,number);
-}
-
-void FaxModulator::setSampleRate(int sr)
-{
-	sampleRate=sr;
 }

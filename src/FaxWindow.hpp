@@ -31,6 +31,7 @@
 #include "FaxTransmitter.hpp"
 #include "File.hpp"
 #include "PTC.hpp"
+#include "ReceiveDialog.hpp"
 #include "Sound.hpp"
 #include "TransmitDialog.hpp"
 
@@ -40,7 +41,7 @@ public:
 	FaxWindow(const QString& version);
 private:
 	// menus
-	void createMenubar(void);
+	void createMenubar();
 	QPopupMenu* imageMenu;
 	int slantID;
 	int colDrawID;
@@ -51,7 +52,7 @@ private:
 	int toolTipID;
 
 	// tool bars
-	void createToolbars(void);
+	void createToolbars();
 	QToolBar* modTool;
 	QComboBox* modulation;
 	QComboBox* filter;
@@ -61,6 +62,7 @@ private:
 	QComboBox* colorBox;
 
 	// status bar
+	void createStatusBar();
 	QLabel* sizeText;
 	QLabel* iocText;
 
@@ -75,6 +77,7 @@ private:
 	Sound* sound;
 	CorrectDialog* correctDialog;
 	TransmitDialog* transmitDialog;
+	ReceiveDialog* receiveDialog;
 
 	int ioc;
 	virtual void closeEvent(QCloseEvent* close);
@@ -95,6 +98,9 @@ public slots:
 	void enableControls(void);
 	void disableControls(void);
 private slots:
+	// from FaxImage
+	void newImageSize(int w, int h);
+
 	// slots for menu items
         // File
         void load(void);
@@ -125,9 +131,6 @@ private slots:
 	void help(void);
         void about(void);
 	void aboutQT(void);
-
-	// from FaxImage
-	void newImageSize(int w, int h);
 
 	// slots for toolbar objects
 	// modulation

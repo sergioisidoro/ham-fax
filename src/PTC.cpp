@@ -88,20 +88,20 @@ void PTC::open(void)
 	}
 }
 
-void PTC::startInput(void)
+int PTC::startInput(void)
 {
 	open();
 	notifier=new QSocketNotifier(device,QSocketNotifier::Read);
 	connect(notifier,SIGNAL(activated(int)),this,SLOT(read(int)));
-	emit newSampleRate(speed/10);
+	return speed/10;
 }
 
-void PTC::startOutput(void)
+int PTC::startOutput(void)
 {
 	open();
 	notifier=new QSocketNotifier(device,QSocketNotifier::Write);
 	connect(notifier,SIGNAL(activated(int)),this,SLOT(checkSpace(int)));
-	emit newSampleRate(speed/20);
+	return speed/20;
 }
 
 void PTC::end(void)

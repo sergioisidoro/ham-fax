@@ -15,13 +15,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-prefix=@prefix@
-docdir=@datadir@/doc/HamFax
-qmdir=@datadir@/HamFax
-
 CXX=@CXX@
 CXXFLAGS=-Wall @QT_CXXFLAGS@ @CXXFLAGS@
-CPPFLAGS=@CPPFLAGS@ -DDOCDIR='"$(docdir)"' -DQMDIR='"$(qmdir)"' @DEFS@
+CPPFLAGS=@CPPFLAGS@ @DEFS@
 LIBS=@QT_LIBS@ @LIBS@
 QT_MOC=@QT_MOC@
 INSTALL=@INSTALL@
@@ -108,7 +104,7 @@ hamfax: Config.o\
         File.o moc_File.o\
         HelpDialog.o moc_HelpDialog.o\
         OptionsDialog.o moc_OptionsDialog.o\
-        PTC.o moc_PTC.o\
+        PTC.o\
         PTT.o moc_PTT.o\
         ReceiveDialog.o moc_ReceiveDialog.o\
         Sound.o moc_Sound.o\
