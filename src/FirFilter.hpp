@@ -39,14 +39,14 @@ public:
 	 * \param c are the new coefficients; the size has to be the same 
 	 * as the size of the filter!
 	 */
-	void setCoeffs(const valarray<T>& c);
+	void setCoeffs(const std::valarray<T>& c);
 
 	/**
 	 * Set new buffer content, e.g. all zero.
 	 * \param b is the new buffer content;, the size has to be the same
 	 * as the old!
 	 */
-	void setBuffer(const valarray<T>& b);
+	void setBuffer(const std::valarray<T>& b);
 
 	/**
 	 * Return the size of the filter buffer.
@@ -61,10 +61,10 @@ public:
 	/**
 	 * Get current buffer; useful for debugging purposes.
 	 */
-	valarray<T> getBuffer() const;
+	std::valarray<T> getBuffer() const;
 private:
-        valarray<T> coeffs;
-        valarray<T> buffer;
+        std::valarray<T> coeffs;
+        std::valarray<T> buffer;
         T* current;
 };
 
@@ -74,12 +74,12 @@ template <class T> FirFilter<T>::FirFilter(size_t n)
 	current=&buffer[0];
 }
 
-template <class T> void FirFilter<T>::setCoeffs(const valarray<T>& c)
+template <class T> void FirFilter<T>::setCoeffs(const std::valarray<T>& c)
 {
 	coeffs=c;
 }
 
-template <class T> inline void FirFilter<T>::setBuffer(const valarray<T>& b)
+template <class T> inline void FirFilter<T>::setBuffer(const std::valarray<T>& b)
 {
 	buffer=b;
 }
@@ -115,7 +115,7 @@ template <class T> inline T FirFilter<T>::filterSample(const T& sample)
 }
 
 template <class T>
-inline valarray<T> FirFilter<T>::getBuffer(void) const
+inline std::valarray<T> FirFilter<T>::getBuffer(void) const
 {
 	return buffer;
 }

@@ -4,33 +4,52 @@ AUTOMAKE_OPTIONS = check-news dist-bzip2 nostdinc subdir-objects
 
 bin_PROGRAMS = hamfax
 hamfax_SOURCES = \
-	src/Config.cpp src/Config.hpp src/moc_Config.cpp\
-        src/CorrectDialog.cpp src/CorrectDialog.hpp src/moc_CorrectDialog.cpp\
-        src/DisplayLevel.cpp src/DisplayLevel.hpp src/moc_DisplayLevel.cpp\
-        src/FaxImage.cpp src/FaxImage.hpp src/moc_FaxImage.cpp\
-        src/FaxWindow.cpp src/FaxWindow.hpp src/moc_FaxWindow.cpp\
-        src/HelpDialog.cpp src/HelpDialog.hpp src/moc_HelpDialog.cpp\
-        src/OptionsDialog.cpp src/OptionsDialog.hpp src/moc_OptionsDialog.cpp\
-        src/ReceiveDialog.cpp src/ReceiveDialog.hpp src/moc_ReceiveDialog.cpp\
-        src/Spectrum.cpp src/Spectrum.hpp src/moc_Spectrum.cpp\
-        src/TransmitDialog.cpp src/TransmitDialog.hpp src/moc_TransmitDialog.cpp\
+	src/Config.cpp src/Config.hpp\
+        src/CorrectDialog.cpp src/CorrectDialog.hpp\
+        src/DisplayLevel.cpp src/DisplayLevel.hpp\
+        src/FaxImage.cpp src/FaxImage.hpp\
+        src/FaxWindow.cpp src/FaxWindow.hpp\
+        src/HelpDialog.cpp src/HelpDialog.hpp\
+        src/OptionsDialog.cpp src/OptionsDialog.hpp\
+        src/ReceiveDialog.cpp src/ReceiveDialog.hpp\
+        src/Spectrum.cpp src/Spectrum.hpp\
+        src/TransmitDialog.cpp src/TransmitDialog.hpp\
         \
-        src/FaxDemodulator.cpp src/FaxDemodulator.hpp src/moc_FaxDemodulator.cpp\
-        src/FaxModulator.cpp src/FaxModulator.hpp src/moc_FaxModulator.cpp\
-        src/FaxReceiver.cpp src/FaxReceiver.hpp src/moc_FaxReceiver.cpp\
-        src/FaxTransmitter.cpp src/FaxTransmitter.hpp src/moc_FaxTransmitter.cpp\
-        src/PTC.cpp src/PTC.hpp src/moc_PTC.cpp\
-        src/File.cpp src/File.hpp src/moc_File.cpp\
-        src/Sound.cpp src/Sound.hpp src/moc_Sound.cpp\
-        src/PTT.cpp src/PTT.hpp src/moc_PTT.cpp\
+        src/FaxDemodulator.cpp src/FaxDemodulator.hpp\
+        src/FaxModulator.cpp src/FaxModulator.hpp\
+        src/FaxReceiver.cpp src/FaxReceiver.hpp\
+        src/FaxTransmitter.cpp src/FaxTransmitter.hpp\
+        src/PTC.cpp src/PTC.hpp\
+        src/File.cpp src/File.hpp\
+        src/Sound.cpp src/Sound.hpp\
+        src/PTT.cpp src/PTT.hpp\
         \
         src/Error.hpp src/Error.cpp\
         src/FirFilter.hpp\
         src/LookUpTable.hpp\
         src/hamfax.cpp
+nodist_hamfax_SOURCES = \
+	src/moc_Config.cpp\
+	src/moc_CorrectDialog.cpp\
+	src/moc_DisplayLevel.cpp\
+	src/moc_FaxImage.cpp\
+	src/moc_FaxWindow.cpp\
+	src/moc_HelpDialog.cpp\
+	src/moc_OptionsDialog.cpp\
+	src/moc_ReceiveDialog.cpp\
+	src/moc_Spectrum.cpp\
+	src/moc_TransmitDialog.cpp\
+	src/moc_FaxDemodulator.cpp\
+	src/moc_FaxModulator.cpp\
+	src/moc_FaxReceiver.cpp\
+	src/moc_FaxTransmitter.cpp\
+	src/moc_PTC.cpp\
+	src/moc_File.cpp\
+	src/moc_Sound.cpp\
+	src/moc_PTT.cpp
 
 hamfax_LDFLAGS = @QT_LIBS@
-hamfax_CXXFLAGS = @QT_CXXFLAGS@
+hamfax_CXXFLAGS = @QT_CXXFLAGS@ -Wall
 
 moc_%.cpp: %.hpp
 	$(QT_MOC) $< -o $@
@@ -43,7 +62,7 @@ endif
 
 pkgdata_DATA = doc/HamFax.html $(TRANSLATION)
 
-EXTRA_DIST = po/hamfax_de.qm
+EXTRA_DIST = po/hamfax_de.qm po/hamfax_de.ts doc/HamFax.html
 
 po/hamfax_de.qm: po/hamfax_de.ts
 	cd po/; $(LRELEASE) hamfax.pro

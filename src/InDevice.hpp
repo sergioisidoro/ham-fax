@@ -49,7 +49,7 @@ public:
 	 * Read all available data.
 	 * 0 stands for black and 255 for white, hence an unsigned char is ok
 	 */
-	virtual valarray<unsigned char> receive()=0;
+	virtual std::valarray<unsigned char> receive()=0;
 
 	/**
 	 * Close the device.

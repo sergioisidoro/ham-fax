@@ -36,8 +36,8 @@ public:
 	 * Take an array of 8-Bit-brightness values and produce 
 	 * array of 16-Bit-values with modulated signal.
 	 */
-	virtual void modulate(valarray<short>& out,
-			      const valarray<unsigned char>& in)=0;
+	virtual void modulate(std::valarray<short>& out,
+			      const std::valarray<unsigned char>& in)=0;
 
 	/**
 	 * Virtual destructor for correct destruction.

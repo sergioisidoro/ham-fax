@@ -1,3 +1,17 @@
+HamFax 0.6.3
+ * build system now uses automake and autoconf
+ * german translation is now included in tar-ball: recreation of
+   hamfax_de.qm with lrelease is possible, but not required
+ * small change not visible to users: FirFilter rewritten
+
+HamFax 0.6.2
+ * switched creation of german translation from deprecated msg2qm to
+   current lrelease, this should now work with every distribution of
+   Qt3
+
+HamFax 0.6.1
+ * fixed segfault while initializing PTC
+ 
 HamFax 0.6
  * Qt3 is required to compile and run the application
  * new dialog for selecting font

@@ -49,7 +49,7 @@ public:
 	 * Write a block of data to device.
 	 * 0 stands for black and 255 for white, hence an unsigned char is ok
 	 */
-	virtual void transmit(valarray<unsigned char>)=0;
+	virtual void transmit(std::valarray<unsigned char>)=0;
 
 	/**
 	 * Return output delay (maximum number of samples in out buffer)

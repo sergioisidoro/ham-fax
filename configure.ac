@@ -18,8 +18,8 @@ dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 dnl
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(src/hamfax.cpp)
-AM_INIT_AUTOMAKE(HamFax, 0.6.3)
+AC_INIT(HamFax, 0.6.3, cschmitt@users.sourceforge.net)
+AM_INIT_AUTOMAKE($PACKAGE_NAME, $PACKAGE_VERSION)
 AM_CONFIG_HEADER(src/config.h)
 
 AC_LANG_CPLUSPLUS
