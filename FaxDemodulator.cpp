@@ -26,25 +26,24 @@ static const double lpf[3][17]={
 };
 
 FaxDemodulator::FaxDemodulator(QObject* parent)
-	: QObject(parent), carrier(0), rate(0), 
-	deviation(0), fm(true), ifirold(0), qfirold(0), filter(1)
+	: QObject(parent),
+	  carrier(0), rate(0), deviation(0), fm(true),  filter(1)
 {
 	sine=new double[sine_size];
 	for(int i=0; i<sine_size; i++) {
 		sine[i]=sin(2.0*M_PI*i/sine_size);
 	}
-	sin_phase=sine;
-	cos_phase=sine+sine_size/4;
 	
-	icurrent=ifir=new double[fir_size](0);
+	ifir=new double[fir_size](0);
 	ifir_end=ifir+fir_size;
-	qcurrent=qfir=new double[fir_size](0);
+	qfir=new double[fir_size](0);
 	qfir_end=qfir+fir_size;
 
 	asine=new double[asine_size];
 	for(int i=0; i<asine_size; i++) {
 		asine[i]=asin(2.0*i/asine_size-1.0)/2.0/M_PI;
 	}
+	init();
 };
 
 FaxDemodulator::~FaxDemodulator(void)
@@ -52,6 +51,15 @@ FaxDemodulator::~FaxDemodulator(void)
 	delete[] ifir;
 	delete[] qfir;
 	delete[] sine;
+}
+
+void FaxDemodulator::init(void)
+{
+	sin_phase=sine;
+	cos_phase=sine+sine_size/4;
+	icurrent=ifir;
+	qcurrent=qfir;
+	ifirold=qfirold=0;
 }
 
 void FaxDemodulator::setCarrier(int carrier)

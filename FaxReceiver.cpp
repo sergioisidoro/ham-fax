@@ -150,7 +150,7 @@ void FaxReceiver::decodeImage(const int& x)
 			pixel/=pixelSamples;
 			emit setPixel(lastCol, color?currRow/3:currRow, 
 				      pixel,color?currRow%3:3);
-			if(lastRow!=currRow) {
+			if(lastRow!=currRow && state!=PHASING) {
 				emit row((lastRow=currRow)/(color?3:1));
 			}
 		}

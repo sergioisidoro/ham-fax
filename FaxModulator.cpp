@@ -32,6 +32,11 @@ FaxModulator::~FaxModulator(void)
 	delete[] sine;
 }
 
+void FaxModulator::init(void)
+{
+	phase=0;
+}
+
 void FaxModulator::modulate(double* buffer, int number)
 {
 	short sample[number];

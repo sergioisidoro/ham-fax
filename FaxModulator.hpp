@@ -36,6 +36,7 @@ private:
 signals:
 	void data(short*, int);
 public slots:
+        void init(void);
 	void setSampleRate(int sr);
         void setCarrier(int carrier);
 	void setDeviation(int dev);

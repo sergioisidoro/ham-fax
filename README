@@ -27,27 +27,34 @@ Software:
  - Qt v2.2 or newer (http://www.trolltech.com/)
  - Audiofile (http://www.68k.org./~michael/audiofile/)
 
+Note: They are standard packages in most recent linux distributions.
 
 Notes / Features:
 *****************
 
- - The supported image format for loading and saving is PNG.
+ - All image formats supported by Qt can be used.
+ 
  - Facsimiles written to a AU-file have a sample rate of 8000Hz and
-   16Bit/sample. This is the same format as used for reading from and
+   16Bit/sample. This is the same format used for reading from and
    writing to the sound interface.
- - The data rate between the SCS-PTC and the computer is
-   57600bit/s. With the start of transmission or reception the PTC is
-   expected to be in the main menu. If HamFax does not put the PTC in
-   fax mode, just turn it off and on, and it should work. ;-)
- - Serial communication to the SCS-PTC is not perfect, data might get lost...
+
+ - The data rate between the SCS-PTC and the computer can be set
+   to 38400bit/s, 57600bit/s or 115200bit/s. With the start of
+   transmission or reception the PTC is expected to be in the
+   main menu. If HamFax does not put the PTC in fax mode, just
+   turn it off and on, and it should work. ;-)
+
+ - While doing frequency modulation (used on shortwave), the PTC
+   mode JVCOMM is used which does hardware handshaking on the
+   serial line. With amplitude modulation (used on transmissions
+   from satellites) the mode AMFAX is used, which does no
+   handshake at all, so data might get lost.
+ 
  - Transmitting:
-    - Set the appropiate devices in Options->'Device Settings'
-      (they are not saved at the moment)
-    - If you want to key your PTT using the RTS signal of the selected
-      serial port select Options->'key PTT'
+    - Check the options menu and adjust everything as you need
     - Load the desired image with File->Open
-    - Adjust the parameters at the left
-    - Use Options->'Scale Image' to adjust the image size to the
+    - Set the transmission parameters
+    - Use Image->'Scale to ICO' to adjust the image size to the
       desired index of cooperation (IOC).
     - Select the desired mode in the transmit menu
  - Reception:
@@ -65,7 +72,7 @@ directory and type (with the correct directories):
 
 ./configure --with-Qt-dir=/usr/lib/qt2 --with-Qt-includes=/usr/lib/qt2/include
 
-On some systems like Debian 2.2 it is enough to install the packages
+On some systems like Debian 2.2 it will suffice to install the packages
 for qt and audiofile and run
 
 ./configure
@@ -75,9 +82,9 @@ retrying configure.  After successful creation of the Makefile type
 
 make
 
-to compile it. If you want you can install the resulting binary
-'hamfax' to /usr/local/bin/ with
+to compile it. As root use 
 
 make install
 
-You have to be root to run this last command.
+to copy the program files to their directories. Default prefix
+is '/usr/local'.

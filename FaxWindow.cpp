@@ -334,6 +334,7 @@ FaxWindow::FaxWindow(const QString& version)
 		faxReceiver,SLOT(setWidth(int)));
 	connect(faxImage,SIGNAL(sizeUpdated(int,int)),
 		faxTransmitter,SLOT(setImageSize(int,int)));
+
 	connect(faxReceiver,SIGNAL(setPixel(int, int, int, int)),
 		faxImage,SLOT(setPixel(int, int, int,int)));
 	connect(this,SIGNAL(scaleToWidth(int)),
@@ -366,6 +367,7 @@ FaxWindow::FaxWindow(const QString& version)
 
 	// transmission
 	connect(faxTransmitter,SIGNAL(start()),transmitDialog,SLOT(start()));
+	connect(faxTransmitter,SIGNAL(start()),faxModulator,SLOT(init()));
 	connect(sound,SIGNAL(openForWriting()),ptt,SLOT(set()));
 	connect(faxTransmitter,SIGNAL(start()),SLOT(disableControls()));
 	connect(faxTransmitter,SIGNAL(phasing()),
@@ -389,6 +391,8 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(faxReceiver,SIGNAL(startReception()),
 		receiveDialog,SLOT(aptStart()));
 	connect(faxReceiver,SIGNAL(startReception()),SLOT(disableControls()));
+	connect(faxReceiver,SIGNAL(startReception()),
+		faxDemodulator,SLOT(init()));
 	connect(receiveDialog,SIGNAL(skipClicked()),faxReceiver,SLOT(skip()));
 	connect(receiveDialog,SIGNAL(cancelClicked()),
 		faxReceiver,SLOT(endReception()));
