@@ -74,7 +74,7 @@ dnl variables are set to the empty string.
 dnl
 dnl Calls BNV_PATH_QT_DIRECT as a subroutine.
 dnl
-dnl @version $Id: aclocal.m4,v 1.2 2002/02/20 22:40:48 cschmitt Exp $
+dnl @version $Id: acinclude.m4,v 1.1 2003/01/24 21:57:42 cschmitt Exp $
 dnl @author Bastiaan N. Veelo <Bastiaan.N.Veelo@immtek.ntnu.no>
 dnl
 AC_DEFUN([BNV_HAVE_QT],

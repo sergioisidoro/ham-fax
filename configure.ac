@@ -1,5 +1,6 @@
 dnl HamFax -- an application for sending and receiving amateur radio facsimiles
-dnl Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+dnl Copyright (C) 2001--2003
+dnl Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 dnl  
 dnl This program is free software; you can redistribute it and/or
 dnl modify it under the terms of the GNU General Public License
@@ -16,11 +17,25 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 dnl
 dnl Process this file with autoconf to produce a configure script.
+
 AC_INIT(src/hamfax.cpp)
+AM_INIT_AUTOMAKE(HamFax, 1.1)
+
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 AC_PROG_INSTALL
-AC_CHECK_LIB(audiofile,afOpenFile)
 BNV_HAVE_QT
+
+AC_CHECK_LIB(audiofile,afOpenFile)
+AC_CHECK_HEADER(sys/soundcard.h, [AC_DEFINE([OSS], 1, [OSS])])
+
+AC_PATH_PROG(LRELEASE, lrelease)
+AM_CONDITIONAL(INTERNATIONAL, test x$LRELEASE != x)
+
+AC_SYS_POSIX_TERMIOS
+AM_CONDITIONAL(TERMIOS, test x$am_cv_sys_posix_termios = xyes)
+
+AC_DEFINE_UNQUOTED(DATADIR, @datadir@, [path to data directory])
+
 AC_CHECK_HEADER(sys/soundcard.h)
-AC_OUTPUT(Makefile src/Makefile po/Makefile doc/Makefile)
+AC_OUTPUT(Makefile)
