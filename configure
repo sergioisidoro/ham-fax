@@ -3173,7 +3173,7 @@ fi
 echo "$as_me:3173: result: $ac_cv_header_sys_soundcard_h" >&5
 echo "${ECHO_T}$ac_cv_header_sys_soundcard_h" >&6
 
-ac_config_files="$ac_config_files Makefile src/Makefile po/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile po/Makefile doc/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -3508,7 +3508,8 @@ do
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "po/Makefile" ) CONFIG_FILES="$CONFIG_FILES po/Makefile" ;;
-  *) { { echo "$as_me:3511: error: invalid argument: $ac_config_target" >&5
+  "doc/Makefile" ) CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
+  *) { { echo "$as_me:3512: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;
   esac
@@ -3721,7 +3722,7 @@ done; }
   esac
 
   if test x"$ac_file" != x-; then
-    { echo "$as_me:3724: creating $ac_file" >&5
+    { echo "$as_me:3725: creating $ac_file" >&5
 echo "$as_me: creating $ac_file" >&6;}
     rm -f "$ac_file"
   fi
@@ -3739,7 +3740,7 @@ echo "$as_me: creating $ac_file" >&6;}
       -) echo $tmp/stdin ;;
       [\\/$]*)
          # Absolute (can't be DOS-style, as IFS=:)
-         test -f "$f" || { { echo "$as_me:3742: error: cannot find input file: $f" >&5
+         test -f "$f" || { { echo "$as_me:3743: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          echo $f;;
@@ -3752,7 +3753,7 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
            echo $srcdir/$f
          else
            # /dev/null tree
-           { { echo "$as_me:3755: error: cannot find input file: $f" >&5
+           { { echo "$as_me:3756: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          fi;;

@@ -22,7 +22,7 @@ docdir=@datadir@/doc/HamFax
 qmdir=@datadir@/HamFax
 INSTALL=@INSTALL@
 
-.PHONY: all binary clean distclean install uninstall translations
+.PHONY: all binary clean doc distclean install uninstall translations
 
 all: binary translations
 
@@ -32,15 +32,20 @@ binary:
 translations:
 	$(MAKE) --directory po/ translations
 
+doc:
+	$(MAKE) --directory doc/ doc
+
 clean:
 	rm -rfv moc_bnv_qt_test.*
 	$(MAKE) --directory src/ clean
 	$(MAKE) --directory po/ clean
+	$(MAKE) --directory doc/ clean
 
 distclean: clean
 	rm -rfv Makefile config.cache config.log config.status
 	$(MAKE) --directory src/ distclean
 	$(MAKE) --directory po/ distclean
+	$(MAKE) --directory doc/ distclean
 
 install: binary translations
 	$(INSTALL) -o root -g root -m 0755 -d $(bindir)

@@ -23,4 +23,4 @@ AC_PROG_INSTALL
 AC_CHECK_LIB(audiofile,afOpenFile)
 BNV_HAVE_QT
 AC_CHECK_HEADER(sys/soundcard.h)
-AC_OUTPUT(Makefile src/Makefile po/Makefile)
+AC_OUTPUT(Makefile src/Makefile po/Makefile doc/Makefile)

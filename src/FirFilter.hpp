@@ -28,17 +28,65 @@
 
 template <class T> class FirFilter {
 public:
+	/**
+	 * Constructs the FIR filter
+	 * \param N specifies the filter length.
+	 */
 	FirFilter(const size_t N);
+
+	/**
+	 * Destructs the FIR filter.
+	 */
 	~FirFilter(void);
+	
+	/**
+	 * Initializes the filter coefficients
+	 * The parameter is an array of filter coefficients in ascending order.
+	 * The array has to have the same length as the filter.
+	 */
 	void setCoefficients(const T* const coeffs);
+
+	/**
+	 * Filter one sample. The parameter is the input value which is stored 
+	 * in the buffer. The return value is the resulting value of convuluting
+	 * the buffer content and the coefficients.
+	 */
 	T filterSample(const T sample);
+
+	/**
+	 * Dump the current buffer content. This is for debugging purposes.
+	 */
 	void getBuffer(T* const bufferCopy) const;
 private:
+	/**
+	 * The filter length.
+	 */
 	size_t N;
-	T* coeffs;         // order: g_{N-1}..g_{0}
+
+	/**
+	 * Pointer to the array of coefficients.
+	 * The coefficients are stored in descending order.
+	 */
+	T* coeffs;
+
+	/**
+	 * Pointer to last element of coefficients array.
+	 */
 	T* coeffsLast;
+
+        /**
+	 * Pointer to buffer which is used circular.
+	 */
 	T* buffer;
+
+	/**
+	 * Pointer to last element of buffer array.
+	 */
 	T* bufferLast;
+
+	/** 
+	 * Pointer to oldest entry of buffer.
+	 */
 	T* bufferCurrent;
 };
 
