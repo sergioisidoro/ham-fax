@@ -16,9 +16,9 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <qapplication.h>
+#include <qtextcodec.h>
 #include <qtranslator.h>
 #include <qstring.h>
-#include <locale.h>
 #include "FaxWindow.hpp"
 
 int main(int argc, char* argv[])
@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 	const QString version="0.5.2";
 	QApplication app(argc, argv);
 	QTranslator translator(0);
-	translator.load(QString("hamfax.")+setlocale(LC_MESSAGES,0),".");
+	translator.load(QString("hamfax.")+QTextCodec::locale(),".");
 	app.installTranslator(&translator);
 	FaxWindow* faxWindow=new FaxWindow(version);
 	app.setMainWidget(faxWindow);
