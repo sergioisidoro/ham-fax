@@ -22,7 +22,6 @@
 #include <qmainwindow.h>
 #include <qstring.h>
 #include <qtoolbar.h>
-#include "Config.hpp"
 #include "CorrectDialog.hpp"
 #include "FaxDemodulator.hpp"
 #include "FaxImage.hpp"
@@ -60,10 +59,9 @@ private:
 	QToolBar* aptTool;
 	QToolBar* faxTool;
 	QComboBox* invertPhase;
-	QComboBox* color;
+	QComboBox* colorBox;
 	QLabel* sizeText;
 	QLabel* iocText;
-	Config* config;
 	File* file;
 	FaxDemodulator* faxDemodulator;
 	FaxModulator* faxModulator;
@@ -83,6 +81,9 @@ signals:
 	void newWidth(int);
 	void scaleToWidth(int);
 	void usePTT(bool);
+	void autoScroll(bool);
+	void color(bool);
+	void toolTip(bool);
 public slots:
         void setUsePTT(bool);
 	void setBeginEnd(void);

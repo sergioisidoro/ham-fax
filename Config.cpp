@@ -97,7 +97,7 @@ void Config::readFile(void)
 	emit toolTip(value["toolTip"]=="1" ? true : false);
 }
 
-void Config::writeFile(void)
+Config::~Config(void)
 {
 	QFile f(QDir::homeDirPath()+"/.hamfax");
 	if (f.open(IO_WriteOnly)) {

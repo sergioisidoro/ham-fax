@@ -30,7 +30,7 @@ FaxModulator::FaxModulator(QObject* parent)
 
 FaxModulator::~FaxModulator(void)
 {
-	delete sine;
+	delete[] sine;
 }
 
 void FaxModulator::modulate(double* buffer, int number)

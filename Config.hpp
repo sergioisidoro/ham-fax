@@ -27,7 +27,7 @@ class Config : public QObject {
 public:
 	Config(QObject* parent);
 	void readFile(void);
-	void writeFile(void);
+	~Config(void);
 	bool getKeyPTT(void);
 private:
 	typedef QMap<QString,QString> ValueMap;

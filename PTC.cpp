@@ -31,7 +31,9 @@ PTC::PTC(QObject* parent)
 
 PTC::~PTC(void)
 {
-	close();
+	if(device!=-1) {
+		::close(device);
+	}
 }
 
 void PTC::setDeviceName(const QString& s)

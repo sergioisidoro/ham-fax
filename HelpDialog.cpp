@@ -27,6 +27,8 @@
 HelpDialog::HelpDialog(QWidget* parent)
 	: QDialog(parent,0,true)
 {
+	setCaption(parent->caption());
+
 	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
 	QTextBrowser* browser=new QTextBrowser(this);
 	layout->addWidget(browser);

@@ -30,6 +30,9 @@ PTT::PTT(QObject* parent)
 
 PTT::~PTT(void)
 {
+	if(device!=0) {
+		close(device);
+	}
 }
 
 void PTT::setDeviceName(const QString& s)

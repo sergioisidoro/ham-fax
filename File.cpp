@@ -27,7 +27,10 @@ File::File(QObject* parent)
 
 File::~File(void)
 {
-	this->end();
+	if(aFile!=0) {
+		afCloseFile(aFile);
+		aFile=0;
+	}
 }
 
 void File::startOutput(const QString& fileName)

@@ -21,6 +21,8 @@
 TransmitDialog::TransmitDialog(QWidget* parent)
 	: QDialog(parent)
 {
+	setCaption(parent->caption());
+
 	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
 	layout->addWidget(status=new QLabel(this));
 	status->setMinimumWidth(150);

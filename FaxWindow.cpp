@@ -29,6 +29,7 @@
 #include <qstatusbar.h>
 #include <qtooltip.h>
 #include <math.h>
+#include "Config.hpp"
 #include "Error.hpp"
 #include "HelpDialog.hpp"
 #include "OptionsDialog.hpp"
@@ -36,10 +37,12 @@
 #include "PTT.hpp"
 
 FaxWindow::FaxWindow(const QString& version)
-	: version(version)
+	: QMainWindow(0,0,WDestructiveClose), version(version)
 {
+	setCaption("HamFax");
+
 	// create child objects
-	config=new Config(this);
+	Config* config=new Config(this);
 	setCentralWidget(faxImage=new FaxImage(this));
 	faxReceiver=new FaxReceiver(this);
 	faxTransmitter=new FaxTransmitter(this,faxImage);
@@ -118,10 +121,10 @@ FaxWindow::FaxWindow(const QString& version)
 	QToolTip::add(invertPhase,tr("normal means 2.5% white, 95% black\n"
 				     "and again 2.5% white"));
 	faxTool->addSeparator();
-	color=new QComboBox(false,faxTool);
-	color->insertItem(tr("mono"));
-	color->insertItem(tr("color"));
-	QToolTip::add(color,
+	colorBox=new QComboBox(false,faxTool);
+	colorBox->insertItem(tr("mono"));
+	colorBox->insertItem(tr("color"));
+	QToolTip::add(colorBox,
 		      tr("In color mode each line\n"
 			 "is split in three lines:\n"
 			 "red, green and blue."));
@@ -265,16 +268,20 @@ FaxWindow::FaxWindow(const QString& version)
 		faxReceiver,SLOT(setPhasePol(bool)));
 
 	connect(config,SIGNAL(color(bool)),SLOT(setColor(bool)));
-	connect(color,SIGNAL(activated(int)),config,SLOT(setColor(int)));
+	connect(colorBox,SIGNAL(activated(int)),config,SLOT(setColor(int)));
 	connect(config,SIGNAL(color(bool)),
 		faxTransmitter,SLOT(setColor(bool)));
 	connect(config,SIGNAL(color(bool)),faxReceiver,SLOT(setColor(bool)));
+	connect(this,SIGNAL(color(bool)),config,SLOT(setColor(bool)));
 
 	connect(config,SIGNAL(autoScroll(bool)),
 		faxImage,SLOT(setAutoScroll(bool)));
 	connect(config,SIGNAL(autoScroll(bool)), SLOT(setAutoScroll(bool)));
+	connect(this,SIGNAL(autoScroll(bool)), 
+		config, SLOT(setAutoScroll(bool)));
 
 	connect(config,SIGNAL(toolTip(bool)), SLOT(setToolTip(bool)));
+	connect(this,SIGNAL(toolTip(bool)), config,SLOT(setToolTip(bool)));
 
 	connect(config,SIGNAL(DSPDevice(const QString&)),
 		sound,SLOT(setDSPDevice(const QString&)));
@@ -411,7 +418,6 @@ FaxWindow::FaxWindow(const QString& version)
 void FaxWindow::help(void)
 {
 	HelpDialog* helpDialog=new HelpDialog(this);
-	helpDialog->setCaption(caption());
 	helpDialog->exec();
 	delete helpDialog;
 }
@@ -469,7 +475,7 @@ void FaxWindow::changeScroll(void)
 {
 	bool b = optionsMenu->isItemChecked(scrollID) ? false : true;
 	optionsMenu->setItemChecked(scrollID,b);
-	config->setAutoScroll(b);
+	emit autoScroll(b);
 }
 
 void FaxWindow::setAutoScroll(bool b)
@@ -629,7 +635,6 @@ void FaxWindow::closeEvent(QCloseEvent* close)
 					tr("&Exit"),tr("&Don't Exit"))) {
 	case 0:
 		close->accept();
-		config->writeFile();
 		break;
 	case 1:
 		break;
@@ -666,7 +671,7 @@ void FaxWindow::setPhasingPol(bool b)
 
 void FaxWindow::setColor(bool b)
 {
-	color->setCurrentItem(b ? 1 : 0);
+	colorBox->setCurrentItem(b ? 1 : 0);
 }
 
 void FaxWindow::slantWaitFirst(void)
@@ -693,13 +698,13 @@ void FaxWindow::slantEnd(void)
 
 void FaxWindow::redrawColor(void)
 {
-	config->setColor(true);
+	emit color(true);
 	faxReceiver->correctLPM(1);
 }
 
 void FaxWindow::redrawMono(void)
 {
-	config->setColor(false);
+	emit color(false);
 	faxReceiver->correctLPM(1);
 }
 
@@ -751,7 +756,7 @@ void FaxWindow::setToolTip(bool b)
 {
 	optionsMenu->setItemChecked(toolTipID,b);
 	QToolTip::setEnabled(b);
-	config->setToolTip(b);
+	emit toolTip(b);
 }
 
 void FaxWindow::adjustIOC(void)

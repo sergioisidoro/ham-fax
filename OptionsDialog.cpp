@@ -23,6 +23,8 @@
 OptionsDialog::OptionsDialog(QWidget* parent)
 	: QDialog(parent,0,true)
 {
+	setCaption(parent->caption());
+
 	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
 
 	QGridLayout* settings=new QGridLayout(layout,3,2);

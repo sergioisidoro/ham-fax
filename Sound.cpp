@@ -31,7 +31,9 @@ Sound::Sound(QObject* parent)
 
 Sound::~Sound(void)
 {
-	this->close();
+	if(devDSP!=-1) {
+		::close(devDSP);
+	}
 }
 
 void Sound::setDSPDevice(const QString& s)

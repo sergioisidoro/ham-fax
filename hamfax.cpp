@@ -30,7 +30,6 @@ int main(int argc, char* argv[])
 	app.installTranslator(&translator);
 	FaxWindow* faxWindow=new FaxWindow(version);
 	app.setMainWidget(faxWindow);
-	faxWindow->setCaption("HamFax");
 	faxWindow->show();
 	return app.exec();
 }
