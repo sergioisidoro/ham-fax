@@ -29,39 +29,39 @@
 template <class T> class FirFilter {
 public:
 	/**
-	 * Convenient name for the coefficients.
+	 * Convenient name for coefficients.
 	 */
 	typedef valarray<T> coeff_t;
 
 	/**
-	 * Convenient name for the buffer.
+	 * Convenient name for buffer.
 	 */
 	typedef valarray<T> buffer_t;
 
 	/**
 	 * Create the FirFilter.
-	 * \param b is the initial value for the buffer and
-	 * \param c are the coefficients.
-	 * Both must be the same size!
-	 */
-	FirFilter(const buffer_t& b, const coeff_t& c);
-
-	/**
-	 * Create the FirFilter.
 	 * \param n is the size of buffer and coefficient array
 	 */
-	FirFilter(size_t n);
+	FirFilter(const size_t n);
 
 	/**
-	 * Set new coefficients and don't change the size!
+	 * Set new coefficients.
+	 * \param c are the new coefficients; the size has to be the same 
+	 * as the size of the filter!
 	 */
 	void setCoeffs(const coeff_t& c);
 
 	/**
-	 * Set new buffer content, e.g. all zero; don't change
-	 * the buffer size!
+	 * Set new buffer content, e.g. all zero.
+	 * \param b is the new buffer content;, the size has to be the same
+	 * as the old!
 	 */
 	void setBuffer(const buffer_t& b);
+
+	/**
+	 * Return the size of the filter buffer.
+	 */
+	size_t size() const;
 
         /**
 	 * Pass one sample through the filter and get the result as return value.
@@ -71,19 +71,12 @@ public:
 	/**
 	 * Get current buffer; useful for debugging purposes.
 	 */
-	buffer_t getBuffer(void) const;
+	buffer_t getBuffer() const;
 private:
         coeff_t coeffs;
         buffer_t buffer;
         T* current;
 };
-
-template <class T>
-inline FirFilter<T>::FirFilter(const buffer_t& b, const coeff_t& c) 
-	: coeffs(c), buffer(b)
-{
-	current=&buffer[0];
-}
 
 template <class T> FirFilter<T>::FirFilter(size_t n)
 	: coeffs(n), buffer(n)
@@ -99,6 +92,11 @@ template <class T> void FirFilter<T>::setCoeffs(const coeff_t& c)
 template <class T> inline void FirFilter<T>::setBuffer(const buffer_t& b)
 {
 	buffer=b;
+}
+
+template <class T> inline size_t FirFilter<T>::size() const
+{
+	return buffer.size();
 }
 
 template <class T> inline T FirFilter<T>::filterSample(const T& sample)

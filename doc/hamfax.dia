@@ -477,7 +477,7 @@
         <dia:real val="5.8"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#SoundIn#</dia:string>
+        <dia:string>#OssIn#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string/>
@@ -652,7 +652,7 @@
         <dia:real val="5.8"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#FileIn#</dia:string>
+        <dia:string>#AudiofileIn#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string/>
@@ -965,7 +965,7 @@
         <dia:point val="-23,14"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="-23.05,13.95;0.6356,18.05"/>
+        <dia:rectangle val="-23.05,13.95;0.6356,18.85"/>
       </dia:attribute>
       <dia:attribute name="elem_corner">
         <dia:point val="-23,14"/>
@@ -974,7 +974,7 @@
         <dia:real val="23.5856"/>
       </dia:attribute>
       <dia:attribute name="elem_height">
-        <dia:real val="4"/>
+        <dia:real val="4.8"/>
       </dia:attribute>
       <dia:attribute name="name">
         <dia:string>#InDevice#</dia:string>
@@ -1054,6 +1054,24 @@
         </dia:composite>
         <dia:composite type="umloperation">
           <dia:attribute name="name">
+            <dia:string>#sampleRate#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="type">
+            <dia:string>#int#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="visibility">
+            <dia:enum val="0"/>
+          </dia:attribute>
+          <dia:attribute name="abstract">
+            <dia:boolean val="true"/>
+          </dia:attribute>
+          <dia:attribute name="class_scope">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+          <dia:attribute name="parameters"/>
+        </dia:composite>
+        <dia:composite type="umloperation">
+          <dia:attribute name="name">
             <dia:string>#receive#</dia:string>
           </dia:attribute>
           <dia:attribute name="type">
@@ -1111,13 +1129,13 @@
     </dia:object>
     <dia:object type="UML - Realizes" version="0" id="O10">
       <dia:attribute name="obj_pos">
-        <dia:point val="0.5856,18"/>
+        <dia:point val="0.5856,18.8"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="-0.2644,18;12.6356,31"/>
+        <dia:rectangle val="-0.2644,18.8;12.6356,31"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
-        <dia:point val="0.5856,18"/>
+        <dia:point val="0.5856,18.8"/>
         <dia:point val="0.5856,20"/>
         <dia:point val="12.5856,20"/>
         <dia:point val="12.5856,31"/>
@@ -1140,13 +1158,13 @@
     </dia:object>
     <dia:object type="UML - Realizes" version="0" id="O11">
       <dia:attribute name="obj_pos">
-        <dia:point val="-11.2072,18"/>
+        <dia:point val="-11.2072,18.8"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="-12.0572,18;-10.3572,21"/>
+        <dia:rectangle val="-12.0572,18.8;-10.3572,21"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
-        <dia:point val="-11.2072,18"/>
+        <dia:point val="-11.2072,18.8"/>
         <dia:point val="-11.2072,20"/>
         <dia:point val="-12,20"/>
         <dia:point val="-12,21"/>
@@ -1169,13 +1187,13 @@
     </dia:object>
     <dia:object type="UML - Realizes" version="0" id="O12">
       <dia:attribute name="obj_pos">
-        <dia:point val="-23,18"/>
+        <dia:point val="-23,18.8"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="-25.2572,18;-22.15,21"/>
+        <dia:rectangle val="-25.2572,18.8;-22.15,21"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
-        <dia:point val="-23,18"/>
+        <dia:point val="-23,18.8"/>
         <dia:point val="-23,20"/>
         <dia:point val="-25.2072,20"/>
         <dia:point val="-25.2072,21"/>
@@ -1537,7 +1555,7 @@
         <dia:point val="29,14"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="28.95,13.95;52.6356,18.05"/>
+        <dia:rectangle val="28.95,13.95;52.6356,18.85"/>
       </dia:attribute>
       <dia:attribute name="elem_corner">
         <dia:point val="29,14"/>
@@ -1546,7 +1564,7 @@
         <dia:real val="23.5856"/>
       </dia:attribute>
       <dia:attribute name="elem_height">
-        <dia:real val="4"/>
+        <dia:real val="4.8"/>
       </dia:attribute>
       <dia:attribute name="name">
         <dia:string>#OutDevice#</dia:string>
@@ -1626,6 +1644,24 @@
         </dia:composite>
         <dia:composite type="umloperation">
           <dia:attribute name="name">
+            <dia:string>#sampleRate#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="type">
+            <dia:string>#unsigned int#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="visibility">
+            <dia:enum val="0"/>
+          </dia:attribute>
+          <dia:attribute name="abstract">
+            <dia:boolean val="true"/>
+          </dia:attribute>
+          <dia:attribute name="class_scope">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+          <dia:attribute name="parameters"/>
+        </dia:composite>
+        <dia:composite type="umloperation">
+          <dia:attribute name="name">
             <dia:string>#transmit#</dia:string>
           </dia:attribute>
           <dia:attribute name="type">
@@ -1683,7 +1719,7 @@
         <dia:real val="5.8"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#SoundOut#</dia:string>
+        <dia:string>#OssOut#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string/>
@@ -1858,7 +1894,7 @@
         <dia:real val="5.8"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#FileOut#</dia:string>
+        <dia:string>#AudiofileOut#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string/>
@@ -2173,13 +2209,13 @@
     </dia:object>
     <dia:object type="UML - Realizes" version="0" id="O23">
       <dia:attribute name="obj_pos">
-        <dia:point val="29,18"/>
+        <dia:point val="29,18.8"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="25.7428,18;29.85,21"/>
+        <dia:rectangle val="25.7428,18.8;29.85,21"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
-        <dia:point val="29,18"/>
+        <dia:point val="29,18.8"/>
         <dia:point val="29,20"/>
         <dia:point val="25.7928,20"/>
         <dia:point val="25.7928,21"/>
@@ -2202,13 +2238,13 @@
     </dia:object>
     <dia:object type="UML - Realizes" version="0" id="O24">
       <dia:attribute name="obj_pos">
-        <dia:point val="40.7928,18"/>
+        <dia:point val="40.7928,18.8"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="38.95,18;41.6428,21"/>
+        <dia:rectangle val="38.95,18.8;41.6428,21"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
-        <dia:point val="40.7928,18"/>
+        <dia:point val="40.7928,18.8"/>
         <dia:point val="40.7928,20"/>
         <dia:point val="39,20"/>
         <dia:point val="39,21"/>
@@ -2231,13 +2267,13 @@
     </dia:object>
     <dia:object type="UML - Realizes" version="0" id="O25">
       <dia:attribute name="obj_pos">
-        <dia:point val="52.5856,18"/>
+        <dia:point val="52.5856,18.8"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="51.7356,18;63.6356,31"/>
+        <dia:rectangle val="51.7356,18.8;63.6356,31"/>
       </dia:attribute>
       <dia:attribute name="orth_points">
-        <dia:point val="52.5856,18"/>
+        <dia:point val="52.5856,18.8"/>
         <dia:point val="52.5856,20"/>
         <dia:point val="63.5856,20"/>
         <dia:point val="63.5856,31"/>
@@ -3868,7 +3904,7 @@
         <dia:point val="-37,52"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="-37.05,51.25;-13.934,58.05"/>
+        <dia:rectangle val="-37.05,51.25;-13.934,58.85"/>
       </dia:attribute>
       <dia:attribute name="elem_corner">
         <dia:point val="-37,52"/>
@@ -3877,7 +3913,7 @@
         <dia:real val="22.616"/>
       </dia:attribute>
       <dia:attribute name="elem_height">
-        <dia:real val="6"/>
+        <dia:real val="6.8"/>
       </dia:attribute>
       <dia:attribute name="name">
         <dia:string>#FirFilter#</dia:string>
@@ -3943,25 +3979,7 @@
         </dia:composite>
         <dia:composite type="umloperation">
           <dia:attribute name="name">
-            <dia:string>#~FirFilter#</dia:string>
-          </dia:attribute>
-          <dia:attribute name="type">
-            <dia:string/>
-          </dia:attribute>
-          <dia:attribute name="visibility">
-            <dia:enum val="0"/>
-          </dia:attribute>
-          <dia:attribute name="abstract">
-            <dia:boolean val="false"/>
-          </dia:attribute>
-          <dia:attribute name="class_scope">
-            <dia:boolean val="false"/>
-          </dia:attribute>
-          <dia:attribute name="parameters"/>
-        </dia:composite>
-        <dia:composite type="umloperation">
-          <dia:attribute name="name">
-            <dia:string>#setCoefficients#</dia:string>
+            <dia:string>#setCoeffs#</dia:string>
           </dia:attribute>
           <dia:attribute name="type">
             <dia:string>#void#</dia:string>
@@ -3981,7 +3999,7 @@
                 <dia:string>#coefficients#</dia:string>
               </dia:attribute>
               <dia:attribute name="type">
-                <dia:string>#const T*#</dia:string>
+                <dia:string>#const coeff_t&amp;#</dia:string>
               </dia:attribute>
               <dia:attribute name="value">
                 <dia:string/>
@@ -3991,6 +4009,57 @@
               </dia:attribute>
             </dia:composite>
           </dia:attribute>
+        </dia:composite>
+        <dia:composite type="umloperation">
+          <dia:attribute name="name">
+            <dia:string>#setBuffer#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="type">
+            <dia:string>#void#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="visibility">
+            <dia:enum val="0"/>
+          </dia:attribute>
+          <dia:attribute name="abstract">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+          <dia:attribute name="class_scope">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+          <dia:attribute name="parameters">
+            <dia:composite type="umlparameter">
+              <dia:attribute name="name">
+                <dia:string>#const buffer_t&amp;#</dia:string>
+              </dia:attribute>
+              <dia:attribute name="type">
+                <dia:string>##</dia:string>
+              </dia:attribute>
+              <dia:attribute name="value">
+                <dia:string/>
+              </dia:attribute>
+              <dia:attribute name="kind">
+                <dia:enum val="0"/>
+              </dia:attribute>
+            </dia:composite>
+          </dia:attribute>
+        </dia:composite>
+        <dia:composite type="umloperation">
+          <dia:attribute name="name">
+            <dia:string>#size#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="type">
+            <dia:string>#size_t#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="visibility">
+            <dia:enum val="0"/>
+          </dia:attribute>
+          <dia:attribute name="abstract">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+          <dia:attribute name="class_scope">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+          <dia:attribute name="parameters"/>
         </dia:composite>
         <dia:composite type="umloperation">
           <dia:attribute name="name">
@@ -4030,7 +4099,7 @@
             <dia:string>#getBuffer#</dia:string>
           </dia:attribute>
           <dia:attribute name="type">
-            <dia:string>#void#</dia:string>
+            <dia:string>#buffer_t#</dia:string>
           </dia:attribute>
           <dia:attribute name="visibility">
             <dia:enum val="0"/>
@@ -4041,22 +4110,7 @@
           <dia:attribute name="class_scope">
             <dia:boolean val="false"/>
           </dia:attribute>
-          <dia:attribute name="parameters">
-            <dia:composite type="umlparameter">
-              <dia:attribute name="name">
-                <dia:string>#bufferCopy#</dia:string>
-              </dia:attribute>
-              <dia:attribute name="type">
-                <dia:string>#T* const#</dia:string>
-              </dia:attribute>
-              <dia:attribute name="value">
-                <dia:string/>
-              </dia:attribute>
-              <dia:attribute name="kind">
-                <dia:enum val="0"/>
-              </dia:attribute>
-            </dia:composite>
-          </dia:attribute>
+          <dia:attribute name="parameters"/>
         </dia:composite>
       </dia:attribute>
       <dia:attribute name="template">
@@ -4923,6 +4977,123 @@
           </dia:attribute>
         </dia:composite>
       </dia:attribute>
+    </dia:object>
+    <dia:object type="UML - Class" version="0" id="O61">
+      <dia:attribute name="obj_pos">
+        <dia:point val="8,16"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="7.95,15.95;26.3028,20.45"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="8,16"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="18.2528"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="4.4"/>
+      </dia:attribute>
+      <dia:attribute name="name">
+        <dia:string>#DeviceFactory#</dia:string>
+      </dia:attribute>
+      <dia:attribute name="stereotype">
+        <dia:string>#Singleton#</dia:string>
+      </dia:attribute>
+      <dia:attribute name="abstract">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="suppress_attributes">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="suppress_operations">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="visible_attributes">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="visible_operations">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="foreground_color">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="background_color">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="attributes"/>
+      <dia:attribute name="operations">
+        <dia:composite type="umloperation">
+          <dia:attribute name="name">
+            <dia:string>#getInDevice#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="type">
+            <dia:string>#InDevice#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="visibility">
+            <dia:enum val="0"/>
+          </dia:attribute>
+          <dia:attribute name="abstract">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+          <dia:attribute name="class_scope">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+          <dia:attribute name="parameters">
+            <dia:composite type="umlparameter">
+              <dia:attribute name="name">
+                <dia:string>#type#</dia:string>
+              </dia:attribute>
+              <dia:attribute name="type">
+                <dia:string>#in_t#</dia:string>
+              </dia:attribute>
+              <dia:attribute name="value">
+                <dia:string/>
+              </dia:attribute>
+              <dia:attribute name="kind">
+                <dia:enum val="0"/>
+              </dia:attribute>
+            </dia:composite>
+          </dia:attribute>
+        </dia:composite>
+        <dia:composite type="umloperation">
+          <dia:attribute name="name">
+            <dia:string>#getOutDevice#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="type">
+            <dia:string>#OutDevice#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="visibility">
+            <dia:enum val="0"/>
+          </dia:attribute>
+          <dia:attribute name="abstract">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+          <dia:attribute name="class_scope">
+            <dia:boolean val="false"/>
+          </dia:attribute>
+          <dia:attribute name="parameters">
+            <dia:composite type="umlparameter">
+              <dia:attribute name="name">
+                <dia:string>#type#</dia:string>
+              </dia:attribute>
+              <dia:attribute name="type">
+                <dia:string>#out_t#</dia:string>
+              </dia:attribute>
+              <dia:attribute name="value">
+                <dia:string/>
+              </dia:attribute>
+              <dia:attribute name="kind">
+                <dia:enum val="0"/>
+              </dia:attribute>
+            </dia:composite>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="template">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="templates"/>
     </dia:object>
   </dia:layer>
 </dia:diagram>
