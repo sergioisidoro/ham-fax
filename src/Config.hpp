@@ -39,7 +39,7 @@ public:
 	static Config& instance();
 private:
 	typedef std::auto_ptr<Config> ConfigPtr;
-	friend class ConfigPtr;
+	friend class std::auto_ptr<Config>;
 	Config();
 	~Config() {};
 	void setDefault(const QString& key, const char* value);
