@@ -31,7 +31,6 @@ public:
 	void startInput(const QString& fileName);
 	void end(void);
 private:
-	int sampleRate;
 	AFfilehandle aFile;
 	QTimer* timer;
 signals:

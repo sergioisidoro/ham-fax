@@ -19,7 +19,7 @@
 #include "Error.hpp"
 
 File::File(QObject* parent)
-	: QObject(parent), sampleRate(8000)
+	: QObject(parent)
 {
 	afSetErrorHandler(0);
 	timer=new QTimer(this);
@@ -44,7 +44,7 @@ void File::startOutput(const QString& fileName)
 		afInitSampleFormat(fs,AF_DEFAULT_TRACK,AF_SAMPFMT_TWOSCOMP,16);
 		afInitByteOrder(fs,AF_DEFAULT_TRACK,AF_BYTEORDER_BIGENDIAN);
 		afInitChannels(fs,AF_DEFAULT_TRACK,1);
-		afInitRate(fs,AF_DEFAULT_TRACK,sampleRate=8000);
+		afInitRate(fs,AF_DEFAULT_TRACK,8000);
 		
 		if((aFile=afOpenFile(fileName,"w",fs))==AF_NULL_FILEHANDLE) {
 			aFile=0;
@@ -53,7 +53,7 @@ void File::startOutput(const QString& fileName)
 		afFreeFileSetup(fs);
 		timer->start(0);
 		connect(timer,SIGNAL(timeout()),this,SLOT(timerSignal()));
-		emit newSampleRate(sampleRate);
+		emit newSampleRate(8000);
 	} catch(Error) {
 		end();
 		throw;
@@ -70,7 +70,10 @@ void File::startInput(const QString& fileName)
 		if(afGetFrameSize(aFile,AF_DEFAULT_TRACK,0)!=2) {
 			throw Error(tr("samples size not 16 bit"));
 		}
-		emit newSampleRate(afGetRate(aFile,AF_DEFAULT_TRACK));
+		if(afGetRate(aFile,AF_DEFAULT_TRACK)!=8000) {
+			throw Error(tr("sample rate is not 8000 Hz"));
+		}
+		emit newSampleRate(8000);
 		timer->start(0);
 		connect(timer,SIGNAL(timeout()),this,SLOT(read()));
 	} catch(Error) {
