@@ -1,5 +1,7 @@
+HamFax 0.5
  * fixed disconnect bug while writing to file
  * fixed line length while transmitting at high speed (>300lpm)
+ * failed read on sound device should no longer crash the program
  * minor changes
 
 HamFax 0.4
