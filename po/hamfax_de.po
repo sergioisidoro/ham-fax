@@ -73,30 +73,34 @@ msgstr "&Senden"
 #: FaxWindow.cpp:83
 msgid "FaxWindow::"
 "AM is only used for getting images\n"
-				    "from weather satellites together with\n"
-				    "a FM receiver. FM together with a\n"
-				    "USB (upper side band) transceiver is\n"
-				    "the right setting for HF"
+	"from weather satellites together with\n"
+	"a FM receiver. FM together with a\n"
+	"USB (upper side band) transceiver is\n"
+	"the right setting for HF"
 msgstr "AM wird für die Übertragung von Bildern von Wettersatelliten\n"
 	"zusammen mit einem FM-Empfänger eigesetzt. Für Übertragungen\n"
 	"über Kurwelle wird hier FM zusammen mit einem\n"
 	"USB (upper side band)-Transceiver benötigt."
-	
 
 #: FaxWindow.cpp:188
 msgid "FaxWindow::About &QT"
 msgstr "Über &QT"
 
 #: FaxWindow.cpp:456
-msgid "FaxWindow::"
-"HamFax is a Qt application for transmitting and receiving"
-		   "\nham radio facsimiles and weather broadcasts.\n\n"
-		   "Author: Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>"
-		   "\n\nThe demodulator is taken from ACfax"
-		   " by Andreas Czechanowski, DL4SDC"
-		   "\n\nLicense: GNU General Public License"
-		   "\nVersion: %1"
-msgstr "Hamfax Version %1"
+msgid "FaxWindow::HamFax is a Qt application for transmitting and receiving"
+	"\nham radio facsimiles and weather broadcasts.\n\n"
+	"Author: Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>"
+	"\n\nThe demodulator is taken from ACfax"
+	" by Andreas Czechanowski, DL4SDC"
+	"\n\nLicense: GNU General Public License"
+	"\nVersion: %1"
+msgstr "HamFax ist eine Qt-Anwendung zum Senden und Empfangen"
+	"\nvon Amateurfunk- und Wetter-Faksimiles.\n\n"
+	"Autor: Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>"
+	"\n\nDie Demodulationsroutinen stammen aus ACfax"
+	" von Andreas Czechanowski, DL4SDC"
+	"\n\nLizenz: GNU General Public License"
+	"\nVersion %1"
 
 #: FaxWindow.cpp:113
 msgid "FaxWindow::Hz"
@@ -228,15 +232,13 @@ msgid "FaxWindow::key PTT while transmitting with DSP"
 msgstr "PTT während Senden via Soundkarte aktivieren"
 
 #: FaxWindow.cpp:100
-msgid "FaxWindow::"
-"length of the black/white pattern\n"
-					"at the beginning of a facsimile"
+msgid "FaxWindow::length of the black/white pattern\n"
+	"at the beginning of a facsimile"
 msgstr "Länge des Schwarz/Weiß-Musters\nzu Beginn der Übertragung"
 
 #: FaxWindow.cpp:109
-msgid "FaxWindow::"
-"length of the black/white pattern\n"
-				       "at the end of a facsimile"
+msgid "FaxWindow::length of the black/white pattern\n"
+	"at the end of a facsimile"
 msgstr "Länge des Schwarz/Weiß-Musters\nam Ende der Übertragung"
 
 #: FaxWindow.cpp:119
@@ -269,12 +271,11 @@ msgstr "schwarz/weiß"
 
 #: FaxWindow.cpp:91
 msgid "FaxWindow::narrow"
-msgstr "eng"
+msgstr "schmal"
 
 #: FaxWindow.cpp:128
-msgid "FaxWindow::"
-"normal means 2.5% white, 95% black\n"
-				     "and again 2.5% white"
+msgid "FaxWindow::normal means 2.5% white, 95% black\n"
+	"and again 2.5% white"
 msgstr "normal bedeutet 2,5\% weiß,\n95\% schwarz und 2.5\% weiß"
 
 #: FaxWindow.cpp:534
@@ -282,9 +283,8 @@ msgid "FaxWindow::output file name"
 msgstr "Ausgabedatei"
 
 #: FaxWindow.cpp:123
-msgid "FaxWindow::"
-"phasing lines mark the beginning\n"
-				    "of a line and the speed (lpm)"
+msgid "FaxWindow::phasing lines mark the beginning\n"
+	"of a line and the speed (lpm)"
 msgstr "Synchronisationszeilen bestimmen\nden Zeilenbeginn und die Geschwindigkeit"
 
 #: FaxWindow.cpp:121

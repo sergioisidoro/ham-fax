@@ -21,6 +21,10 @@
 #include <qstring.h>
 #include "FaxWindow.hpp"
 
+#ifndef QMDIR
+#error "QMDIR needs to be defined"
+#endif
+
 int main(int argc, char* argv[])
 {
 	const QString version="0.5.2";
