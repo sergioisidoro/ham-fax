@@ -44,7 +44,7 @@ void FaxReceiver::init(void)
 	phaseLines=noPhaseLines=0;
 	lpm=lpmSum=0;
 	rawData.resize(8388608);
-	emit start();
+	emit startReception();
 }
 
 void FaxReceiver::decode(unsigned int* buf, unsigned int n)
@@ -185,7 +185,7 @@ void FaxReceiver::widthAdjust(double d)
 	lpm*=d;
 	rawIt=rawData.begin();
 	timer->start(0);
-	emit start();
+	emit startCorrection();
 }
 
 void FaxReceiver::adjustNext(void)

@@ -67,7 +67,8 @@ signals:
 	void newImageHeight(unsigned int y, unsigned int h);
 	void newPixel(unsigned int c, unsigned int h, 
 		      unsigned int v, unsigned int rgbg);
-	void start(void);
+	void startReception(void);
+	void startCorrection(void);
 	void end(void);
 	void startingPhasing(void);
 	void phasingLine(double lpm);

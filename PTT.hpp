@@ -28,17 +28,14 @@ public:
 	~PTT(void);
 	void setDeviceName(QString s);
 	QString& getDeviceName(void);
-	void openDevice(void);
-	void closeDevice(void);
-	void set(bool press);
 private:
 	int device;
 	bool usePTT;
 	QString deviceName;
 public slots:
         void setUse(bool use);
-signals:
-        void newPTTUsage(bool use);
+	void set(void);
+	void release(void);
 };
 
 #endif

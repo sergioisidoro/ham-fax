@@ -31,6 +31,7 @@
 #include "ScaleDialog.hpp"
 #include "ReceiveDialog.hpp"
 #include "TransmitDialog.hpp"
+#include "PTT.hpp"
 
 FaxWindow::FaxWindow(const QString& version)
 	: version(version)
@@ -42,7 +43,7 @@ FaxWindow::FaxWindow(const QString& version)
 	faxReceiver=new FaxReceiver(this);
 	sound=new Sound(this);
 	file=new File(this);
-	ptt=new PTT(this);
+	PTT* ptt=new PTT(this);
 	ptc=new PTC(this);
 	faxModulator=new FaxModulator(this);
 	faxDemodulator=new FaxDemodulator(this);
@@ -235,10 +236,15 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(transmitDialog,SIGNAL(cancelClicked()),
 		this,SLOT(enableControls()));
 
+	connect(faxTransmitter,SIGNAL(start()),
+		ptt,SLOT(set()));
+	connect(faxTransmitter,SIGNAL(end()),
+		ptt,SLOT(release()));
+
 	// FaxReceiver -- ReceiveDialog
 	connect(faxReceiver,SIGNAL(aptFound(unsigned int)),
 		receiveDialog,SLOT(apt(unsigned int)));
-	connect(faxReceiver,SIGNAL(start()),
+	connect(faxReceiver,SIGNAL(startReception()),
 		receiveDialog,SLOT(aptStart()));
 	connect(faxReceiver,SIGNAL(startingPhasing()),
 		receiveDialog,SLOT(phasing()));
@@ -253,14 +259,17 @@ FaxWindow::FaxWindow(const QString& version)
 	connect(faxReceiver,SIGNAL(end()),
 		this,SLOT(endReception()));
 
-	connect(faxReceiver,SIGNAL(start()),
+	connect(faxReceiver,SIGNAL(startReception()),
 		this,SLOT(disableControls()));
-	connect(faxReceiver,SIGNAL(start()),
+	connect(faxReceiver,SIGNAL(startReception()),
 		receiveDialog,SLOT(show()));
 	connect(faxReceiver,SIGNAL(end()),
 		this,SLOT(enableControls()));
 	connect(faxReceiver,SIGNAL(end()),
 		receiveDialog,SLOT(hide()));
+
+	connect(faxReceiver,SIGNAL(startCorrection()),
+		this,SLOT(disableControls()));
 
 	connect(this,SIGNAL(correctSlant()),faxImage,SLOT(correctSlant()));
 	connect(faxImage,SIGNAL(widthAdjust(double)),
@@ -470,8 +479,6 @@ void FaxWindow::initTransmit(int item)
 		case DSP:
 			sampleRate=8000;
 			sound->openOutput(sampleRate);
-			ptt->openDevice();
-			ptt->set(true);
 			connect(sound,SIGNAL(spaceLeft(unsigned int)),
 				faxTransmitter,SLOT(doNext(unsigned int)));
 			connect(faxTransmitter,
@@ -518,9 +525,7 @@ void FaxWindow::endTransmission(void)
 			   SLOT(write(signed short*, unsigned int)));
 		break;
 	case DSP:
-		ptt->set(false);
 		sound->close();
-		ptt->closeDevice();
 		disconnect(sound,SIGNAL(spaceLeft(unsigned int)),
 			faxTransmitter,SLOT(doNext(unsigned int)));
 		disconnect(faxTransmitter,

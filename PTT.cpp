@@ -42,45 +42,45 @@ QString& PTT::getDeviceName(void)
 	return deviceName;
 }
 
-void PTT::openDevice(void)
+void PTT::set(void)
 {
 	if(usePTT) {
 		if((device=open(deviceName,O_WRONLY))==-1) {
 			throw Error(tr("could not open PTT device"));
 		}
-	}
-}
-
-void PTT::closeDevice(void)
-{
-	if(device!=0) {
-		close(device);
-		device=0;
-	}
-}
-
-void PTT::set(bool press)
-{
-	if(usePTT) {
 		int status;
 		if(ioctl(device,TIOCMGET,&status)==-1) {
 			throw Error(tr("error getting PTT state"));
 		}
-		if(press) {
-			status|=TIOCM_RTS;
-		} else {
-			status&=~TIOCM_RTS;
-		}
+		status|=TIOCM_RTS;
 		if(ioctl(device,TIOCMSET,&status)==-1) {
 			throw Error(tr("error setting PTT"));
+		close(device);
+		device=0;
+		}
+	}
+}
+
+void PTT::release(void)
+{
+	if(usePTT) {
+		if((device=open(deviceName,O_WRONLY))==-1) {
+			throw Error(tr("could not open PTT device"));
+		}
+		int status;
+		if(ioctl(device,TIOCMGET,&status)==-1) {
+			throw Error(tr("error getting PTT state"));
+		}
+		status&=~TIOCM_RTS;
+		if(ioctl(device,TIOCMSET,&status)==-1) {
+			throw Error(tr("error setting PTT"));
+		close(device);
+		device=0;
 		}
 	}
 }
 
 void PTT::setUse(bool use)
 {
-	if(use!=usePTT) {
-		usePTT=use;
-		emit newPTTUsage(use );
-	}
+	usePTT=use;
 }

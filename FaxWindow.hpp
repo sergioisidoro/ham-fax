@@ -32,7 +32,6 @@
 #include "FaxTransmitter.hpp"
 #include "File.hpp"
 #include "PTC.hpp"
-#include "PTT.hpp"
 #include "Sound.hpp"
 
 class FaxWindow : public QMainWindow {
@@ -65,7 +64,6 @@ private:
 	FaxDemodulator* faxDemodulator;
 	Sound* sound;
 	File* file;
-	PTT* ptt;
 	PTC* ptc;
 	QMessageBox* slantDialog;
 	enum { WAITFIRST, WAITSECOND, NOTHING } slantState;
