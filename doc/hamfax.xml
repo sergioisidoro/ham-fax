@@ -7,7 +7,7 @@
     <authorgroup>
       <author>
         <firstname>Christof</firstname><surname>Schmitt</surname>
-        <othername>&ldquo;DH1CS&rdquo;</othername>
+        <othername>(DH1CS)</othername>
         <affiliation>
           <jobtitle>initial author</jobtitle>
           <address><email>cschmitt@users.sourceforge.net</email></address>
@@ -17,7 +17,7 @@
   </bookinfo>
 
   <chapter>
-    <title>about HamFax</title>
+    <title>About</title>
 
     <para>HamFax is an application for sending and receiving facsimilies in
     amateur radio. You can either use a sound card as interface to the
@@ -30,7 +30,7 @@
   </chapter>
 
   <chapter>
-    <title>general</title>
+    <title>Facsimiles</title>
 
     <para>Facsimiles are pictures which are transmitted line by line.
     The sending and receiving station have to agree on the
@@ -46,7 +46,7 @@
   </chapter>
 
   <chapter>
-    <title>short wave facsimiles</title> 
+    <title>Short Wave Facsimiles</title> 
 
     <figure float="1" id="example">
       <title>Example</title>
@@ -70,7 +70,7 @@
   </chapter>
 
   <chapter>
-    <title>weather satellites</title>
+    <title>Weather Satellites</title>
 
     <para>For receiving facsimiles from a weather satellite a suitable
     FM receiver is needed. The output of this receiver is a amplitude
@@ -79,10 +79,10 @@
   </chapter>
 
   <chapter>
-    <title>using HamFax</title>
+    <title>Using HamFax</title>
 
     <section>
-      <title>interface setup</title>
+      <title>Interface Setup</title>
 
       <para>You can either use a SCS PTC-II as modulator and
       demodulator or connect a sound card to your transceiver. For the
@@ -100,7 +100,7 @@
     </section>
 
     <section>
-      <title>receiving facsimiles</title>
+      <title>Receiving Facsimiles</title>
 
       <para>Set deviation, modulation apt start and stop frequencies,
       lpm, the type of phasing lines (normal or inverted) and the
@@ -120,7 +120,7 @@
     </section>
 
     <section>
-      <title>sending facsimiles</title>
+      <title>Sending Facsimiles</title>
 
       <para>Load the image from somewhere. Then set the control items
       to the desired values and scale the image to the desired IOC.
@@ -128,4 +128,42 @@
       the way.</para>
     </section>
   </chapter>
+
+  <appendix>
+    <title>References</title>
+    <refentry>
+      <refnamediv>
+        <refname>hamfax</refname>
+        <refpurpose>Send and receive radio facsimiles.</refpurpose>
+      </refnamediv>
+      <refsynopsisdiv>
+        <cmdsynopsis>
+          <command>hamfax</command>
+        </cmdsynopsis>
+      </refsynopsisdiv>
+      <refsect1>
+        <title>Options</title>
+
+        <para><command>hamfax</command> provides no special command
+        line options, but the ones inherited from the Qt toolkit and
+        from X11 apply.</para>
+
+      </refsect1>
+      <refsect1>
+        <title>Description</title>
+
+        <para><command>hamfax</command> is an application for sending
+        and receiving radio facsimile transmissions.</para>
+
+      </refsect1>
+      <refsect1>
+        <title>See also</title>
+
+        <para>User documentation is provided as docbook based manual.
+        It is available as html pages that can be viewed from within
+        the Qt GUI.</para>
+
+      </refsect1>
+    </refentry>
+  </appendix>
 </book>
