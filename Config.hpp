@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,6 +22,7 @@
 #include <qobject.h>
 #include <qmap.h>
 #include <qstring.h>
+#include <qfont.h>
 
 class Config : public QObject {
 	Q_OBJECT
@@ -76,6 +78,7 @@ public slots:
 	void setToolTip(bool b);
 	void setPtcSpeed(int s);
 	void setFilter(int n);
+	void setFont(QFont f);
 };
 
 #endif

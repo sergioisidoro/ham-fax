@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -17,10 +18,12 @@
 
 #include "FaxWindow.hpp"
 #include <qpopupmenu.h>
+#include <qapplication.h>
 #include <qfiledialog.h>
 #include <qstring.h>
 #include <qlayout.h>
 #include <qdatetime.h>
+#include <qfontdialog.h>
 #include <qimage.h>
 #include <qinputdialog.h>
 #include <qmenubar.h>
@@ -171,6 +174,7 @@ FaxWindow::FaxWindow(const QString& version)
 	optionsMenu=new QPopupMenu(this);
 	optionsMenu->insertItem(tr("device settings"),
 				optionsDialog,SLOT(doDialog()));
+	optionsMenu->insertItem(tr("select font"),this,SLOT(selectFont()));
 	optionsMenu->insertSeparator();
 	pttID=optionsMenu->
 		insertItem(tr("key PTT while transmitting with DSP"),
@@ -320,6 +324,8 @@ FaxWindow::FaxWindow(const QString& version)
 		ptc,SLOT(setSpeed(int)));
 	connect(optionsDialog,SIGNAL(ptcSpeed(int)),
 		config,SLOT(setPtcSpeed(int)));
+
+	connect(this,SIGNAL(fontSelected(QFont)),config,SLOT(setFont(QFont)));
 	
 	connect(config,SIGNAL(keyPTT(bool)),ptt,SLOT(setUse(bool)));
 	connect(config,SIGNAL(keyPTT(bool)),SLOT(setUsePTT(bool)));
@@ -809,5 +815,15 @@ void FaxWindow::scaleToIOC(void)
 					    ioc, 204, 576, 1, &ok, this );
 	if(ok) {
 		emit scaleToWidth(M_PI*newIOC);
+	}
+}
+
+void FaxWindow::selectFont(void)
+{
+	bool ok;
+	QFont f=QFontDialog::getFont(&ok,QApplication::font(),this);
+	if (ok) {
+		QApplication::setFont(f,true);
+		emit fontSelected(f);
 	}
 }

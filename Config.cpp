@@ -1,5 +1,6 @@
 // HamFax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
+// Copyright (C) 2001,2002
+// Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,6 +20,7 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qdir.h>
+#include <qapplication.h>
 
 Config::Config(QObject* parent)
 	: QObject(parent)
@@ -42,6 +44,7 @@ Config::Config(QObject* parent)
 	value["toolTip"]="1";
 	value["ptcSpeed"]="57600";
 	value["filter"]="1";
+	value["font"]=QApplication::font(0).rawName();
 }
 
 void Config::readFile(void)
@@ -75,7 +78,8 @@ void Config::readFile(void)
 				   key=="color" ||
 				   key=="toolTip" ||
 				   key=="ptcSpeed" ||
-				   key=="filter") {
+				   key=="filter" ||
+				   key=="font") {
 					value[key]=data;
 				}
 			};
@@ -101,6 +105,10 @@ void Config::readFile(void)
 	emit toolTip(value["toolTip"]=="1" ? true : false);
 	emit ptcSpeed(value["ptcSpeed"].toUInt());
 	emit filter(value["filter"].toInt());
+
+	QFont font;
+	font.setRawName(value["font"]);
+	QApplication::setFont(font,true);
 }
 
 Config::~Config(void)
@@ -285,4 +293,9 @@ void Config::setFilter(int n)
 		value["filter"]=QString().sprintf("%d",n);
 		emit filter(n);
 	}
+}
+
+void Config::setFont(QFont f)
+{
+	value["font"]=f.rawName();
 }
