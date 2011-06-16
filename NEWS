@@ -1,3 +1,8 @@
+HamFax 0.6.5
+ * Add hamfax.desktop for entry in desktop menu
+ * Fix build problems with newer GCC versions
+ * Use docbook for documentation
+
 HamFax 0.6.4
  * compilation with GCC 3.4 fixed
  * removed dependency to deprecated header
