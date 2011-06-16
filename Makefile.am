@@ -29,7 +29,7 @@ hamfax_SOURCES = \
         src/LookUpTable.hpp\
         src/hamfax.cpp
 
-hamfax_LDFLAGS = @QT_LIBS@
+LIBS+=@QT_LIBS@
 hamfax_CXXFLAGS = @QT_CXXFLAGS@ -Wall
 hamfax_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\"
 

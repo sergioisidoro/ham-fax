@@ -208,7 +208,7 @@ EOF
             echo "configure: could not compile:" >&AC_FD_CC
             cat bnv_qt_main.$ac_ext >&AC_FD_CC
           else
-            bnv_try_4="$CXX $QT_LIBS $LIBS -o bnv_qt_main bnv_qt_main.o moc_bnv_qt_test.o >/dev/null 2>bnv_qt_test_4.out"
+            bnv_try_4="$CXX -o bnv_qt_main bnv_qt_main.o moc_bnv_qt_test.o $QT_LIBS $LIBS >/dev/null 2>bnv_qt_test_4.out"
             AC_TRY_EVAL(bnv_try_4)
             bnv_err_4=`grep -v '^ *+' bnv_qt_test_4.out`
             if test x"$bnv_err_4" != x; then
@@ -379,8 +379,6 @@ AC_DEFUN([BNV_PATH_QT_DIRECT],
               # Succes.
               # We can link with no special library directory.
               bnv_qt_lib_dir=
-            ], [
-              # Leave bnv_qt_lib_dir defined
             ])
           ])
         ])
