@@ -66,6 +66,7 @@ EXTRA_DIST = po/hamfax_de.qm po/hamfax_de.ts doc/HamFax.html data/hamfax.desktop
 
 applicationsdir=$(datadir)/applications
 applications_DATA=data/hamfax.desktop
+dist_man_MANS=doc/hamfax.1
 
 po/hamfax_de.qm: po/hamfax_de.ts
 	$(LRELEASE) $< -qm $@
