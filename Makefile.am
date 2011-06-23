@@ -74,9 +74,6 @@ po/hamfax_de.qm: po/hamfax_de.ts
 .xml.html:
 	xmlto html-nochunks -o doc $<
 
-.xml.1:
-	xmlto man -o doc $<
-
 .xml.pdf:
 	xmlto pdf --extensions -o doc $<
 
