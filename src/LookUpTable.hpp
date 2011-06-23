@@ -61,7 +61,7 @@ template <class T> inline void LookUpTable<T>::setIncrement(size_t i)
 template <class T> inline T LookUpTable<T>::nextValue(void)
 {
 	next+=increment;
-	if(next>table_size) {
+	if(next >= table_size) {
 		next%=table_size;
 	}
 	return table[next];
