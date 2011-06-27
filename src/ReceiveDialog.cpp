@@ -25,7 +25,7 @@ ReceiveDialog::ReceiveDialog(QWidget* parent)
         setCaption(parent->caption());
 	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
 	layout->addWidget(status=new QLabel(this));
-	status->setMinimumWidth(200);
+	status->setMinimumWidth(300);
 	layout->addWidget(aptText=new QLabel(this));
 	layout->addWidget(level=new DisplayLevel(this));
 	layout->addWidget(spectrum=new Spectrum(this));

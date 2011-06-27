@@ -19,24 +19,18 @@
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <cmath>
+#include <cstring>
 
 Spectrum::Spectrum(QWidget* parent)
 	: QFrame(parent)
 {
 	setFrameStyle(QFrame::Panel|QFrame::Sunken);
 	setMargin(2);
-	setFixedSize(128+2*margin(),64+2*margin());
+	setFixedSize(260+2*margin(),126+2*margin());
 	pixmap=new QPixmap(width()-2*margin(),height()-2*margin());
 	QPainter paint(pixmap,this);
 	paint.eraseRect(0,0,width(),height());
 	paint.flush();
-}
-
-void Spectrum::init(void)
-{
-	for(int i=0; i<64; i++) {
-		data[i]=0;
-	}
 }
 
 void Spectrum::paintEvent(QPaintEvent* e)
@@ -46,28 +40,64 @@ void Spectrum::paintEvent(QPaintEvent* e)
 	       width()-2*margin(),height()-2*margin());
 }
 
+
+static void draw_spectrum_line(int y, QPainter& paint,
+			       const double *const data, const int buf_size)
+{
+	int from_x = 2;
+	int from_y = y - 1;
+
+	for (int i = 0; i < buf_size; i++) {
+		int to_y = y - data[i];
+		int to_x = i + 2;
+
+		paint.drawLine(from_x, from_y, to_x , to_y);
+		from_x = to_x;
+		from_y = to_y;
+	}
+}
+
+static void draw_scale_lines(int step, int y, QPainter& paint)
+{
+	for (int x = 2; x < 254; x += step)
+		paint.drawLine(x, 95, x, y);
+}
+
 void Spectrum::samples(int* buffer, int n)
 {
-	for(int i=0; i<64; i++) {
-		data[i]=0;
+	const int buf_size = 256;
+	double data[buf_size]; // spectrum from 0 (black) to buf_size (white)
+
+	std::memset(data, 0, sizeof(data));
+
+	// fill buffer with histogram data
+	for (int i = 0; i<n; i++) {
+		data[buffer[i]]++;
 	}
-	for(int i=0; i<n; i++) {
-		data[buffer[i]/4]++;
+
+	// normalize data
+	for (int i = 0; i < buf_size; i++) {
+		data[i] = 1024.0 * data[i] / n;
+		data[i] = std::min(data[i], 93.0);
+		data[i] = std::max(data[i], 0.0);
 	}
-	for(int i=0; i<64; i++) {
-		data[i]=data[i]*128.0/n+1;
-		data[i]=std::log(data[i])*32.0;
-		if(data[i]>127) {
-			data[i]=127;
-		}
-	}
-	QPainter paint(pixmap,this);
-	paint.eraseRect(0,0,width(),height());
-	paint.setPen(Qt::blue);
-	paint.setBrush(Qt::blue);
-	for(int i=0; i<64; i++) {
-		paint.drawRect(i*2,128-data[i],2,data[i]);
-	}
+
+	QPainter paint(pixmap, this);
+	paint.eraseRect(0, 0, width(),height());
+	paint.setPen(Qt::black);
+
+	// draw scale "black to white"
+	paint.drawLine(2, 95, 254, 95);
+	paint.drawText(6, 115, tr("B"));
+	paint.drawText(236, 115, tr("W"));
+	draw_scale_lines(25, 104, paint);
+	draw_scale_lines(5, 99, paint);
+
+	// and finally the spectrum itself
+	draw_spectrum_line(95, paint, data, buf_size);;
+	paint.setPen(Qt::gray);
+	draw_spectrum_line(94, paint, data, buf_size);
+
 	paint.flush();
 	update();
 }

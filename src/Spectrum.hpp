@@ -28,9 +28,7 @@ public:
 private:
 	virtual void paintEvent(QPaintEvent* e);
 	QPixmap* pixmap;
-	double data[64];
 public slots:
-        void init(void);
         void samples(int* buffer, int n);
 };
 
