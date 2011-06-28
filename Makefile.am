@@ -57,18 +57,19 @@ moc_%.cpp: %.hpp
 	$(QT_MOC) $< -o $@
 
 if USE_LRELEASE
-TRANSLATION = po/hamfax_de.qm
+TRANSLATION = po/hamfax_de.qm po/hamfax_fr.qm
 endif
 
 pkgdata_DATA = doc/HamFax.html $(TRANSLATION)
 
-EXTRA_DIST = po/hamfax_de.qm po/hamfax_de.ts doc/HamFax.html data/hamfax.desktop
+EXTRA_DIST = po/hamfax_de.qm po/hamfax_de.ts po/hamfax_fr.qm po/hamfax_ft.ts \
+	     doc/HamFax.html data/hamfax.desktop
 
 applicationsdir=$(datadir)/applications
 applications_DATA=data/hamfax.desktop
 dist_man_MANS=doc/hamfax.1
 
-po/hamfax_de.qm: po/hamfax_de.ts
+.ts.qm:
 	$(LRELEASE) $< -qm $@
 
 .xml.html:
