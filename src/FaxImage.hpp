@@ -32,7 +32,7 @@ public:
 	int getCols(void);
 	int getPixel(int col, int row, int rgbg);
 	void load(QString fileName);
-	void save(QString fileName);
+	bool save(QString fileName);
 private:
 	void drawContents(QPainter* p, int x,int y,int w,int h);
 	virtual void contentsMousePressEvent(QMouseEvent* m);

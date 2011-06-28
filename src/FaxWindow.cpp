@@ -465,7 +465,11 @@ void FaxWindow::save(void)
 	QString filter="*."+QImage::outputFormatList().join(" *.").lower();
 	QString name=QFileDialog::getSaveFileName(".",filter,this,0,caption());
 	if(!name.isEmpty()) {
-		faxImage->save(name);
+		bool result = faxImage->save(name);
+		if (result == false)
+			QMessageBox::warning(this, caption(),
+				tr("Could not save to file '%1'.").arg(name),
+				QMessageBox::Ok, QMessageBox::NoButton);
 	}
 }
 

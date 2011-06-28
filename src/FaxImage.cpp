@@ -126,15 +126,28 @@ void FaxImage::load(QString fileName)
 	emit newImage();
 }
 
-void FaxImage::save(QString fileName)
+bool FaxImage::save(QString fileName)
 {
-	int n=fileName.find('.');
-	if(n!=-1) {
-		QString handler=fileName.right(fileName.length()-n-1).upper();
-		if(QImageIO::outputFormats().contains(handler)) {
-			image.save(fileName,handler);
-		}
+	QString handler;
+	int n = fileName.findRev('.');
+
+	if(n != -1) {
+		QString ext = fileName.right(fileName.length() - n - 1).upper();
+		if(QImageIO::outputFormats().contains(ext))
+			handler = ext;
 	}
+
+	// No valid extension in file name. Try PNG as default, if supported
+	// by current Qt library.
+	if (!handler && QImageIO::outputFormats().contains("PNG")) { 
+		fileName.append(".png");
+		handler = "PNG";
+	}
+
+	if (!handler)
+		return false;
+
+	return image.save(fileName,handler);
 }
 
 void FaxImage::scale(int width, int height)
