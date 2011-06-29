@@ -334,7 +334,7 @@ void FaxWindow::endTransmission(void)
 	switch(interface) {
 	case FILE:
 		file->end();
-		disconnect(sound,SIGNAL(spaceLeft(int)),
+		disconnect(file, SIGNAL(next(int)),
 			   faxTransmitter,SLOT(doNext(int)));
 		disconnect(faxTransmitter, SIGNAL(data(double*, int)),
 			   faxModulator, SLOT(modulate(double*, int)));
