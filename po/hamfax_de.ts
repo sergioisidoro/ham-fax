@@ -107,24 +107,12 @@ zu Beginn der Übertragung</translation>
         <translation>von &amp;PTC</translation>
     </message>
     <message>
-        <source>input file name</source>
-        <translation>zu ladende Datei</translation>
-    </message>
-    <message>
-        <source>output file name</source>
-        <translation>Ausgabedatei</translation>
-    </message>
-    <message>
         <source>inverted</source>
         <translation>invertiert</translation>
     </message>
     <message>
         <source>redraw as mono facsimile</source>
         <translation>als S/W-Faksimile neuzeichnen</translation>
-    </message>
-    <message>
-        <source>load image</source>
-        <translation>Bild laden</translation>
     </message>
     <message>
         <source>normal means 2.5% white, 95% black
@@ -171,10 +159,6 @@ and again 2.5% white</source>
     <message>
         <source>apt stop</source>
         <translation>APT-Stop</translation>
-    </message>
-    <message>
-        <source>save image</source>
-        <translation>Bild speichern</translation>
     </message>
     <message>
         <source>redraw as color facsimile</source>
@@ -264,7 +248,7 @@ Version: %1</translation>
     </message>
     <message>
         <source>select second point of vertical line</source>
-        <translation>zweiten Punkt auf vertikaler Linux auswählen</translation>
+        <translation>zweiten Punkt auf vertikaler Linie auswählen</translation>
     </message>
     <message>
         <source>modulation</source>
@@ -341,6 +325,30 @@ Bildbreite in Pixeln dividiert durch PI</translation>
         <source>phasing lines</source>
         <translation>Synchronisationszeilen</translation>
     </message>
+    <message>
+        <source>Hz</source>
+        <translation>Hz</translation>
+    </message>
+    <message>
+        <source>AM</source>
+        <translation>AM</translation>
+    </message>
+    <message>
+        <source>FM</source>
+        <translation>FM</translation>
+    </message>
+    <message>
+        <source>s</source>
+        <translation>s</translation>
+    </message>
+    <message>
+        <source>normal</source>
+        <translation>normal</translation>
+    </message>
+    <message>
+        <source>Could not save to file &apos;%1&apos;.</source>
+        <translation>Bild konnte nicht in Datei &apos;%1&apos; gespeichert werden.</translation>
+    </message>
 </context>
 <context>
     <name>File</name>
@@ -389,6 +397,22 @@ Bildbreite in Pixeln dividiert durch PI</translation>
     <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Abbrechen</translation>
+    </message>
+    <message>
+        <source>38400bps</source>
+        <translation>38400bps</translation>
+    </message>
+    <message>
+        <source>57600bps</source>
+        <translation>57600bps</translation>
+    </message>
+    <message>
+        <source>115200bps</source>
+        <translation>115200bps</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -447,6 +471,17 @@ Bildbreite in Pixeln dividiert durch PI</translation>
     <message>
         <source>could not set mono mode</source>
         <translation>Mono-Modues konnte nicht eingestellt werden</translation>
+    </message>
+</context>
+<context>
+    <name>Spectrum</name>
+    <message>
+        <source>B</source>
+        <translation>S</translation>
+    </message>
+    <message>
+        <source>W</source>
+        <translation>W</translation>
     </message>
 </context>
 <context>
