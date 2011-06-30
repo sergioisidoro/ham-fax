@@ -63,13 +63,20 @@
 {
 	const QString version(PACKAGE_STRING);
 	Config& config=config.instance();
-
-	QTranslator translator(0);
-	translator.load(QString("hamfax_")+QTextCodec::locale(),
-			config.readEntry("/hamfax/directories/qm"));
-
 	QApplication app(argc, argv);
-	app.installTranslator(&translator);
+
+	// translation file for Qt (e.g. file open/save dialog)
+	QTranslator qt_trans(0);
+	qt_trans.load(QString( "qt_" ) + QTextCodec::locale(),
+		qInstallPathTranslations());
+	app.installTranslator(&qt_trans);
+
+	// translation file for hamfax strings
+	QTranslator hamfax_trans(0);
+	hamfax_trans.load(QString("hamfax_") + QTextCodec::locale(),
+			  config.readEntry("/hamfax/directories/qm"));
+	app.installTranslator(&hamfax_trans);
+
 	FaxWindow* faxWindow=new FaxWindow(version);
 	QFont f;
 	f.fromString(config.readEntry("/hamfax/GUI/font"));
