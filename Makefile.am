@@ -57,7 +57,14 @@ moc_%.cpp: %.hpp
 	$(QT_MOC) $< -o $@
 
 if USE_LRELEASE
+
 TRANSLATION = po/hamfax_de.qm po/hamfax_fr.qm
+
+# helper target for updating translation files
+lupdate: $(hamfax_SOURCES)
+	lupdate $(hamfax_SOURCES) -ts po/hamfax_de.ts
+	lupdate $(hamfax_SOURCES) -ts po/hamfax_fr.ts
+
 endif
 
 pkgdata_DATA = doc/HamFax.html $(TRANSLATION)
