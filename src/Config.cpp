@@ -29,7 +29,7 @@ Config::Config()
 {
 	insertSearchPath( QSettings::Unix, "/etc" );
 
-	setDefault("/hamfax/sound/device","/dev/dsp");
+	setDefault("/hamfax/sound/device","ALSA:default");
 	setDefault("/hamfax/PTC/device","/dev/ttyS0");
 	setDefault("/hamfax/PTC/speed",38400);
 	setDefault("/hamfax/PTT/device","/dev/ttyS1");

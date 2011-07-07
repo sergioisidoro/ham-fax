@@ -26,8 +26,12 @@
 
 #include <qobject.h>
 #include <qstring.h>
+#include <qthread.h>
 #include <qsocketnotifier.h>
 #include "PTT.hpp"
+
+#define ALSA_PCM_NEW_HW_PARAMS_API
+#include <alsa/asoundlib.h>
 
 class Sound : public QObject {
 	Q_OBJECT
@@ -38,9 +42,25 @@ public:
 	int startInput(void);
 private:
 	int sampleRate;
+	int use_alsa;
+	snd_pcm_t *pcm;
+#ifdef QT_THREAD_SUPPORT
+	QThread   *xfer_thread;
+#else
+	int	  callbackSocket[2];
+#endif
+	snd_async_handler_t *handler;
+	snd_pcm_uframes_t frames;
+	int		  framesize;
+	short		  *buffer;
 	int dsp;
 	QSocketNotifier* notifier;
 	PTT ptt;
+
+	static void ALSA_read_callback(snd_async_handler_t *handler);
+	static void ALSA_write_callback(snd_async_handler_t *handler);
+	bool readALSAdata();
+	
 signals:
         void data(short*, int);
 	void deviceClosed(void);
@@ -50,8 +70,9 @@ public slots:
 	void end(void);
 	void write(short* samples, int number);
 private slots:
-        void read(int fd);
 	void checkSpace(int fd);
+        void read(int fd);
+        void readALSA(int fd);
 	void close(void);
 };
 
