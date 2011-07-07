@@ -26,9 +26,6 @@
 #include "Config.hpp"
 #include "Error.hpp"
 
-#define ALSA_PCM_NEW_HW_PARAMS_API
-#include <alsa/asoundlib.h>
-
 #ifdef QT_THREAD_SUPPORT
 // If QT was built with thread support, we can do things
 // a little differently (better)
@@ -72,11 +69,13 @@ void TransferThread::run()
 Sound::Sound(QObject* parent)
 	: QObject(parent), sampleRate(8000), 
 	  use_alsa(1),
-	  pcm(NULL),
+#ifdef USE_ALSA
+	  pcm(NULL), handler(NULL), frames(512), framesize(sizeof(short)),
+	  buffer(NULL),
+#endif
 #ifdef HF_QT_THREAD
 	  xfer_thread(NULL),
 #endif
-	  handler(NULL), frames(512), framesize(sizeof(short)), buffer(NULL),
 	  dsp(-1), notifier(0)
 {
 }
@@ -95,6 +94,7 @@ Sound::~Sound(void)
 	if(dsp!=-1) {
 		::close(dsp);
 	}
+#ifdef USE_ALSA
 	if (pcm) {
 		snd_pcm_drain(pcm);
 		snd_pcm_close(pcm);
@@ -104,9 +104,11 @@ Sound::~Sound(void)
 	   free(buffer);
 	   buffer=NULL;
 	}
+#endif
 }
 
 
+#ifdef USE_ALSA
 /*
    A couple of functions to turn ALSA callbacks into:
    No QThreads: socket activity which is picked up by a QSocketNotifier
@@ -134,7 +136,7 @@ void Sound::ALSA_read_callback(snd_async_handler_t *handler)
   ::write(sound->callbackSocket[0], &a, sizeof(a));
 #endif
 }
-
+#endif /* USE_ALSA */
 
 int Sound::startOutput(void)
 {
@@ -151,6 +153,7 @@ int Sound::startOutput(void)
 	        use_alsa=0;
 	     }
 
+#ifdef USE_ALSA
 	     if (use_alsa) {
 	        snd_pcm_hw_params_t *hwparams=NULL;
 	        snd_pcm_sw_params_t *swparams=NULL;
@@ -221,6 +224,7 @@ int Sound::startOutput(void)
 		snd_async_add_pcm_handler(&handler, pcm, ALSA_write_callback, this);
 		//snd_pcm_start(pcm);
 	     } else {
+#endif /* USE_ALSA */
 		
 		if((dsp=open(devDSPName,O_WRONLY|O_NONBLOCK))==-1) {
 			throw Error(tr("could not open dsp device"));
@@ -244,7 +248,9 @@ int Sound::startOutput(void)
 		connect(notifier,SIGNAL(activated(int)),
 			this,SLOT(checkSpace(int)));
 		ptt.set();
+#ifdef USE_ALSA
 	     }
+#endif /* USE_ALSA */
 	} catch(Error) {
 		close();
 		throw;
@@ -268,6 +274,7 @@ int Sound::startInput(void)
 	        use_alsa=0;
 	     }
 			
+#ifdef USE_ALSA
 	     if (use_alsa) {
 	        snd_pcm_hw_params_t *hwparams=NULL;
 	        snd_pcm_sw_params_t *swparams=NULL;
@@ -354,6 +361,7 @@ int Sound::startInput(void)
 		snd_pcm_start(pcm);
 		
 	     } else {
+#endif /* USE_ALSA */
 		if((dsp=open(devDSPName,O_RDONLY|O_NONBLOCK))==-1) {
 			throw Error(tr("could not open dsp device"));
 		}
@@ -375,7 +383,9 @@ int Sound::startInput(void)
 		}
 		notifier=new QSocketNotifier(dsp,QSocketNotifier::Read,this);
 		connect(notifier,SIGNAL(activated(int)),SLOT(read(int)));
+#ifdef USE_ALSA
 	     }
+#endif /* USE_ALSA */
 	} catch(Error) {
 		close();
 		throw;
@@ -385,7 +395,9 @@ int Sound::startInput(void)
 
 void Sound::end(void)
 {
+#ifdef USE_ALSA
 	if (pcm) snd_pcm_drain(pcm);
+#endif /* USE_ALSA */
 	
 	if(notifier) {
 		notifier->setEnabled(false);
@@ -420,6 +432,7 @@ void Sound::write(short* samples, int number)
 			}
 			notifier->setEnabled(true);
 		}
+#ifdef USE_ALSA
 		if (pcm) {
 #ifndef HF_QT_THREAD
 			notifier->setEnabled(false);
@@ -441,6 +454,7 @@ void Sound::write(short* samples, int number)
 			notifier->setEnabled(true);
 #endif
 		}
+#endif /* USE_ALSA */
 	} catch(Error) {
 		close();
 	}
@@ -456,7 +470,7 @@ void Sound::read(int fd)
 	}
 }
 
-
+#ifdef USE_ALSA
 // stub for when using non-threaded approach
 void Sound::readALSA(int fd)
 {
@@ -465,7 +479,12 @@ void Sound::readALSA(int fd)
   //while (readALSAdata());
   readALSAdata();
 }
+#else /* USE_ALSA */
+// empty stub since it cannot be ifdef'ed in the hpp file
+void Sound::readALSA(int fd) { }
+#endif /* USE_ALSA */
 
+#ifdef USE_ALSA
 bool Sound::readALSAdata()
 {
 	int n;
@@ -494,16 +513,20 @@ bool Sound::readALSAdata()
 	}
 	return (n>0 && n<=(int)frames);;
 }
+#endif /* USE_ALSA */
 
 void Sound::checkSpace(int fd)
 {
+#ifdef USE_ALSA
 	if (pcm) {
 #ifndef HF_QT_THREAD
 	  char tmp;
 	  ::read(callbackSocket[1], &tmp, sizeof(tmp));
 #endif
 	  emit spaceLeft(snd_pcm_avail_update(pcm));
-	} else if (dsp!=-1) {
+	} else 
+#endif /* USE_ALSA */
+	if (dsp!=-1) {
 	  audio_buf_info info;
 	  ioctl(fd,SNDCTL_DSP_GETOSPACE,&info);
 	  emit spaceLeft(info.bytes/sizeof(short));
@@ -519,6 +542,7 @@ void Sound::close(void)
 	   ::close(dsp);
 	   dsp=-1;
 	}
+#ifdef USE_ALSA
 	if (pcm) {
 	   snd_pcm_drop(pcm);
 	   if (handler) {
@@ -528,7 +552,6 @@ void Sound::close(void)
 	   snd_pcm_close(pcm);
 	   pcm=NULL;
 	}
-
 #ifdef HF_QT_THREAD
 	if (xfer_thread) {
 		xfer_thread->quit=1;
@@ -545,6 +568,7 @@ void Sound::close(void)
 	   free(buffer);
 	   buffer=NULL;
 	}
+#endif /* USE_ALSA */
 
 	emit deviceClosed();
 	ptt.release();
@@ -558,7 +582,12 @@ void Sound::closeNow(void)
 		delete notifier;
 		notifier=NULL;
 	}
-	if (dsp!=-1 || pcm) {
+	if (dsp!=-1) {
 		close();
+		return;
 	}
+#ifdef USE_ALSA
+	if (pcm)
+		close();
+#endif /* USE_ALSA */
 }

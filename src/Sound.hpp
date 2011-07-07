@@ -29,9 +29,12 @@
 #include <qthread.h>
 #include <qsocketnotifier.h>
 #include "PTT.hpp"
+#include "config.h"
 
+#ifdef USE_ALSA
 #define ALSA_PCM_NEW_HW_PARAMS_API
 #include <alsa/asoundlib.h>
+#endif
 
 class Sound : public QObject {
 	Q_OBJECT
@@ -43,24 +46,24 @@ public:
 private:
 	int sampleRate;
 	int use_alsa;
+#ifdef USE_ALSA
 	snd_pcm_t *pcm;
+	snd_async_handler_t *handler;
+	snd_pcm_uframes_t frames;
+	static void ALSA_read_callback(snd_async_handler_t *handler);
+	static void ALSA_write_callback(snd_async_handler_t *handler);
+	bool readALSAdata();
+	int		  framesize;
+	short		  *buffer;
+#endif
 #ifdef QT_THREAD_SUPPORT
 	QThread   *xfer_thread;
 #else
 	int	  callbackSocket[2];
 #endif
-	snd_async_handler_t *handler;
-	snd_pcm_uframes_t frames;
-	int		  framesize;
-	short		  *buffer;
 	int dsp;
 	QSocketNotifier* notifier;
 	PTT ptt;
-
-	static void ALSA_read_callback(snd_async_handler_t *handler);
-	static void ALSA_write_callback(snd_async_handler_t *handler);
-	bool readALSAdata();
-	
 signals:
         void data(short*, int);
 	void deviceClosed(void);
@@ -72,6 +75,7 @@ public slots:
 private slots:
 	void checkSpace(int fd);
         void read(int fd);
+	// readALSA should be ifdef'ed, but this does not work with moc
         void readALSA(int fd);
 	void close(void);
 };
