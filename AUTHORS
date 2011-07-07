@@ -5,3 +5,9 @@ Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 Jean-michel Dechamps <jean-michel-62@orange.fr>
 * Improvement of spectrum analyzer
 * French translation
+
+Mike Nix <mnix@wanm.com.au>
+* ALSA support
+
+Remi Chateauneu <remi.chateauneu@gmail.com>
+* hamlib support
