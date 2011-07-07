@@ -87,3 +87,6 @@ Things to do sometime:
 - save ioc in config
 
 - allow slant correction while reception is still running
+
+- Sound: Get user defined sample rate from Config/OptionsDialog instead of
+  environment file
