@@ -24,6 +24,8 @@
 #include <qlineedit.h>
 #include <qcombobox.h>
 
+#include "config.h"
+
 class OptionsDialog : public QDialog {
 	Q_OBJECT
 public:
@@ -33,6 +35,10 @@ private:
 	QLineEdit* devPTT;
 	QLineEdit* devPTC;
 	QComboBox* speedPTC;
+#ifdef HAVE_LIBHAMLIB
+	QLineEdit* hamlibModel;
+	QLineEdit* hamlibParams;
+#endif
 private slots:
         void okClicked(void);
 	void cancelClicked(void);

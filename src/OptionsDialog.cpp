@@ -21,6 +21,7 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
+#include "config.h"
 
 OptionsDialog::OptionsDialog(QWidget* parent)
 	: QDialog(parent,0,true)
@@ -55,6 +56,16 @@ OptionsDialog::OptionsDialog(QWidget* parent)
 	};
 	speedPTC->setCurrentItem(i);
 
+#ifdef HAVE_LIBHAMLIB
+	settings->addWidget(new QLabel(tr("hamlib model number"),this),5,1);
+	settings->addWidget(hamlibModel=new QLineEdit(this),5,2);
+	hamlibModel->setText(c.readEntry("/hamfax/HAMLIB/hamlib_model"));
+
+	settings->addWidget(new QLabel(tr("hamlib optional parameters"),this),6,1);
+	settings->addWidget(hamlibParams=new QLineEdit(this),6,2);
+	hamlibParams->setText(c.readEntry("/hamfax/HAMLIB/hamlib_parameters"));
+#endif
+
 	QHBoxLayout* buttons=new QHBoxLayout(layout);
 	QPushButton* ok=new QPushButton(tr("&OK"),this);
 	buttons->addWidget(ok);
@@ -79,6 +90,10 @@ void OptionsDialog::okClicked(void)
 	c.writeEntry("/hamfax/PTC/device",devPTC->text());
 	c.writeEntry("/hamfax/sound/device",devDSP->text());
 	c.writeEntry("/hamfax/PTT/device",devPTT->text());
+#ifdef HAVE_LIBHAMLIB
+	c.writeEntry("/hamfax/HAMLIB/hamlib_model",hamlibModel->text());
+	c.writeEntry("/hamfax/HAMLIB/hamlib_parameters",hamlibParams->text());
+#endif
 }
 
 void OptionsDialog::cancelClicked(void)

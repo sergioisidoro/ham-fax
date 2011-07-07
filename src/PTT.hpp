@@ -19,8 +19,13 @@
 #ifndef PTT_HPP
 #define PTT_HPP
 
+#include "config.h"
 #include <qstring.h>
 #include <qfile.h>
+
+#ifdef HAVE_LIBHAMLIB
+#include <hamlib/rig.h>
+#endif
 
 class PTT {
 public:
@@ -29,6 +34,13 @@ public:
 	void release(void);
 private:
 	QFile device;
+#ifdef HAVE_LIBHAMLIB
+        bool hamlibInit(void);
+        void hamlibClose(void);
+	void hamlibSetPtt(ptt_t aPtt);
+	RIG  *hamlibRigPtr;
+#endif
+
 };
 
 #endif

@@ -48,6 +48,8 @@ AH_TEMPLATE(USE_ALSA, [Build with support for Advanced Linux Sound System (ALSA)
 AC_CHECK_HEADER(alsa/asoundlib.h, [AC_DEFINE(USE_ALSA) USE_ALSA="1" LIBS="$LIBS -lasound"])
 AM_CONDITIONAL(USE_ALSA, test x$USE_ALSA = x1)
 
+AC_CHECK_LIB(hamlib,rigerror)
+
 AH_TEMPLATE(USE_PTC, [Build with support for the PTC-II])
 AC_SYS_POSIX_TERMIOS
 AM_CONDITIONAL(USE_PTC, test x$am_cv_sys_posix_termios = xyes)
