@@ -1,30 +1,89 @@
-First of all:
-- change internal code layout (class and object structure, ...);
-   the current one is not very nice for making changes
+Things to do sometime:
 
-Little fixes and easy features:
+- ALSA: remove QT_THREAD ifdefs from ALSA code: a single thread makes things much
+  simpler, and the QT_THREAD parts are "untested" anyway
+
+- ALSA: Move ALSA code to a new class, e.g. SoundAlsa and only have OSS code in
+  the class Sound
+
+- ALSA: remove the socket and use the snd_pcm_poll_descriptors interface
+  instead, as it is done for OSS.
+
+- hamlib: Move hamlib code to new file, e.g. PttHamlib
+
+- hamlib/PTT: Implement abstract interface for calling into e.g. PttSerial and
+  PttHamlib
+
+- Qt: Update to use Qt4
+
+- build: Implement build with CMake
+
+- Config: change config readEntry/writeEntry, so that caller does not have to put
+  /hamfax/ every time.
+
+- I18N: gettext for translations, instead of QObject::tr(). This avoids using
+  QObject in every file.
+
+- sf feat #774129 "Receive from wav files": Maybe implement a new FileLibsnd
+  interface using libsndfile to allow different file formats:
+  http://www.mega-nerd.com/libsndfile/
+
+- sf feat #2789642 "Command-line mode for sending/receiving images without GUI"
+
 - use correct types (size_t, ssize_t, ...)
-- possibility for selecting available input/output
+
+- possibility for selecting desired input/output options (reduce number of menu
+  entries)
+
 - menu for some "standard modes"
+
 - add slider to dialogs for selecting ioc
-- frequency / brightness scale for spectrum
+
 - switch for deciding whether to wait for apt start (and stop?)
 
-to do:
-- documentation
+- improve user documentation
+
 - test AM
-- real "on air test"
-- switch for deciding whether to determine the lpm from phasing
+
+- add switch for deciding whether to determine the lpm from phasing
    lines or use a fixed value; adding a control for rx lpm
+
 - possibility for changing lpm after reception to specific value
    (slant correction does this implicitly)
+
 - correct beginning of line out of stored samples
    (necessary for correction of color facsimile)
-- possibility for permanent slant correction
-- some kind of preview while decoding apt and phasing lines
 
-Features for the far future: (HamFax2; is anyone interested?)
+- possibility for permanent slant correction
+
+- some sort of preview while decoding apt and phasing lines
+
 - CW id before and after transmission
+
 - automatic reception (perhaps a background/daemon process doing the work)
+
 - setting the frequency on the transceiver, perhaps having a daemon process
    (have a look at hamlib)
+
+- rewrite backend functions (e.g. encoder/decoder) in C to reuse, e.g. in cli
+
+- change name from CamelCase HamFax to lowercase hamfax everywhere
+
+- implement abstract base class for Sound, File and Ptc (see e.g. void
+  FaxWindow::endTransmission(void))
+
+- implement and test meteosat support
+
+- enumerate alsa devices with int snd_device_name_hint for OptionDialog
+
+- update Doxygen docu and create proper document
+
+- implement optional stop after n lines, in case apt stop signal does not work
+
+- save slant correction in config file
+
+- implement variable sample rate
+
+- save ioc in config
+
+- allow slant correction while reception is still running
