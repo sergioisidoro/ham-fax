@@ -43,6 +43,9 @@ void FaxTransmitter::start(int sampleRate)
 
 void FaxTransmitter::doNext(int n)
 {
+	// maximum number of samples to avoid stack overrun
+	n = std::min(n, 1024);
+
 	double lineSamples=60.0*sampleRate/lpm;
 	double buf[n];
 	for(int i=0; i<n; i++) {
