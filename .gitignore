@@ -1,0 +1,25 @@
+# Qt message and meta object files
+po/*.qm
+src/moc_*
+
+# automake, autoconf, ...
+src/.deps/
+src/.dirstamp
+src/config.h
+src/config.h.in
+src/stamp-h1
+install-sh
+missing
+INSTALL
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache/
+config.log
+config.status
+configure
+depcomp
+
+# binaries
+src/*.o
+hamfax
