@@ -64,6 +64,7 @@ private:
 	int dsp;
 	QSocketNotifier* notifier;
 	PTT ptt;
+	int rateF;
 signals:
         void data(short*, int);
 	void deviceClosed(void);

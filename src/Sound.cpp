@@ -17,6 +17,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Sound.hpp"
+#include <stdlib.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -76,8 +77,19 @@ Sound::Sound(QObject* parent)
 #ifdef HF_QT_THREAD
 	  xfer_thread(NULL),
 #endif
-	  dsp(-1), notifier(0)
+	  dsp(-1), notifier(0), rateF(1)
 {
+	char *pszSr = getenv("DEF_RATE");
+	int nsr; 
+
+	if (pszSr && sscanf (pszSr, "%d", &nsr) == 1) {
+
+		sampleRate = nsr;
+
+		rateF = sampleRate / 8000;
+
+		printf("New sample rate: %d rate: %d\n", sampleRate, rateF);
+	}
 }
 
 Sound::~Sound(void)
@@ -383,6 +395,10 @@ int Sound::startInput(void)
 		}
 		notifier=new QSocketNotifier(dsp,QSocketNotifier::Read,this);
 		connect(notifier,SIGNAL(activated(int)),SLOT(read(int)));
+
+		// trigger the file descriptor reads
+		read (dsp);
+
 #ifdef USE_ALSA
 	     }
 #endif /* USE_ALSA */
@@ -462,12 +478,38 @@ void Sound::write(short* samples, int number)
 
 void Sound::read(int fd)
 {
-	const int max=256;
-	short buffer[max];
-	int n=::read(fd,buffer,max*sizeof(short))/sizeof(short);
-	if(n>0 && n<=max) {
-		emit data(buffer,n);
-	}
+    #define RX_BUF (BUFSIZ*8) 
+	short buffer [RX_BUF];
+    short usbuf  [RX_BUF/2];
+
+    int n=::read (fd, buffer, sizeof(buffer));
+
+    if ( n > 0 ) {
+
+        #if 0
+        int i;
+        int ns = n / 2;  // # of shorts !!!
+        int j;
+
+        //for (i=0; i < n; ++i) {
+        //    printf("i=%d, value=%d ", i, (int)buffer[j]);
+        //}
+        
+
+        // copy the even short only !!!
+        for (i = 0, j=0; i < ns; i++) {
+            if ( (i % 2) == 0 ) {
+                usbuf[j] = buffer [i];
+                //printf("i=%d, j=%d, value=%d ", i, j, (int)usbuf[j]);
+                j++;
+            }
+        }
+        //printf("READ: %d\n", i);
+        emit data ( usbuf, j);
+        #else
+        emit data ( buffer, n / sizeof(short));
+        #endif
+    }
 }
 
 #ifdef USE_ALSA
