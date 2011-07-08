@@ -414,6 +414,14 @@ Bildbreite in Pixeln dividiert durch PI</translation>
         <source>&amp;OK</source>
         <translation>OK</translation>
     </message>
+    <message>
+        <source>hamlib model number</source>
+        <translation>Modell-Nummer für hamlib</translation>
+    </message>
+    <message>
+        <source>hamlib optional parameters</source>
+        <translation>Optionale Parameter für hamlib</translation>
+    </message>
 </context>
 <context>
     <name>ReceiveDialog</name>
@@ -471,6 +479,14 @@ Bildbreite in Pixeln dividiert durch PI</translation>
     <message>
         <source>could not set mono mode</source>
         <translation>Mono-Modues konnte nicht eingestellt werden</translation>
+    </message>
+    <message>
+        <source>could not open ALSA sound device</source>
+        <translation>ALSA-Gerätedatei konnte nicht geöffnet werden</translation>
+    </message>
+    <message>
+        <source>could not open ALSA:default</source>
+        <translation>ALSA:default konnte nicht geöffnet werden.</translation>
     </message>
 </context>
 <context>
