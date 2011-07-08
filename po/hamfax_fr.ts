@@ -14,7 +14,7 @@
     </message>
     <message>
         <source>mono</source>
-        <translation>Mono</translation>
+        <translation>monochrome</translation>
     </message>
     <message>
         <source>wide</source>
@@ -22,7 +22,7 @@
     </message>
     <message>
         <source>&amp;Exit</source>
-        <translation>&amp;Sortie</translation>
+        <translation>&amp;Sortir</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -42,23 +42,15 @@
     </message>
     <message>
         <source>device settings</source>
-        <translation>&amp;Réglages périphérique</translation>
+        <translation>&amp;Réglages des périphérique</translation>
     </message>
     <message>
         <source>color</source>
         <translation>couleur</translation>
     </message>
     <message>
-        <source>length of the black/white pattern at the end of a facsimile</source>
-        <translation>Longueur des motifs noirs et blancs à la fin d'un fax</translation>
-    </message>
-    <message>
         <source>automatic scroll to last received line</source>
         <translation>Défilement automatique à la dernière ligne reçue</translation>
-    </message>
-    <message>
-        <source>phasing lines mark the beginning of a line and the speed (lpm)</source>
-        <translation>Les lignes de synchro déterminent le début des lignes et la vitesse en LPM</translation>
     </message>
     <message>
         <source>modulation settings</source>
@@ -66,23 +58,15 @@
     </message>
     <message>
         <source>Please enter IOC</source>
-        <translation>Entrez l'index d'alignement (IOC): </translation>
+        <translation>Entrez l&apos;index d&apos;alignement (IOC): </translation>
     </message>
     <message>
         <source>&amp;Image</source>
-        <translation>&amp;Imaqes</translation>
-    </message>
-    <message>
-        <source>In color mode each line is split in three lines: red, green and blue.</source>
-        <translation>En mode couleur, chaque ligne est triplée en lignes rouges,vertes,et bleues</translation>
+        <translation>&amp;Image</translation>
     </message>
     <message>
         <source>select beginning of line</source>
-        <translation>Sélectionnez le début de ligne</translation>
-    </message>
-    <message>
-        <source>length of the black/white pattern at the beginning of a facsimile</source>
-        <translation>Longueur du motif noir et blanc au début du fax</translation>
+        <translation>cliquez sur le début de ligne</translation>
     </message>
     <message>
         <source>signal carrier for FM and AM</source>
@@ -90,39 +74,23 @@
     </message>
     <message>
         <source>Receive from d&amp;sp</source>
-        <translation>Reception depuis la &amp;Carte son</translation>
+        <translation>Réception depuis le &amp;périphérique son</translation>
     </message>
     <message>
         <source>Receive from P&amp;TC</source>
-        <translation>Reception depuis &amp;PTC</translation>
-    </message>
-    <message>
-        <source>input file name</source>
-        <translation>Nom du fichier d'entrée</translation>
-    </message>
-    <message>
-        <source>output file name</source>
-        <translation>Nom du fichier de sortie</translation>
+        <translation>Réception depuis le P&amp;TC</translation>
     </message>
     <message>
         <source>inverted</source>
-        <translation>inversé</translation>
+        <translation>inverse</translation>
     </message>
     <message>
         <source>redraw as mono facsimile</source>
-        <translation>Redessine en fax mono</translation>
-    </message>
-    <message>
-        <source>load image</source>
-        <translation>Charger une image</translation>
-    </message>
-    <message>
-        <source>normal means 2.5% white, 95% black and again 2.5% white</source>
-        <translation>La norme est 2.5% blanc, 95% noir et encore 2.5% blanc</translation>
+        <translation>Redessine en fax monochrome</translation>
     </message>
     <message>
         <source>apt start</source>
-        <translation>Début d'APT</translation>
+        <translation>Début d&apos;APT</translation>
     </message>
     <message>
         <source>&amp;Options</source>
@@ -130,55 +98,47 @@
     </message>
     <message>
         <source>&amp;Scale to IOC (scale whole image)</source>
-        <translation>M&amp;Mise à l'échelle IOC (image complète)</translation>
+        <translation>&amp;Mise à l&apos;échelle IOC (image complète)</translation>
     </message>
     <message>
         <source>Receive from f&amp;ile</source>
-        <translation>Reçoit depuis un &amp;fichier</translation>
+        <translation>Réception depuis un &amp;fichier</translation>
     </message>
     <message>
         <source>set beginning of line</source>
-        <translation>Règler le début de ligne</translation>
+        <translation>règler le début de ligne</translation>
     </message>
     <message>
         <source>About &amp;QT</source>
-        <translation>A Propos de &amp;QT</translation>
+        <translation>A propos de &amp;QT</translation>
     </message>
     <message>
         <source>filter</source>
-        <translation>Filtre</translation>
+        <translation>filtre</translation>
     </message>
     <message>
         <source>middle</source>
-        <translation>milieu</translation>
+        <translation>moyen</translation>
     </message>
     <message>
         <source>narrow</source>
-        <translation>Etroite</translation>
+        <translation>etroit</translation>
     </message>
     <message>
         <source>apt stop</source>
-        <translation>Fin de APT</translation>
-    </message>
-    <message>
-        <source>save image</source>
-        <translation>Sauvegarder l'image</translation>
+        <translation>fin de APT</translation>
     </message>
     <message>
         <source>redraw as color facsimile</source>
-        <translation>Redessiner come fax couleur</translation>
+        <translation>Redessiner en fax couleur</translation>
     </message>
     <message>
         <source>key PTT while transmitting with DSP</source>
-        <translation>Commutation PTT lors d'une transmission avec DSP</translation>
-    </message>
-    <message>
-        <source>frequency of the black/white pattern at the end of a facsimile</source>
-        <translation>Fréquence des motifs noirs et blancs à la fin d'un fax</translation>
+        <translation>Commutation PTT lors d&apos;une transmission avec DSP</translation>
     </message>
     <message>
         <source>&amp;Transmit</source>
-        <translation>&amp;Emetre</translation>
+        <translation>&amp;Emettre</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
@@ -186,80 +146,64 @@
     </message>
     <message>
         <source>&amp;select font</source>
-        <translation>&amp;Sélection de police</translation>
-    </message>
-    <message>
-        <source>HamFax is a Qt application for transmitting and receiving am radio facsimiles and weather broadcasts.
-Author: Christof Schmitt, DH1CS &lt;cschmitt@users.sourceforge.net&gt;
-
-The demodulator is taken from ACfax by Andreas Czechanowski, DL4SDC
-
-License: GNU General Public License
-Version: %1</source>
-        <translation>HamFax est une application QT destinée à la réception et àn l'emmission de fax radios et des fax météos.
-Auteur: Cristof Schmitt, DH1CS &lt;cschmitt@users.sourceforge.net&gt;
-
-Le démodulateur est tiré d'ACfax par  Andreas Czechanowski, DL4SDC
-License : GNU General Public License
-
-Version: %1</translation>
+        <translation>&amp;sélection de police</translation>
     </message>
     <message>
         <source>&amp;Quick save as PNG</source>
-        <translation>S&amp;Sauvegarde rapide comme PNG</translation>
+        <translation>S&amp;auvegarde rapide en PNG</translation>
     </message>
     <message>
         <source>deviation for FM</source>
-        <translation>Déviation FM</translation>
+        <translation>déviation FM</translation>
     </message>
     <message>
         <source>carrier</source>
-        <translation>Porteuse</translation>
+        <translation>porteuse</translation>
     </message>
     <message>
         <source>facsimile settings</source>
-        <translation>&amp;Réglages FAX</translation>
+        <translation>&amp;réglages FAX</translation>
     </message>
     <message>
         <source>apt settings</source>
-        <translation>Réglages APT</translation>
+        <translation>réglages APT</translation>
     </message>
     <message>
         <source>show tool tips</source>
-        <translation>Montrer les astuces</translation>
+        <translation>montrer les astuces</translation>
     </message>
     <message>
         <source>shift colors (R-&gt;G,G-&gt;B,B-&gt;R)</source>
-        <translation>Remapper les couleurs (rouge-vert,vert-bleu,bleu-rouge)</translation>
+        <translation>décaler les couleurs (rouge-vert,vert-bleu,bleu-rouge)</translation>
     </message>
     <message>
         <source>image size: %1x%2</source>
-        <translation>Taille d'image: %1x%2</translation>
+        <translation>taille de l&apos;image: %1x%2</translation>
     </message>
     <message>
         <source>Transmit to &amp;file</source>
-        <translation>Emettre dans le &amp; fichier</translation>
+        <translation>Emission dans un &amp; fichier</translation>
     </message>
     <message>
         <source>lines per minute</source>
-        <translation>Lignes par minute</translation>
+        <translation>lignes par minute</translation>
     </message>
     <message>
         <source>select second point of vertical line</source>
-        <translation>Cliquer sur le second point de la ligne verticale</translation>
+        <translation>cliquer sur le second point de la ligne verticale</translation>
     </message>
     <message>
         <source>modulation</source>
-        <translation>Modulation</translation>
+        <translation>modulation</translation>
     </message>
     <message>
         <source>frequency of the black/white pattern
 at the beginning of a facsimile</source>
-        <translation>Fréquence des motifs noirs et blancs au début d'un fax</translation>
+        <translation>Fréquence des motifs noirs et blancs à la fin d&apos;un fax</translation>
     </message>
     <message>
         <source>deviation</source>
-        <translation>Déviation</translation>
+        <translation>déviation</translation>
     </message>
     <message>
         <source>AM is only used for getting images
@@ -267,30 +211,30 @@ from weather satellites together with
 a FM receiver. FM together with a
 USB (upper side band) transceiver is
 the right setting for HF</source>
-        <translation>L'AM est seulement utilisée pour récupérer des images de
+        <translation>La modulation AM est seulement utilisée pour récupérer des images de
 satellites météos avec un récepteur FM.La FM avec un récepteur
 règlé en USB est utilisée en HF (bandes décamétriques)</translation>
     </message>
     <message>
         <source>&amp;Adjust IOC (change width)</source>
-        <translation>&amp;Ajuster l'index d'alignement  (changer la largeur)</translation>
+        <translation>&amp;Ajuster l&apos;index d&apos;alignement  (changer la largeur)</translation>
     </message>
     <message>
         <source>Index Of Cooperation:
 image width in pixels divided by PI</source>
-        <translation>Index +d'alignement(IOC): largeur d'image en pixels divisée par PI</translation>
+        <translation>Index d&apos;alignement(IOC): largeur d&apos;image en pixels divisée par PI</translation>
     </message>
     <message>
         <source>bandwidth of the software demodulator</source>
-        <translation>Bande passante du démodulateur logiciel</translation>
+        <translation>bande passante du démodulateur logiciel</translation>
     </message>
     <message>
         <source>slant correction</source>
-        <translation>Correction de pente </translation>
+        <translation>correction de pente </translation>
     </message>
     <message>
         <source>select first point of vertical line</source>
-        <translation>Cliquer sur le premier point d'une ligne verticale</translation>
+        <translation>cliquer sur le premier point d&apos;une ligne verticale</translation>
     </message>
     <message>
         <source>IOC: %1</source>
@@ -302,130 +246,246 @@ image width in pixels divided by PI</source>
     </message>
     <message>
         <source>&amp;About HamFax</source>
-        <translation>&amp;A propos d'HamFax</translation>
+        <translation>&amp;A propos d&apos;HamFax</translation>
     </message>
     <message>
         <source>Really exit?</source>
-        <translation>Réellement sortir ?</translation>
+        <translation>Sortir réellement ?</translation>
     </message>
     <message>
         <source>Transmit using &amp;PTC</source>
-        <translation>Emettre avec le &amp;PTC</translation>
+        <translation>Emission avec le &amp;PTC</translation>
     </message>
     <message>
         <source>Transmit using &amp;dsp</source>
-        <translation>Emettre avec &amp;La carte son</translation>
+        <translation>Emission avec &amp;le périphérique son</translation>
     </message>
     <message>
         <source>phasing lines</source>
-        <translation>Lignes de synchronisation</translation>
+        <translation>lignes de synchronisation</translation>
+    </message>
+    <message>
+        <source>Hz</source>
+        <translation>Hz</translation>
+    </message>
+    <message>
+        <source>AM</source>
+        <translation>MA</translation>
+    </message>
+    <message>
+        <source>FM</source>
+        <translation>MF</translation>
+    </message>
+    <message>
+        <source>s</source>
+        <translation>s</translation>
+    </message>
+    <message>
+        <source>length of the black/white pattern
+at the beginning of a facsimile</source>
+        <translation>Longueur du motif noir et blanc au début du fax</translation>
+    </message>
+    <message>
+        <source>length of the black/white pattern
+at the end of a facsimile</source>
+        <translation>Longueur des motifs noirs et blancs à la fin d&apos;un fax</translation>
+    </message>
+    <message>
+        <source>frequency of the black/white pattern
+at the end of a facsimile</source>
+        <translation>Fréquence des motifs noirs et blancs à la fin d&apos;un fax</translation>
+    </message>
+    <message>
+        <source>phasing lines mark the beginning
+of a line and the speed (lpm)</source>
+        <translation>Les lignes de synchro déterminent le début des lignes et la vitesse en LPM</translation>
+    </message>
+    <message>
+        <source>normal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>normal means 2.5% white, 95% black
+and again 2.5% white</source>
+        <translation>La norme est 2.5% blanc, 95% noir et encore 2.5% blanc</translation>
+    </message>
+    <message>
+        <source>In color mode each line
+is split in three lines:
+red, green and blue.</source>
+        <translation>En mode couleur, chaque ligne est décomposée en rouge,vert,et bleue</translation>
+    </message>
+    <message>
+        <source>Could not save to file &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HamFax is a Qt application for transmitting and receiving
+ham radio facsimiles and weather broadcasts.
+
+Author: Christof Schmitt, DH1CS &lt;cschmitt@users.sourceforge.net&gt;
+
+The demodulator is taken from ACfax by Andreas Czechanowski, DL4SDC
+
+License: GNU General Public License
+Version: %1</source>
+        <translation>HamFax est une application QT destinée à la réception et àn l&apos;emmission de fax radios et des fax météos.
+Auteur: Cristof Schmitt, DH1CS &lt;cschmitt@users.sourceforge.net&gt;
+
+Le démodulateur est tiré d&apos;ACfax par Andreas Czechanowski, DL4SDC
+License : GNU General Public License
+
+Version: %1</translation>
     </message>
 </context>
 <context>
     <name>File</name>
     <message>
         <source>could not allocate AFfilesetup</source>
-        <translation>Ne peut allouer AFfilesetup</translation>
-    </message>
-    <message>
-        <source>samples size not 16 bit</source>
-        <translation>Lex échantillons ne sont pas sur 16 bits</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>could not open file</source>
-        <translation>Impossible d'ouvrir le fichier</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>samples size not 16 bit</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>sample rate is not 8000 Hz</source>
-        <translation>La fréquence d'échantillonnage n'est pas de 8000 Hz</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>HelpDialog</name>
     <message>
         <source>&amp;Close</source>
-        <translation>&amp;Fermer</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OptionsDialog</name>
     <message>
-        <source>ptc speed</source>
-        <translation>Vitesse PTC</translation>
-    </message>
-    <message>
         <source>dsp device</source>
-        <translation>Carte son</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ptt device</source>
-        <translation>Voie PTT</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ptc device</source>
-        <translation>Voie PTC</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ptc speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>38400bps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>57600bps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>115200bps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>&amp;Annuler</translation>
+        <translation type="unfinished">&amp;Annuler</translation>
+    </message>
+    <message>
+        <source>hamlib model number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>hamlib optional parameters</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ReceiveDialog</name>
     <message>
-        <source>phasing line, lpm %1</source>
-        <translation>Synchronisation, %1 LPM</translation>
-    </message>
-    <message>
-        <source>skip phasing</source>
-        <translation>&amp;Eviter la synchronisation</translation>
-    </message>
-    <message>
-        <source>receiving line %1</source>
-        <translation>Réception de la ligne %1</translation>
-    </message>
-    <message>
-        <source>decoding phasing</source>
-        <translation>Décodage signaux de synchronisation</translation>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Annuler</translation>
     </message>
     <message>
         <source>Apt frequency: %1 Hz</source>
-        <translation>Fréquence APT: %1 Hz</translation>
-    </message>
-    <message>
-        <source>&amp;Skip apt start</source>
-        <translation>&amp;Eviter l'atentte de signal APT</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>searching APT start tone</source>
-        <translation>Atentte de signal APT</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Cancel</source>
-        <translation>&amp;Annuler</translation>
+        <source>&amp;Skip apt start</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>decoding phasing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>skip phasing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>phasing line, lpm %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>receiving line %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Sound</name>
     <message>
         <source>could not open dsp device</source>
-        <translation>Impossible d'ouvrir la carte son</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>could not set audio format to S16_NE</source>
-        <translation>Impossible de forcer le format S16_NE</translation>
-    </message>
-    <message>
-        <source>could not set audio format S16_LE</source>
-        <translation>Impossible de forcer le format S16_LE</translation>
-    </message>
-    <message>
-        <source>could not set sample rate</source>
-        <translation>Impossible de forcer la fréquence d'échantillonage</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>could not set mono mode</source>
-        <translation>Impossible de passer en mono</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>could not set sample rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>could not set audio format S16_LE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>could not open ALSA sound device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>could not open ALSA:default</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Spectrum</name>
+    <message>
+        <source>B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>W</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
