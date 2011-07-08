@@ -1,4 +1,4 @@
-// HamFax -- an application for sending and receiving amateur radio facsimiles
+// hamfax -- an application for sending and receiving amateur radio facsimiles
 // Copyright (C) 2001,2002
 // Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
@@ -19,7 +19,7 @@
 /**
  * \file
  *
- * HamFax main file. This file implements the main function where
+ * hamfax main file. This file implements the main function where
  * everything begins.
  */
 
@@ -33,7 +33,7 @@
 #include "FaxWindow.hpp"
 
 /**
- * \mainpage HamFax inline documentation
+ * \mainpage hamfax inline documentation
  *
  * \author Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
  *

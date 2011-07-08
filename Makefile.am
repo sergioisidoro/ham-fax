@@ -67,10 +67,10 @@ lupdate: $(hamfax_SOURCES)
 
 endif
 
-pkgdata_DATA = doc/HamFax.html $(TRANSLATION)
+pkgdata_DATA = doc/hamfax.html $(TRANSLATION)
 
 EXTRA_DIST = po/hamfax_de.qm po/hamfax_de.ts po/hamfax_fr.qm po/hamfax_ft.ts \
-	     doc/HamFax.html data/hamfax.desktop
+	     doc/hamfax.html data/hamfax.desktop
 
 applicationsdir=$(datadir)/applications
 applications_DATA=data/hamfax.desktop

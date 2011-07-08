@@ -1,4 +1,4 @@
-// HamFax -- an application for sending and receiving amateur radio facsimiles
+// hamfax -- an application for sending and receiving amateur radio facsimiles
 // Copyright (C) 2001,2002
 // Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
@@ -78,7 +78,7 @@ void PTC::open(void)
 			.arg(c.readNumEntry("/hamfax/modulation/deviation"));
 		write(device,s,s.length());
 		fm=c.readBoolEntry("/hamfax/modulation/FM");
-		s=QString("FAX %1\r").arg(fm ? "JVCOMM :HamFax FM":"AMFAX");
+		s=QString("FAX %1\r").arg(fm ? "JVCOMM :hamfax FM":"AMFAX");
 		write(device,s,s.length());
 		usleep(300000);
 		tcflush(device,TCIOFLUSH);

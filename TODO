@@ -67,8 +67,6 @@ Things to do sometime:
 
 - rewrite backend functions (e.g. encoder/decoder) in C to reuse, e.g. in cli
 
-- change name from CamelCase HamFax to lowercase hamfax everywhere
-
 - implement abstract base class for Sound, File and Ptc (see e.g. void
   FaxWindow::endTransmission(void))
 

@@ -187,7 +187,7 @@ am Ende der Übertragung</translation>
         <translation>&amp;Schrift auswählen</translation>
     </message>
     <message>
-        <source>HamFax is a Qt application for transmitting and receiving
+        <source>hamfax is a Qt application for transmitting and receiving
 ham radio facsimiles and weather broadcasts.
 
 Author: Christof Schmitt, DH1CS &lt;cschmitt@users.sourceforge.net&gt;
@@ -196,7 +196,7 @@ The demodulator is taken from ACfax by Andreas Czechanowski, DL4SDC
 
 License: GNU General Public License
 Version: %1</source>
-        <translation>HamFax ist eine Qt-Anwendung zum Senden und Empfangen
+        <translation>hamfax ist eine Qt-Anwendung zum Senden und Empfangen
 von Amateurfunk- und Wetter-Faksimiles.
 
 Autor: Christof Schmitt, DH1CS &lt;cschmitt@users.sourceforge.net&gt;
@@ -306,12 +306,12 @@ Bildbreite in Pixeln dividiert durch PI</translation>
         <translation>&amp;Nicht beenden</translation>
     </message>
     <message>
-        <source>&amp;About HamFax</source>
-        <translation>&amp;Über HamFax</translation>
+        <source>&amp;About hamfax</source>
+        <translation>&amp;Über hamfax</translation>
     </message>
     <message>
         <source>Really exit?</source>
-        <translation>HamFax beenden?</translation>
+        <translation>hamfax beenden?</translation>
     </message>
     <message>
         <source>Transmit using &amp;PTC</source>

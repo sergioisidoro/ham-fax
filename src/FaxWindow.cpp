@@ -1,4 +1,4 @@
-// HamFax -- an application for sending and receiving amateur radio facsimiles
+// hamfax -- an application for sending and receiving amateur radio facsimiles
 // Copyright (C) 2001,2002
 // Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
@@ -192,7 +192,7 @@ void FaxWindow::createMenubar(void)
 	QPopupMenu* helpMenu=new QPopupMenu(this);
 	helpMenu->insertItem(tr("&Help"),this,SLOT(help()));
 	helpMenu->insertSeparator();
-	helpMenu->insertItem(tr("&About HamFax"),this,SLOT(about()));
+	helpMenu->insertItem(tr("&About hamfax"),this,SLOT(about()));
 	helpMenu->insertItem(tr("About &QT"),this,SLOT(aboutQT()));
 
 	menuBar()->insertItem(tr("&File"),fileMenu);
@@ -672,7 +672,7 @@ void FaxWindow::about(void)
 {
 	QMessageBox::information(
 		this,caption(),
-		tr("HamFax is a Qt application for transmitting and receiving"
+		tr("hamfax is a Qt application for transmitting and receiving"
 		   "\nham radio facsimiles and weather broadcasts.\n\n"
 		   "Author: Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>"
 		   "\n\nThe demodulator is taken from ACfax"

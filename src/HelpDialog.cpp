@@ -1,4 +1,4 @@
-// HamFax -- an application for sending and receiving amateur radio facsimiles
+// hamfax -- an application for sending and receiving amateur radio facsimiles
 // Copyright (C) 2001 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
@@ -32,7 +32,7 @@ HelpDialog::HelpDialog(QWidget* parent)
 	browser->mimeSourceFactory()
 		->addFilePath(Config::instance().
 			      readEntry("/hamfax/directories/doc"));
-	browser->setSource("HamFax.html");
+	browser->setSource("hamfax.html");
 	QPushButton* button=new QPushButton(tr("&Close"),this);
 	layout->addWidget(button);
 	connect(button,SIGNAL(clicked()),SLOT(close()));

@@ -1,10 +1,10 @@
-HamFax
+hamfax
 ******
 
 Copyright (C) 2001, 2002, 2003
 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 
-HamFax is a Qt/X11 application for sending and receiving
+hamfax is a Qt/X11 application for sending and receiving
 facsimiles. It is licensed under the GNU General Public License (GPL),
 see the file COPYING for the complete text.
 
@@ -44,7 +44,7 @@ Notes / Features:
  - The data rate between the SCS-PTC and the computer can be set
    to 38400bit/s, 57600bit/s or 115200bit/s. With the start of
    transmission or reception the PTC is expected to be in the
-   main menu. If HamFax does not put the PTC in fax mode, just
+   main menu. If hamfax does not put the PTC in fax mode, just
    turn it off and on, and it should work. ;-)
 
  - While doing frequency modulation (used on shortwave), the PTC
@@ -69,7 +69,7 @@ see file TODO for information on missing features
 Installation:
 *************
 
-HamFax uses automake and autoconf for the build process.  For building
+hamfax uses automake and autoconf for the build process.  For building
 from a tar ball you don't need them, only if you grab the code from
 the CVS.  The easy way is (after untaring and changing the directory):
 

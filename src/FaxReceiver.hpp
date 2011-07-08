@@ -1,4 +1,4 @@
-// HamFax -- an application for sending and receiving amateur radio facsimiles
+// hamfax -- an application for sending and receiving amateur radio facsimiles
 // Copyright (C) 2001, 2004
 // Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  

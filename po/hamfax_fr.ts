@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="fr_FR">
+<!DOCTYPE TS><TS>
 <context>
     <name>CorrectDialog</name>
     <message>
@@ -247,8 +245,8 @@ image width in pixels divided by PI</source>
         <translation>&amp;Ne pas sortir</translation>
     </message>
     <message>
-        <source>&amp;About HamFax</source>
-        <translation>&amp;A propos d&apos;HamFax</translation>
+        <source>&amp;About hamfax</source>
+        <translation>&amp;A propos d&apos;hamfax</translation>
     </message>
     <message>
         <source>Really exit?</source>
@@ -322,7 +320,7 @@ red, green and blue.</source>
         <translation>Impossible d&apos;écrire dans le fichier &apos;%1&apos;</translation>
     </message>
     <message>
-        <source>HamFax is a Qt application for transmitting and receiving
+        <source>hamfax is a Qt application for transmitting and receiving
 ham radio facsimiles and weather broadcasts.
 
 Author: Christof Schmitt, DH1CS &lt;cschmitt@users.sourceforge.net&gt;
@@ -331,7 +329,7 @@ The demodulator is taken from ACfax by Andreas Czechanowski, DL4SDC
 
 License: GNU General Public License
 Version: %1</source>
-        <translation>HamFax est une application QT destinée à la réception et àn l&apos;emmission de fax radios et des fax météos.
+        <translation>hamfax est une application QT destinée à la réception et àn l&apos;emmission de fax radios et des fax météos.
 Auteur: Cristof Schmitt, DH1CS &lt;cschmitt@users.sourceforge.net&gt;
 
 Le démodulateur est tiré d&apos;ACfax par Andreas Czechanowski, DL4SDC
@@ -483,12 +481,10 @@ Version: %1</translation>
     <name>Spectrum</name>
     <message>
         <source>B</source>
-        <translatorcomment>(black-noir)</translatorcomment>
         <translation>N</translation>
     </message>
     <message>
         <source>W</source>
-        <translatorcomment>(white -blanc)</translatorcomment>
         <translation>B</translation>
     </message>
 </context>
