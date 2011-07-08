@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="fr_FR">
 <context>
     <name>CorrectDialog</name>
     <message>
@@ -302,7 +304,7 @@ of a line and the speed (lpm)</source>
     </message>
     <message>
         <source>normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <source>normal means 2.5% white, 95% black
@@ -317,7 +319,7 @@ red, green and blue.</source>
     </message>
     <message>
         <source>Could not save to file &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;écrire dans le fichier &apos;%1&apos;</translation>
     </message>
     <message>
         <source>HamFax is a Qt application for transmitting and receiving
@@ -342,73 +344,73 @@ Version: %1</translation>
     <name>File</name>
     <message>
         <source>could not allocate AFfilesetup</source>
-        <translation type="unfinished"></translation>
+        <translation>Imopssible d&apos;initialiser AFfilesetup</translation>
     </message>
     <message>
         <source>could not open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le fichier</translation>
     </message>
     <message>
         <source>samples size not 16 bit</source>
-        <translation type="unfinished"></translation>
+        <translation>Echantillons non  16 bits</translation>
     </message>
     <message>
         <source>sample rate is not 8000 Hz</source>
-        <translation type="unfinished"></translation>
+        <translation>La fréquence d&apos;échantillonnage n&apos;est pas 8000Hz</translation>
     </message>
 </context>
 <context>
     <name>HelpDialog</name>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fermer</translation>
     </message>
 </context>
 <context>
     <name>OptionsDialog</name>
     <message>
         <source>dsp device</source>
-        <translation type="unfinished"></translation>
+        <translation>Périphérique son</translation>
     </message>
     <message>
         <source>ptt device</source>
-        <translation type="unfinished"></translation>
+        <translation>Périphérique de commutation PTT</translation>
     </message>
     <message>
         <source>ptc device</source>
-        <translation type="unfinished"></translation>
+        <translation>Périphérique PTC</translation>
     </message>
     <message>
         <source>ptc speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse PTC</translation>
     </message>
     <message>
         <source>38400bps</source>
-        <translation type="unfinished"></translation>
+        <translation>38400 bauds</translation>
     </message>
     <message>
         <source>57600bps</source>
-        <translation type="unfinished"></translation>
+        <translation>57600 bauds</translation>
     </message>
     <message>
         <source>115200bps</source>
-        <translation type="unfinished"></translation>
+        <translation>115200 bauds</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Valider</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Annuler</translation>
+        <translation>&amp;Annuler</translation>
     </message>
     <message>
         <source>hamlib model number</source>
-        <translation type="unfinished"></translation>
+        <translation>Version Hamlib</translation>
     </message>
     <message>
         <source>hamlib optional parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramêtres Hamilb supplémetaires</translation>
     </message>
 </context>
 <context>
@@ -419,73 +421,75 @@ Version: %1</translation>
     </message>
     <message>
         <source>Apt frequency: %1 Hz</source>
-        <translation type="unfinished"></translation>
+        <translation>Fréquence apt %1 Hz</translation>
     </message>
     <message>
         <source>searching APT start tone</source>
-        <translation type="unfinished"></translation>
+        <translation>Attente tonalité apt</translation>
     </message>
     <message>
         <source>&amp;Skip apt start</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne pas attendre la &amp;trame APT</translation>
     </message>
     <message>
         <source>decoding phasing</source>
-        <translation type="unfinished"></translation>
+        <translation>Décodage des motifs e référence</translation>
     </message>
     <message>
         <source>skip phasing</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne pas attendre les motifs de référence</translation>
     </message>
     <message>
         <source>phasing line, lpm %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ligne de référence, lpm %1</translation>
     </message>
     <message>
         <source>receiving line %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Réception de la ligne %1</translation>
     </message>
 </context>
 <context>
     <name>Sound</name>
     <message>
         <source>could not open dsp device</source>
-        <translation type="unfinished"></translation>
+        <translation>Imopssible d&apos;ouvrir le périphérique son</translation>
     </message>
     <message>
         <source>could not set audio format to S16_NE</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;initialiser le format son S16_NE</translation>
     </message>
     <message>
         <source>could not set mono mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;initialiser le mode mono</translation>
     </message>
     <message>
         <source>could not set sample rate</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;initialiser la fréquence d&apos;échantilonnage</translation>
     </message>
     <message>
         <source>could not set audio format S16_LE</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;initialiser le format son S16_LE</translation>
     </message>
     <message>
         <source>could not open ALSA sound device</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le périphérique son ALSA</translation>
     </message>
     <message>
         <source>could not open ALSA:default</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le périphérique son ALSA par défaut</translation>
     </message>
 </context>
 <context>
     <name>Spectrum</name>
     <message>
         <source>B</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>(black-noir)</translatorcomment>
+        <translation>N</translation>
     </message>
     <message>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>(white -blanc)</translatorcomment>
+        <translation>B</translation>
     </message>
 </context>
 <context>
