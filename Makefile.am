@@ -79,6 +79,10 @@ dist_man_MANS=doc/hamfax.1
 .ts.qm:
 	$(LRELEASE) $< -qm $@
 
+# create ChangeLog file from git log
+dist-hook: ChangeLog
+	git log --pretty=short --abbrev-commit > ChangeLog
+
 ## disabled until there is only one doc either html or xml
 #.xml.html:
 #	xmlto html-nochunks -o doc $<
