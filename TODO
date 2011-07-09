@@ -88,3 +88,5 @@ Things to do sometime:
 
 - Sound: Get user defined sample rate from Config/OptionsDialog instead of
   environment file
+
+- consolidate documentation in html or docbook xml; keep one delete the other

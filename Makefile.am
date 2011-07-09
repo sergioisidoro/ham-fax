@@ -79,11 +79,12 @@ dist_man_MANS=doc/hamfax.1
 .ts.qm:
 	$(LRELEASE) $< -qm $@
 
-.xml.html:
-	xmlto html-nochunks -o doc $<
-
-.xml.pdf:
-	xmlto pdf --extensions -o doc $<
-
-.xml.txt:
-	xmlto txt -o doc $<
+## disabled until there is only one doc either html or xml
+#.xml.html:
+#	xmlto html-nochunks -o doc $<
+#
+#.xml.pdf:
+#	xmlto pdf --extensions -o doc $<
+#
+#.xml.txt:
+#	xmlto txt -o doc $<
