@@ -1,3 +1,14 @@
+hamfax 0.7
+ * French translation from Jean-michel Déchamps
+ * ALSA support (patch from Mike Nix)
+ * hamlib support (patch from Remi Chateauneu)
+ * updated spectrum analyzer (input from Jean-michel Déchamps)
+ * man page from Debian package
+ * Fixes from Andrea Montefusco for interoperation with oss2jack
+ * Fix overflow bug in LookUpTable
+ * Display translations also in Qt file dialogs
+ * Name change to lowercase "hamfax"
+
 HamFax 0.6.5
  * Add hamfax.desktop for entry in desktop menu
  * Fix build problems with newer GCC versions
