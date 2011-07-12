@@ -183,7 +183,7 @@ void FaxReceiver::correctWidth(int w)
 	pixel=pixelSamples=imageSample=0;
 	lastCol=99;
 	width=w;
-	if(rawData.isNull()) {
+	if(rawData.isEmpty()) {
 		emit imageWidth(w);
 	} else {
 		rawIt=rawData.begin();

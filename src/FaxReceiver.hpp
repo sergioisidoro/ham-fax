@@ -19,10 +19,10 @@
 #ifndef FAXRECEIVER_HPP
 #define FAXRECEIVER_HPP
 
-#include <qobject.h>
-#include <qstring.h>
-#include <Q3MemArray>
-#include <qtimer.h>
+#include <QObject>
+#include <QString>
+#include <QTimer>
+#include <QVector>
 
 class FaxReceiver : public QObject {
 	Q_OBJECT
@@ -59,8 +59,8 @@ private:
 	int pixelSamples;
 	bool color;
 	QTimer* timer;
-	Q3MemArray<unsigned char> rawData;
-	Q3MemArray<unsigned char>::Iterator rawIt;
+	QVector<unsigned char> rawData;
+	QVector<unsigned char>::Iterator rawIt;
 signals:
 	void aptFound(int);
 	void aptStopDetected(void);
