@@ -18,18 +18,18 @@
 #ifndef DISPLAYLEVEL_HPP
 #define DISPLAYLEVEL_HPP
 
-#include <qwidget.h>
-#include <Q3Frame>
+#include <QFrame>
+#include <QWidget>
 
-class DisplayLevel : public Q3Frame {
+class DisplayLevel : public QFrame {
 	Q_OBJECT
 public:
 	DisplayLevel(QWidget* parent);
 	void setZero(void);
 private:
 	virtual void paintEvent(QPaintEvent* e);
-	int m;
-	int w;
+	const int margin;
+	int length;
 public slots:
         void samples(short* buffer, int n);
 };

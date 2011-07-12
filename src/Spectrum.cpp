@@ -16,30 +16,28 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Spectrum.hpp"
-#include <qpainter.h>
-#include <qpixmap.h>
 #include <QPaintEvent>
-#include <Q3Frame>
-#include <Q3Painter>
+#include <QPainter>
+#include <QPixmap>
 #include <cmath>
 #include <cstring>
 
 Spectrum::Spectrum(QWidget* parent)
-	: Q3Frame(parent)
+	: QFrame(parent), margin(2)
 {
-	setFrameStyle(Q3Frame::Panel|Q3Frame::Sunken);
-	setMargin(2);
-	setFixedSize(260+2*margin(),126+2*margin());
-	pixmap=new QPixmap(width()-2*margin(),height()-2*margin());
-	Q3Painter paint(pixmap);
+	setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	setContentsMargins(margin, margin, margin, margin);
+	setFixedSize(260 + 2 * margin, 126 + 2 * margin);
+	pixmap=new QPixmap(width() - 2 * margin, height() - 2 * margin);
+	QPainter paint(pixmap);
 	paint.eraseRect(0,0,width(),height());
 }
 
 void Spectrum::paintEvent(QPaintEvent* e)
 {
-	Q3Frame::paintEvent(e);
-	bitBlt(this,margin(),margin(),pixmap,0,0,
-	       width()-2*margin(),height()-2*margin());
+	QFrame::paintEvent(e);
+	bitBlt(this, margin, margin, pixmap,
+	       0, 0, width() - 2 * margin, height() - 2 * margin);
 }
 
 

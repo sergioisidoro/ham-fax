@@ -1,31 +1,29 @@
 #include "DisplayLevel.hpp"
-#include <qpainter.h>
 #include <QPaintEvent>
-#include <Q3Frame>
+#include <QPainter>
 
 DisplayLevel::DisplayLevel(QWidget* parent)
-	: Q3Frame(parent), w(0)
+	: QFrame(parent), margin(2), length(0)
 {
 	setMinimumHeight(20);
-	setFrameStyle(Q3Frame::Panel|Q3Frame::Sunken);
-	setMargin(2);
-	m=margin();
+	setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	setContentsMargins(margin, margin, margin, margin);
 }
 
 void DisplayLevel::paintEvent(QPaintEvent* e)
 {
-	Q3Frame::paintEvent(e);
+	QFrame::paintEvent(e);
 	QPainter paint;
 	paint.begin(this);
 	paint.setPen(Qt::black);
 	paint.setBrush(Qt::gray);
-	paint.drawRect(m,m,w,height()-2*m);
+	paint.drawRect(margin, margin, length, height() - 2 * margin);
 	paint.end();
 }
 
 void DisplayLevel::setZero(void)
 {
-	w=0;
+	length = 0;
 }
 
 void DisplayLevel::samples(short* buffer, int n)
@@ -42,6 +40,6 @@ void DisplayLevel::samples(short* buffer, int n)
 		}
 	}
 	double level=(max-min)/65536.0;
-	w=static_cast<int>(level*(width()-2*m));
+	length = static_cast<int>(level * (width() - 2 * margin));
 	update();
 }

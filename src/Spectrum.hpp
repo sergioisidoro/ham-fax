@@ -18,16 +18,17 @@
 #ifndef SPECTRUM_HPP
 #define SPECTRUM_HPP
 
-#include <Q3Frame>
-#include <qwidget.h>
+#include <QFrame>
+#include <QWidget>
 
-class Spectrum : public Q3Frame {
+class Spectrum : public QFrame {
 	Q_OBJECT
 public:
 	Spectrum(QWidget* parent);
 private:
 	virtual void paintEvent(QPaintEvent* e);
 	QPixmap* pixmap;
+	const int margin;
 public slots:
         void samples(int* buffer, int n);
 };
