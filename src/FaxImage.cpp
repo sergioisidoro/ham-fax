@@ -18,12 +18,14 @@
 
 #include "FaxImage.hpp"
 #include "Config.hpp"
+#include <QMouseEvent>
+#include <QImageWriter>
 
 FaxImage::FaxImage(QWidget* parent)
-	: QScrollView(parent,0,WResizeNoErase|WNorthWestGravity)
+	: Q3ScrollView(parent,0,Qt::WResizeNoErase|Qt::WStaticContents)
 {
 	setResizePolicy(Manual);
-	viewport()->setBackgroundMode(PaletteMid);
+	viewport()->setBackgroundMode(Qt::PaletteMid);
 	autoScroll=Config::instance().readBoolEntry("/hamfax/GUI/autoScroll");
 }
 
@@ -133,19 +135,13 @@ bool FaxImage::save(QString fileName)
 
 	if(n != -1) {
 		QString ext = fileName.right(fileName.length() - n - 1).upper();
-		if(QImageIO::outputFormats().contains(ext))
+		if(QImageWriter::supportedImageFormats().contains(ext.toAscii()))
 			handler = ext;
 	}
 
-	// No valid extension in file name. Try PNG as default, if supported
-	// by current Qt library.
-	if (!handler && QImageIO::outputFormats().contains("PNG")) { 
-		fileName.append(".png");
-		handler = "PNG";
-	}
-
-	if (!handler)
-		return false;
+	// No valid extension in file name. Try PNG as default.
+	fileName.append(".png");
+	handler = "PNG";
 
 	return image.save(fileName,handler);
 }

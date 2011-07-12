@@ -19,9 +19,9 @@
 #define DISPLAYLEVEL_HPP
 
 #include <qwidget.h>
-#include <qframe.h>
+#include <Q3Frame>
 
-class DisplayLevel : public QFrame {
+class DisplayLevel : public Q3Frame {
 	Q_OBJECT
 public:
 	DisplayLevel(QWidget* parent);

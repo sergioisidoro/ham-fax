@@ -16,14 +16,17 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "CorrectDialog.hpp"
+
 #include <qpushbutton.h>
 #include <qlayout.h>
+#include <QLabel>
+#include <Q3VBoxLayout>
 
 CorrectDialog::CorrectDialog(QWidget* parent)
 	: QDialog(parent)
 {
 	setCaption(parent->caption());
-	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
+	Q3VBoxLayout* layout=new Q3VBoxLayout(this,15,15);
 	layout->addWidget(text=new QLabel(this));
 	QPushButton* cancel=new QPushButton(tr("&Cancel"),this);
 	layout->addWidget(cancel);

@@ -21,24 +21,28 @@
 #include "Error.hpp"
 #include "HelpDialog.hpp"
 #include "OptionsDialog.hpp"
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qapplication.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qstring.h>
 #include <qlayout.h>
 #include <qdatetime.h>
 #include <qfontdialog.h>
 #include <qimage.h>
+#include <QImageReader>
+#include <QImageWriter>
 #include <qinputdialog.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
 #include <qspinbox.h>
 #include <qstatusbar.h>
 #include <qtooltip.h>
+#include <QLabel>
+#include <QCloseEvent>
 #include <cmath>
 
 FaxWindow::FaxWindow(const QString& version)
-	: QMainWindow(0,0,WDestructiveClose)
+	: Q3MainWindow(0,0,Qt::WDestructiveClose)
 {
 	setCaption(version);
 
@@ -134,26 +138,26 @@ void FaxWindow::createMenubar(void)
 {
 	Config& config=Config::instance();
 
-	QPopupMenu* fileMenu=new QPopupMenu(this);
+	Q3PopupMenu* fileMenu=new Q3PopupMenu(this);
 	fileMenu->insertItem(tr("&Open"),this,SLOT(load()));
 	fileMenu->insertItem(tr("&Save"),this,SLOT(save()));
 	fileMenu->insertItem(tr("&Quick save as PNG"),this,SLOT(quickSave()));
 	fileMenu->insertSeparator();
 	fileMenu->insertItem(tr("&Exit"),this,SLOT(close()));
 
-	QPopupMenu* transmitMenu=new QPopupMenu(this);
+	Q3PopupMenu* transmitMenu=new Q3PopupMenu(this);
 	transmitMenu->insertItem(tr("Transmit using &dsp"),DSP);
 	transmitMenu->insertItem(tr("Transmit to &file"),FILE);
 	transmitMenu->insertItem(tr("Transmit using &PTC"),SCSPTC);
 	connect(transmitMenu,SIGNAL(activated(int)),SLOT(initTransmit(int)));
 
-	QPopupMenu* receiveMenu=new QPopupMenu(this);
+	Q3PopupMenu* receiveMenu=new Q3PopupMenu(this);
 	receiveMenu->insertItem(tr("Receive from d&sp"),DSP);
 	receiveMenu->insertItem(tr("Receive from f&ile"),FILE);
 	receiveMenu->insertItem(tr("Receive from P&TC"),SCSPTC);
 	connect(receiveMenu,SIGNAL(activated(int)),SLOT(initReception(int)));
 
-	imageMenu=new QPopupMenu(this);
+	imageMenu=new Q3PopupMenu(this);
 	imageMenu->insertItem(tr("&Adjust IOC (change width)"),
 			      this,SLOT(adjustIOC()));
 	imageMenu->insertItem(tr("&Scale to IOC (scale whole image)"),
@@ -170,7 +174,7 @@ void FaxWindow::createMenubar(void)
 			      faxImage,SLOT(shiftColors()));
 	imageMenu->insertItem(tr("set beginning of line"),
 			      this,SLOT(setBegin()));
-	optionsMenu=new QPopupMenu(this);
+	optionsMenu=new Q3PopupMenu(this);
 	optionsMenu->insertItem(tr("device settings"),this,SLOT(doOptions()));
 	optionsMenu->insertItem(tr("&select font"),this,SLOT(selectFont()));
 	optionsMenu->insertSeparator();
@@ -187,9 +191,8 @@ void FaxWindow::createMenubar(void)
 					  this,SLOT(changeToolTip()));
 	bool toolTipEnabled=config.readBoolEntry("/hamfax/GUI/toolTips");
 	optionsMenu->setItemChecked(toolTipID,toolTipEnabled);
-	QToolTip::setGloballyEnabled(toolTipEnabled);
 
-	QPopupMenu* helpMenu=new QPopupMenu(this);
+	Q3PopupMenu* helpMenu=new Q3PopupMenu(this);
 	helpMenu->insertItem(tr("&Help"),this,SLOT(help()));
 	helpMenu->insertSeparator();
 	helpMenu->insertItem(tr("&About hamfax"),this,SLOT(about()));
@@ -208,7 +211,7 @@ void FaxWindow::createToolbars(void)
 {
 	Config& config=Config::instance();
 
-	modTool=new QToolBar(tr("modulation settings"),this);
+	modTool=new Q3ToolBar(tr("modulation settings"),this);
 	new QLabel(tr("carrier"),modTool);
 	QSpinBox* carrier=new QSpinBox(800,2400,100,modTool);
 	carrier->setSuffix(tr("Hz"));
@@ -248,7 +251,7 @@ void FaxWindow::createToolbars(void)
 	connect(filter,SIGNAL(activated(int)),SLOT(setFilter(int)));
 	QToolTip::add(filter,tr("bandwidth of the software demodulator"));
 
-	aptTool=new QToolBar(tr("apt settings"),this);
+	aptTool=new Q3ToolBar(tr("apt settings"),this);
 	new QLabel(tr("apt start"),aptTool);
 	QSpinBox* aptStartLength=new QSpinBox(0,20,1,aptTool);
 	aptStartLength->setSuffix(tr("s"));
@@ -284,7 +287,7 @@ void FaxWindow::createToolbars(void)
 	QToolTip::add(aptStopFreq,tr("frequency of the black/white pattern\n"
 				     "at the end of a facsimile"));
 	
-	faxTool=new QToolBar(tr("facsimile settings"),this);
+	faxTool=new Q3ToolBar(tr("facsimile settings"),this);
 	new QLabel(tr("lpm"),faxTool);
 	QSpinBox* lpm=new QSpinBox(60,360,10,faxTool);
 	lpm->setValue(config.readNumEntry("/hamfax/fax/LPM"));
@@ -453,8 +456,15 @@ void FaxWindow::setBeginEnd(void)
 
 void FaxWindow::load(void)
 {
-	QString filter="*."+QImage::outputFormatList().join(" *.").lower();
-	QString name=QFileDialog::getOpenFileName(".",filter,this,0,caption());
+	const QList<QByteArray>& formats = QImageReader::supportedImageFormats();
+	QStringList str_formats;
+
+	for (int i = 0; i < formats.size(); i++)
+		str_formats.append(formats.at(i));
+
+	QString filter = "*." + str_formats.join(" *.").lower();
+	QString name=Q3FileDialog::getOpenFileName(".",filter,this,0,caption());
+
 	if(!name.isEmpty()) {
 		faxImage->load(name);
 	}
@@ -462,14 +472,21 @@ void FaxWindow::load(void)
 
 void FaxWindow::save(void)
 {
-	QString filter="*."+QImage::outputFormatList().join(" *.").lower();
-	QString name=QFileDialog::getSaveFileName(".",filter,this,0,caption());
+	const QList <QByteArray>& formats = QImageWriter::supportedImageFormats();
+	QStringList str_formats;
+
+	for (int i = 0; i< formats.size(); i++)
+		str_formats.append(formats.at(i));
+
+	QString filter = "*." + str_formats.join(" *.").lower();
+	QString name=Q3FileDialog::getSaveFileName(".",filter,this,0,caption());
+
 	if(!name.isEmpty()) {
 		bool result = faxImage->save(name);
 		if (result == false)
 			QMessageBox::warning(this, caption(),
 				tr("Could not save to file '%1'.").arg(name),
-				QMessageBox::Ok, QMessageBox::NoButton);
+				QMessageBox::Ok, Qt::NoButton);
 	}
 }
 
@@ -492,7 +509,7 @@ void FaxWindow::initTransmit(int item)
 		int sampleRate;
 		switch(interface=item) {
 		case FILE:
-			fileName=QFileDialog::getSaveFileName(".","*.au",
+			fileName=Q3FileDialog::getSaveFileName(".","*.au",
 							      this,0,caption());
 			if(fileName.isEmpty()) {
 				return;
@@ -538,7 +555,7 @@ void FaxWindow::initReception(int item)
                 QString fileName;
                 switch(interface=item) {
                 case FILE:
-                        fileName=QFileDialog::getOpenFileName(".","*.au",this,
+                        fileName=Q3FileDialog::getOpenFileName(".","*.au",this,
                                                               0,caption());
                         if(fileName.isEmpty()) {
                                 return;
@@ -658,7 +675,6 @@ void FaxWindow::changeToolTip(void)
 	bool b=!optionsMenu->isItemChecked(toolTipID);
 	optionsMenu->setItemChecked(toolTipID,b);
 	Config::instance().writeEntry("/hamfax/GUI/toolTips",b);
-	QToolTip::setGloballyEnabled(b);
 }
 
 void FaxWindow::help(void)

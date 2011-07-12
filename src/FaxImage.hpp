@@ -21,10 +21,10 @@
 #include <qimage.h>
 #include <qpainter.h>
 #include <qpoint.h>
-#include <qscrollview.h>
+#include <Q3ScrollView>
 #include <qstring.h>
 
-class FaxImage : public QScrollView {
+class FaxImage : public Q3ScrollView {
 	Q_OBJECT
 public:
 	FaxImage(QWidget* parent);

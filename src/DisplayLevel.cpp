@@ -1,18 +1,20 @@
 #include "DisplayLevel.hpp"
 #include <qpainter.h>
+#include <QPaintEvent>
+#include <Q3Frame>
 
 DisplayLevel::DisplayLevel(QWidget* parent)
-	: QFrame(parent), w(0)
+	: Q3Frame(parent), w(0)
 {
 	setMinimumHeight(20);
-	setFrameStyle(QFrame::Panel|QFrame::Sunken);
+	setFrameStyle(Q3Frame::Panel|Q3Frame::Sunken);
 	setMargin(2);
 	m=margin();
 }
 
 void DisplayLevel::paintEvent(QPaintEvent* e)
 {
-	QFrame::paintEvent(e);
+	Q3Frame::paintEvent(e);
 	QPainter paint;
 	paint.begin(this);
 	paint.setPen(Qt::black);

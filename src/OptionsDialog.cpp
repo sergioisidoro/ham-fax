@@ -21,6 +21,9 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
+#include <Q3VBoxLayout>
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
 #include "config.h"
 
 OptionsDialog::OptionsDialog(QWidget* parent)
@@ -28,9 +31,9 @@ OptionsDialog::OptionsDialog(QWidget* parent)
 {
 	Config& c=Config::instance();
 	setCaption(parent->caption());
-	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
+	Q3VBoxLayout* layout=new Q3VBoxLayout(this,15,15);
 
-	QGridLayout* settings=new QGridLayout(layout,3,2);
+	Q3GridLayout* settings=new Q3GridLayout(layout,3,2);
 	settings->addWidget(new QLabel(tr("dsp device"),this),1,1);
 	settings->addWidget(devDSP=new QLineEdit(this),1,2);
 	devDSP->setText(c.readEntry("/hamfax/sound/device"));
@@ -66,7 +69,7 @@ OptionsDialog::OptionsDialog(QWidget* parent)
 	hamlibParams->setText(c.readEntry("/hamfax/HAMLIB/hamlib_parameters"));
 #endif
 
-	QHBoxLayout* buttons=new QHBoxLayout(layout);
+	Q3HBoxLayout* buttons=new Q3HBoxLayout(layout);
 	QPushButton* ok=new QPushButton(tr("&OK"),this);
 	buttons->addWidget(ok);
 	connect(ok,SIGNAL(clicked()),this,SLOT(okClicked()));

@@ -17,13 +17,16 @@
 
 #include "TransmitDialog.hpp"
 #include <qlayout.h>
+#include <Q3VBoxLayout>
+#include <QCloseEvent>
+#include <QLabel>
 
 TransmitDialog::TransmitDialog(QWidget* parent)
 	: QDialog(parent)
 {
 	setCaption(parent->caption());
 
-	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
+	Q3VBoxLayout* layout=new Q3VBoxLayout(this,15,15);
 	layout->addWidget(status=new QLabel(this));
 	status->setMinimumWidth(150);
 	layout->addWidget(cancel=new QPushButton(tr("&Cancel"),this));

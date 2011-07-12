@@ -21,7 +21,7 @@
 
 #include <qobject.h>
 #include <qstring.h>
-#include <qmemarray.h>
+#include <Q3MemArray>
 #include <qtimer.h>
 
 class FaxReceiver : public QObject {
@@ -59,8 +59,8 @@ private:
 	int pixelSamples;
 	bool color;
 	QTimer* timer;
-	QArray<unsigned char> rawData;
-	QArray<unsigned char>::Iterator rawIt;
+	Q3MemArray<unsigned char> rawData;
+	Q3MemArray<unsigned char>::Iterator rawIt;
 signals:
 	void aptFound(int);
 	void aptStopDetected(void);

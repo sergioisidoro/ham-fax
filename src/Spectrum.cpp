@@ -18,24 +18,26 @@
 #include "Spectrum.hpp"
 #include <qpainter.h>
 #include <qpixmap.h>
+#include <QPaintEvent>
+#include <Q3Frame>
+#include <Q3Painter>
 #include <cmath>
 #include <cstring>
 
 Spectrum::Spectrum(QWidget* parent)
-	: QFrame(parent)
+	: Q3Frame(parent)
 {
-	setFrameStyle(QFrame::Panel|QFrame::Sunken);
+	setFrameStyle(Q3Frame::Panel|Q3Frame::Sunken);
 	setMargin(2);
 	setFixedSize(260+2*margin(),126+2*margin());
 	pixmap=new QPixmap(width()-2*margin(),height()-2*margin());
-	QPainter paint(pixmap,this);
+	Q3Painter paint(pixmap);
 	paint.eraseRect(0,0,width(),height());
-	paint.flush();
 }
 
 void Spectrum::paintEvent(QPaintEvent* e)
 {
-	QFrame::paintEvent(e);
+	Q3Frame::paintEvent(e);
 	bitBlt(this,margin(),margin(),pixmap,0,0,
 	       width()-2*margin(),height()-2*margin());
 }
@@ -82,7 +84,7 @@ void Spectrum::samples(int* buffer, int n)
 		data[i] = std::max(data[i], 0.0);
 	}
 
-	QPainter paint(pixmap, this);
+	QPainter paint(pixmap);
 	paint.eraseRect(0, 0, width(),height());
 	paint.setPen(Qt::black);
 
@@ -98,6 +100,5 @@ void Spectrum::samples(int* buffer, int n)
 	paint.setPen(Qt::gray);
 	draw_spectrum_line(94, paint, data, buf_size);
 
-	paint.flush();
 	update();
 }

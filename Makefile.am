@@ -29,8 +29,8 @@ hamfax_SOURCES = \
         src/LookUpTable.hpp\
         src/hamfax.cpp
 
-LIBS+=@QT_LIBS@
-hamfax_CXXFLAGS = @QT_CXXFLAGS@ -Wall
+LIBS+=@Qt4_LIBS@
+hamfax_CXXFLAGS = @Qt4_CFLAGS@ -Wall
 hamfax_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\"
 
 nodist_hamfax_SOURCES = \
@@ -54,7 +54,7 @@ nodist_hamfax_SOURCES = \
 	src/moc_PTT.cpp
 
 moc_%.cpp: %.hpp
-	$(QT_MOC) $< -o $@
+	moc $< -o $@
 
 if USE_LRELEASE
 

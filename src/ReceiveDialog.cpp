@@ -18,12 +18,15 @@
 
 #include "ReceiveDialog.hpp"
 #include <qlayout.h>
+#include <Q3VBoxLayout>
+#include <QCloseEvent>
+#include <QLabel>
 
 ReceiveDialog::ReceiveDialog(QWidget* parent)
 	: QDialog(parent)
 {
         setCaption(parent->caption());
-	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
+	Q3VBoxLayout* layout=new Q3VBoxLayout(this,15,15);
 	layout->addWidget(status=new QLabel(this));
 	status->setMinimumWidth(300);
 	layout->addWidget(aptText=new QLabel(this));

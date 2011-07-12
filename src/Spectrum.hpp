@@ -18,10 +18,10 @@
 #ifndef SPECTRUM_HPP
 #define SPECTRUM_HPP
 
-#include <qframe.h>
+#include <Q3Frame>
 #include <qwidget.h>
 
-class Spectrum : public QFrame {
+class Spectrum : public Q3Frame {
 	Q_OBJECT
 public:
 	Spectrum(QWidget* parent);

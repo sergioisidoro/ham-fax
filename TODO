@@ -14,7 +14,7 @@ Things to do sometime:
 - hamlib/PTT: Implement abstract interface for calling into e.g. PttSerial and
   PttHamlib
 
-- Qt: Update to use Qt4
+- Qt: Remove requirement for Qt3Support
 
 - build: Implement build with CMake
 

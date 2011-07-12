@@ -19,15 +19,16 @@
 #include "HelpDialog.hpp"
 #include <qpushbutton.h>
 #include <qlayout.h>
-#include <qtextbrowser.h>
+#include <q3textbrowser.h>
+#include <Q3VBoxLayout>
 
 HelpDialog::HelpDialog(QWidget* parent)
 	: QDialog(parent,0,true)
 {
 	setCaption(parent->caption());
 
-	QVBoxLayout* layout=new QVBoxLayout(this,15,15);
-	QTextBrowser* browser=new QTextBrowser(this);
+	Q3VBoxLayout* layout=new Q3VBoxLayout(this,15,15);
+	Q3TextBrowser* browser=new Q3TextBrowser(this);
 	layout->addWidget(browser);
 	browser->mimeSourceFactory()
 		->addFilePath(Config::instance().

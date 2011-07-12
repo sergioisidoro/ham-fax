@@ -25,7 +25,9 @@ AM_CONFIG_HEADER(src/config.h)
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 AC_PROG_INSTALL
-BNV_HAVE_QT
+
+PKG_PROG_PKG_CONFIG
+PKG_CHECK_MODULES([Qt4], [QtCore Qt3Support QtGui])
 
 AH_TEMPLATE(USE_FILE, [Build with support for audio files.])
 AC_CHECK_LIB(audiofile, afOpenFile,

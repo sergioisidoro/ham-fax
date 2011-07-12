@@ -26,9 +26,8 @@ Config& Config::instance()
 }
 
 Config::Config()
+	: QSettings(QSettings::UserScope, "hamfax", "hamfax")
 {
-	insertSearchPath( QSettings::Unix, "/etc" );
-
 	setDefault("/hamfax/sound/device","ALSA:default");
 	setDefault("/hamfax/PTC/device","/dev/ttyS0");
 	setDefault("/hamfax/PTC/speed",38400);
@@ -53,17 +52,17 @@ Config::Config()
 	setDefault("/hamfax/GUI/font","Helvetica,11,-1,5,50,0,0,0,0,0");
 }
 
-void Config::setDefault(const QString& key, const char* value)
+void Config::setDefault(const QString& key, const char* v)
 {
-	writeEntry(key,readEntry(key,(const QString)value));
+	setValue(key,value(key,(const QString)v));
 }
 
-void Config::setDefault(const QString& key, const int value)
+void Config::setDefault(const QString& key, const int v)
 {
-	writeEntry(key,readNumEntry(key,value));
+	setValue(key,value(key,v));
 }
 
-void Config::setDefault(const QString& key, const bool value)
+void Config::setDefault(const QString& key, const bool v)
 {
-	writeEntry(key,readBoolEntry(key,value));
+	setValue(key,value(key,v));
 }

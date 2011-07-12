@@ -49,7 +49,7 @@ bool PTT::hamlibInit(void)
 	}
 std::cout << this << " ctor " << __FUNCTION__ << "\n" ;
 	Config& c=Config::instance();
-	std::string hamlibModelString = c.readEntry("/hamfax/HAMLIB/hamlib_model");
+	std::string hamlibModelString = c.readEntry("/hamfax/HAMLIB/hamlib_model").toStdString();
 	if( hamlibModelString.empty() )
 	{
 		return false ;
@@ -166,7 +166,7 @@ void PTT::set(void)
 #endif
 		try {
 			device.setName(c.readEntry("/hamfax/PTT/device"));
-			if(!device.open(IO_WriteOnly)) {
+			if(!device.open(QIODevice::WriteOnly)) {
 				throw Error();
 			}
 			int status;
