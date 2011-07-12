@@ -17,23 +17,30 @@
 
 #include "Config.hpp"
 #include "HelpDialog.hpp"
-#include <qpushbutton.h>
-#include <qlayout.h>
-#include <q3textbrowser.h>
 #include <QBoxLayout>
+#include <QFile>
+#include <QPushButton>
+#include <QTextBrowser>
 
 HelpDialog::HelpDialog(QWidget* parent)
 	: QDialog(parent,0,true)
 {
 	setCaption(parent->caption());
 
+	QFile file;
+	file.setFileName(Config::instance().readEntry("/hamfax/directories/doc")
+			 + "/hamfax.html");
+
+	QString html;
+	if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+		html = file.readAll();
+	else
+		html = tr("Could not open help file.");
+
 	QBoxLayout* layout=new QBoxLayout(QBoxLayout::TopToBottom, this);
-	Q3TextBrowser* browser=new Q3TextBrowser(this);
+	QTextBrowser* browser=new QTextBrowser(this);
 	layout->addWidget(browser);
-	browser->mimeSourceFactory()
-		->addFilePath(Config::instance().
-			      readEntry("/hamfax/directories/doc"));
-	browser->setSource("hamfax.html");
+	browser->setHtml(html);
 	QPushButton* button=new QPushButton(tr("&Close"),this);
 	layout->addWidget(button);
 	connect(button,SIGNAL(clicked()),SLOT(close()));
