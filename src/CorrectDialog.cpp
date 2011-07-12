@@ -20,13 +20,13 @@
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <QLabel>
-#include <Q3VBoxLayout>
+#include <QBoxLayout>
 
 CorrectDialog::CorrectDialog(QWidget* parent)
 	: QDialog(parent)
 {
 	setCaption(parent->caption());
-	Q3VBoxLayout* layout=new Q3VBoxLayout(this,15,15);
+	QBoxLayout* layout=new QBoxLayout(QBoxLayout::TopToBottom, this);
 	layout->addWidget(text=new QLabel(this));
 	QPushButton* cancel=new QPushButton(tr("&Cancel"),this);
 	layout->addWidget(cancel);
