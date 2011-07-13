@@ -77,6 +77,15 @@ the CVS.  The easy way is (after untaring and changing the directory):
 make
 make install
 
+If you are not compiling from a tar ball, the autotools scripts have to be
+generated first: Check that autotool-dev is installed on your system, then
+run:
+
+autoreconf -f -i
+./configure
+make
+make install
+
 Check the documentation in INSTALL for questions on build options.
 
 If configure fails, check that you have the required software (see
