@@ -21,10 +21,11 @@
 #include <qimage.h>
 #include <qpainter.h>
 #include <qpoint.h>
-#include <Q3ScrollView>
+#include <QLabel>
+#include <QScrollArea>
 #include <qstring.h>
 
-class FaxImage : public Q3ScrollView {
+class FaxImage : public QScrollArea {
 	Q_OBJECT
 public:
 	FaxImage(QWidget* parent);
@@ -34,10 +35,16 @@ public:
 	void load(QString fileName);
 	bool save(QString fileName);
 private:
-	void drawContents(QPainter* p, int x,int y,int w,int h);
-	virtual void contentsMousePressEvent(QMouseEvent* m);
+	virtual void mousePressEvent(QMouseEvent* m);
 	void resizeHeight(int h);
+
+	/**
+	 * Internal representation of the image for pixel level access.  When
+	 * updating this representation, an update has to be sent to the
+	 * ImageWidget that will redraw itself with the data from here.
+	 */
 	QImage image;
+
 	QPoint slant1;
 	QPoint slant2;
 	bool autoScroll;

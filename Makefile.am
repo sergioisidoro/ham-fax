@@ -10,6 +10,7 @@ hamfax_SOURCES = \
         src/FaxImage.cpp src/FaxImage.hpp\
         src/FaxWindow.cpp src/FaxWindow.hpp\
         src/HelpDialog.cpp src/HelpDialog.hpp\
+        src/ImageWidget.cpp src/ImageWidget.hpp\
         src/OptionsDialog.cpp src/OptionsDialog.hpp\
         src/ReceiveDialog.cpp src/ReceiveDialog.hpp\
         src/Spectrum.cpp src/Spectrum.hpp\
@@ -40,6 +41,7 @@ nodist_hamfax_SOURCES = \
 	src/moc_FaxImage.cpp\
 	src/moc_FaxWindow.cpp\
 	src/moc_HelpDialog.cpp\
+	src/moc_ImageWidget.cpp\
 	src/moc_OptionsDialog.cpp\
 	src/moc_ReceiveDialog.cpp\
 	src/moc_Spectrum.cpp\
