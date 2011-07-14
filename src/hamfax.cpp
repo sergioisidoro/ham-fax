@@ -26,6 +26,7 @@
 #include "config.h"
 #include <qapplication.h>
 #include <qfont.h>
+#include <QLibraryInfo>
 #include <qtextcodec.h>
 #include <qtranslator.h>
 #include <qstring.h>
@@ -68,7 +69,7 @@
 	// translation file for Qt (e.g. file open/save dialog)
 	QTranslator qt_trans(0);
 	qt_trans.load(QString( "qt_" ) + QTextCodec::locale(),
-		qInstallPathTranslations());
+		QLibraryInfo::location(QLibraryInfo::TranslationsPath));
 	app.installTranslator(&qt_trans);
 
 	// translation file for hamfax strings
