@@ -23,9 +23,8 @@
 #include <QTextBrowser>
 
 HelpDialog::HelpDialog(QWidget* parent)
-	: QDialog(parent,0,true)
 {
-	setCaption(parent->caption());
+	setWindowTitle(parent->windowTitle());
 
 	QFile file;
 	file.setFileName(Config::instance().readEntry("/hamfax/directories/doc")

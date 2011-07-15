@@ -171,7 +171,8 @@ int Sound::startOutput(void)
 	        snd_pcm_sw_params_t *swparams=NULL;
 		int dir=0; // 0=match speed, -1 nearest below, +1 nearest above
 
-	        int rc=snd_pcm_open(&pcm, devDSPName, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
+	        int rc = snd_pcm_open(&pcm, devDSPName.toAscii(),
+				      SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
 	        if (rc<0) throw Error(tr("could not open ALSA sound device"));
 	        
 	        // allocate parameters and fill with defaults
@@ -238,7 +239,8 @@ int Sound::startOutput(void)
 	     } else {
 #endif /* USE_ALSA */
 		
-		if((dsp=open(devDSPName,O_WRONLY|O_NONBLOCK))==-1) {
+		dsp = open(devDSPName.toAscii(), O_WRONLY | O_NONBLOCK);
+		if(dsp == -1) {
 			throw Error(tr("could not open dsp device"));
 		}
 		int format=AFMT_S16_NE;
@@ -292,7 +294,9 @@ int Sound::startInput(void)
 	        snd_pcm_sw_params_t *swparams=NULL;
 		int dir=0; // 0=match speed, -1 nearest below, +1 nearest above
 
-	        int rc=snd_pcm_open(&pcm, devDSPName, SND_PCM_STREAM_CAPTURE, SND_PCM_ASYNC | SND_PCM_NONBLOCK);
+	        int rc = snd_pcm_open(&pcm, devDSPName.toAscii(),
+				      SND_PCM_STREAM_CAPTURE,
+				      SND_PCM_ASYNC | SND_PCM_NONBLOCK);
 	        if (rc<0) throw Error(tr("could not open ALSA:default"));
 	        
 	        // allocate parameters and fill with defaults
@@ -374,7 +378,8 @@ int Sound::startInput(void)
 		
 	     } else {
 #endif /* USE_ALSA */
-		if((dsp=open(devDSPName,O_RDONLY|O_NONBLOCK))==-1) {
+		dsp = open(devDSPName.toAscii(), O_RDONLY | O_NONBLOCK);
+		if (dsp == -1) {
 			throw Error(tr("could not open dsp device"));
 		}
 		int format=AFMT_S16_LE;

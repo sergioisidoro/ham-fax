@@ -37,6 +37,13 @@ public:
 	 * Only possible access to Singleton
 	 */
 	static Config& instance();
+
+	QString readEntry(const QString& key);
+	bool readBoolEntry(const QString &key);
+	int readNumEntry(const QString& key);
+	void writeEntry(const QString& key, const QString& value);
+	void writeEntry(const QString& key, bool value);
+	void writeEntry(const QString& key, int value);
 private:
 	typedef std::auto_ptr<Config> ConfigPtr;
 	friend class std::auto_ptr<Config>;

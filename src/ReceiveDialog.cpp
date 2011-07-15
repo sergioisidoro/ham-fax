@@ -25,7 +25,7 @@
 ReceiveDialog::ReceiveDialog(QWidget* parent)
 	: QDialog(parent)
 {
-        setCaption(parent->caption());
+        setWindowTitle(parent->windowTitle());
 	QBoxLayout* layout=new QBoxLayout(QBoxLayout::TopToBottom, this);
 	layout->addWidget(status=new QLabel(this));
 	status->setMinimumWidth(300);

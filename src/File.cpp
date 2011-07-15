@@ -44,7 +44,8 @@ int File::startOutput(const QString& fileName)
 		afInitChannels(fs,AF_DEFAULT_TRACK,1);
 		afInitRate(fs,AF_DEFAULT_TRACK,8000);
 		
-		if((aFile=afOpenFile(fileName,"w",fs))==AF_NULL_FILEHANDLE) {
+		aFile = afOpenFile(fileName.toAscii(), "w", fs);
+		if(aFile == AF_NULL_FILEHANDLE) {
 			aFile=0;
 			throw Error(tr("could not open file"));
 		}
@@ -62,7 +63,8 @@ int File::startInput(const QString& fileName)
 {
 	try {
 		AFfilesetup fs=0;
-		if((aFile=afOpenFile(fileName,"r",fs))==AF_NULL_FILEHANDLE) {
+		aFile = afOpenFile(fileName.toAscii(), "r", fs);
+		if(aFile == AF_NULL_FILEHANDLE) {
 			throw Error(tr("could not open file"));
 		}
 		if(afGetFrameSize(aFile,AF_DEFAULT_TRACK,0)!=2) {

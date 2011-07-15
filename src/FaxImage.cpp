@@ -111,7 +111,7 @@ void FaxImage::resizeHeight(int h)
 
 void FaxImage::create(int cols, int rows)
 {
-	image.create(cols,rows,32);
+	image = QImage(cols, rows, QImage::Format_RGB32);
 	image.fill(qRgb(80,80,80));
 	widget()->resize(cols, rows);
 	widget()->update(0, 0, cols, rows);
@@ -121,7 +121,7 @@ void FaxImage::create(int cols, int rows)
 
 void FaxImage::load(QString fileName)
 {
-	image=QImage(fileName).convertDepth(32);
+	image=QImage(fileName).convertToFormat(QImage::Format_RGB32);
 	widget()->resize(image.width(), image.height());
 	widget()->update(0, 0, image.width(), image.height());
 	emit sizeUpdated(image.width(),image.height());
@@ -131,10 +131,10 @@ void FaxImage::load(QString fileName)
 bool FaxImage::save(QString fileName)
 {
 	QString handler;
-	int n = fileName.findRev('.');
+	int n = fileName.lastIndexOf('.');
 
 	if(n != -1) {
-		QString ext = fileName.right(fileName.length() - n - 1).upper();
+		QString ext = fileName.right(fileName.length() - n - 1).toUpper();
 		if(QImageWriter::supportedImageFormats().contains(ext.toAscii()))
 			handler = ext;
 	}
@@ -143,12 +143,13 @@ bool FaxImage::save(QString fileName)
 	fileName.append(".png");
 	handler = "PNG";
 
-	return image.save(fileName,handler);
+	return image.save(fileName,handler.toAscii());
 }
 
 void FaxImage::scale(int width, int height)
 {
-	image=image.smoothScale(width,height);
+	image = image.scaled(width, height, Qt::IgnoreAspectRatio,
+			     Qt::SmoothTransformation);
 	widget()->resize(width, height);
 	widget()->update(0, 0, width, height);
 	emit sizeUpdated(width,height);
@@ -220,7 +221,7 @@ void FaxImage::correctBegin(void)
 	int n=slant2.x();
 	int h=image.height();
 	int w=image.width();
-	QImage tempImage(w,h,32);
+	QImage tempImage(w, h, QImage::Format_RGB32);
 	for(int c=0; c<w; c++) {
 		for(int r=0; r<h; r++) {
 			tempImage.setPixel(c,r,image.pixel((n+c)%w,r));

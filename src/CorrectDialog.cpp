@@ -25,7 +25,7 @@
 CorrectDialog::CorrectDialog(QWidget* parent)
 	: QDialog(parent)
 {
-	setCaption(parent->caption());
+	setWindowTitle(parent->windowTitle());
 	QBoxLayout* layout=new QBoxLayout(QBoxLayout::TopToBottom, this);
 	layout->addWidget(text=new QLabel(this));
 	QPushButton* cancel=new QPushButton(tr("&Cancel"),this);

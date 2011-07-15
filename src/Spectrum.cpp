@@ -36,8 +36,9 @@ Spectrum::Spectrum(QWidget* parent)
 void Spectrum::paintEvent(QPaintEvent* e)
 {
 	QFrame::paintEvent(e);
-	bitBlt(this, margin, margin, pixmap,
-	       0, 0, width() - 2 * margin, height() - 2 * margin);
+	QPainter painter(this);
+	painter.drawPixmap(margin, margin, *pixmap,
+			   0, 0, width() - 2 * margin, height() - 2 * margin);
 }
 
 

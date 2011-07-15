@@ -52,6 +52,36 @@ Config::Config()
 	setDefault("/hamfax/GUI/font","Helvetica,11,-1,5,50,0,0,0,0,0");
 }
 
+QString Config::readEntry(const QString& key)
+{
+	return value(key).toString();
+}
+
+bool Config::readBoolEntry(const QString &key)
+{
+	return value(key).toBool();
+}
+
+int Config::readNumEntry(const QString &key)
+{
+	return value(key).toInt();
+}
+
+void Config::writeEntry(const QString& key, const QString& value)
+{
+	setValue(key, value);
+}
+
+void Config::writeEntry(const QString& key, bool value)
+{
+	setValue(key, value);
+}
+
+void Config::writeEntry(const QString& key, int value)
+{
+	setValue(key, value);
+}
+
 void Config::setDefault(const QString& key, const char* v)
 {
 	setValue(key,value(key,(const QString)v));

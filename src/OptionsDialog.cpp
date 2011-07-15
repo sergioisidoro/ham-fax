@@ -25,10 +25,9 @@
 #include "config.h"
 
 OptionsDialog::OptionsDialog(QWidget* parent)
-	: QDialog(parent,0,true)
 {
 	Config& c=Config::instance();
-	setCaption(parent->caption());
+	setWindowTitle(parent->windowTitle());
 	QBoxLayout* layout=new QBoxLayout(QBoxLayout::TopToBottom, this);
 
 	QGridLayout* settings=new QGridLayout();
@@ -47,16 +46,16 @@ OptionsDialog::OptionsDialog(QWidget* parent)
 
 	settings->addWidget(new QLabel(tr("ptc speed"),this),4,1);
 	settings->addWidget(speedPTC=new QComboBox(this),4,2);
-	speedPTC->insertItem(tr("38400bps"));
-	speedPTC->insertItem(tr("57600bps"));
-	speedPTC->insertItem(tr("115200bps"));
+	speedPTC->addItem(tr("38400bps"));
+	speedPTC->addItem(tr("57600bps"));
+	speedPTC->addItem(tr("115200bps"));
 	int i=0;
 	switch(c.readNumEntry("/hamfax/PTC/speed")) {
 	case 115200: i=2; break;
 	case 57600:  i=1; break;
 	default:          break;
 	};
-	speedPTC->setCurrentItem(i);
+	speedPTC->setCurrentIndex(i);
 
 #ifdef HAVE_LIBHAMLIB
 	settings->addWidget(new QLabel(tr("hamlib model number"),this),5,1);
@@ -84,7 +83,7 @@ void OptionsDialog::okClicked(void)
 	done(1);
 	Config& c=Config::instance();
 	int s=38400;
-	switch (speedPTC->currentItem()) {
+	switch (speedPTC->currentIndex()) {
 	case 2: s=115200; break;
 	case 1: s=57600;  break;
 	default:          break;

@@ -55,29 +55,24 @@ std::cout << this << " ctor " << __FUNCTION__ << "\n" ;
 		return false ;
 	};
 
-	bool hamlibModelOk ;
-	int hamlibModel = c.readNumEntry("/hamfax/HAMLIB/hamlib_model", 0, &hamlibModelOk );
-
-	if (!hamlibModelOk) {
-		ThrowError("Hamlib: Model is not an integer:%s", hamlibModelString.c_str() );
-	};
+	int hamlibModel = c.readNumEntry("/hamfax/HAMLIB/hamlib_model");
 
 	hamlibRigPtr = rig_init(hamlibModel);
 	if( ! hamlibRigPtr ) {
 		ThrowError("Hamlib: rig_init invalid model=%d", hamlibModel);
 	}
 
-	std::string pttDeviceString = c.readEntry("/hamfax/PTT/device").ascii();
+	std::string pttDeviceString = c.readEntry("/hamfax/PTT/device").toStdString();
 	if( pttDeviceString.size() >= FILPATHLEN ) {
 		ThrowError("Hamlib: rig_init PTT device too long=%s", pttDeviceString.c_str() );
 	};
 std::cout << "pttDev=" << pttDeviceString << "\n" ;
 	strncpy(hamlibRigPtr->state.rigport.pathname, pttDeviceString.c_str(), FILPATHLEN);
 
-	QString hamlibParametersQString = c.readEntry("/hamfax/HAMLIB/hamlib_parameters");
+	std::string hamlibParametersQString = c.readEntry("/hamfax/HAMLIB/hamlib_parameters").toStdString();
 	std::vector<char> hamlibParametersVector(
-			hamlibParametersQString.ascii(),
-			hamlibParametersQString.ascii() +
+			hamlibParametersQString.c_str(),
+			hamlibParametersQString.c_str() +
 			hamlibParametersQString.length() );
 
 	/// It must be terminated with a zero.
@@ -165,7 +160,7 @@ void PTT::set(void)
 		}
 #endif
 		try {
-			device.setName(c.readEntry("/hamfax/PTT/device"));
+			device.setFileName(c.readEntry("/hamfax/PTT/device"));
 			if(!device.open(QIODevice::WriteOnly)) {
 				throw Error();
 			}
