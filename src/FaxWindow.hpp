@@ -23,8 +23,8 @@
 #include <qmainwindow.h>
 #include <qstring.h>
 #include <qtoolbar.h>
-#include <Q3PopupMenu>
-#include <Q3MainWindow>
+#include <QMenu>
+#include <QMainWindow>
 #include "CorrectDialog.hpp"
 #include "FaxDemodulator.hpp"
 #include "FaxImage.hpp"
@@ -37,29 +37,29 @@
 #include "Sound.hpp"
 #include "TransmitDialog.hpp"
 
-class FaxWindow : public Q3MainWindow {
+class FaxWindow : public QMainWindow {
 	Q_OBJECT
 public:
 	FaxWindow(const QString& version);
 private:
 	// menus
 	void createMenubar();
-	Q3PopupMenu* imageMenu;
+	QMenu* imageMenu;
 	int slantID;
 	int colDrawID;
 	int monoDrawID;
-	Q3PopupMenu* optionsMenu;
+	QMenu* optionsMenu;
 	int pttID;
 	int scrollID;
 	int toolTipID;
 
 	// tool bars
 	void createToolbars();
-	Q3ToolBar* modTool;
+	QToolBar* modTool;
 	QComboBox* modulation;
 	QComboBox* filter;
-	Q3ToolBar* aptTool;
-	Q3ToolBar* faxTool;
+	QToolBar* aptTool;
+	QToolBar* faxTool;
 	QComboBox* invertPhase;
 	QComboBox* colorBox;
 
