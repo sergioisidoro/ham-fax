@@ -27,7 +27,7 @@ AC_PROG_CXX
 AC_PROG_INSTALL
 
 PKG_PROG_PKG_CONFIG
-PKG_CHECK_MODULES([Qt4], [QtCore Qt3Support QtGui])
+PKG_CHECK_MODULES([Qt4], [QtCore QtGui])
 
 AH_TEMPLATE(USE_FILE, [Build with support for audio files.])
 AC_CHECK_LIB(audiofile, afOpenFile,
