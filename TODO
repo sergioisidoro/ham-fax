@@ -90,3 +90,6 @@ Things to do sometime:
   environment file
 
 - consolidate documentation in html or docbook xml; keep one delete the other
+
+- FaxWindow: remove "int interface", split endReception and endTransmit() in
+  three functions each

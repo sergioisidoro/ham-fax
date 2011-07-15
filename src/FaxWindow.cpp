@@ -41,9 +41,8 @@
 #include <cmath>
 
 FaxWindow::FaxWindow(const QString& version)
-	: QMainWindow(0,0,Qt::WDestructiveClose)
 {
-	setCaption(version);
+	setWindowTitle(version);
 
 	// create child objects
 	setCentralWidget(faxImage=new FaxImage(this));
@@ -137,73 +136,77 @@ void FaxWindow::createMenubar(void)
 {
 	Config& config=Config::instance();
 
-	QMenu* fileMenu=new QMenu(this);
-	fileMenu->insertItem(tr("&Open"),this,SLOT(load()));
-	fileMenu->insertItem(tr("&Save"),this,SLOT(save()));
-	fileMenu->insertItem(tr("&Quick save as PNG"),this,SLOT(quickSave()));
-	fileMenu->insertSeparator();
-	fileMenu->insertItem(tr("&Exit"),this,SLOT(close()));
+	QMenu* fileMenu = new QMenu(tr("&File"));
+	menuBar()->addMenu(fileMenu);
+	fileMenu->addAction(tr("&Open"), this, SLOT(load()));
+	fileMenu->addAction(tr("&Save"), this, SLOT(save()));
+	fileMenu->addAction(tr("&Quick save as PNG"), this, SLOT(quickSave()));
+	fileMenu->addSeparator();
+	fileMenu->addAction(tr("&Exit"), this, SLOT(close()));
 
-	QMenu* transmitMenu=new QMenu(this);
-	transmitMenu->insertItem(tr("Transmit using &dsp"),DSP);
-	transmitMenu->insertItem(tr("Transmit to &file"),FILE);
-	transmitMenu->insertItem(tr("Transmit using &PTC"),SCSPTC);
-	connect(transmitMenu,SIGNAL(activated(int)),SLOT(initTransmit(int)));
+	QMenu* transmitMenu = new QMenu(tr("&Transmit"));
+	menuBar()->addMenu(transmitMenu);
+	transmitMenu->addAction(tr("Transmit using &dsp"),
+				this, SLOT(initTransmitDsp()));
+	transmitMenu->addAction(tr("Transmit to &file"),
+				this, SLOT(initTransmitFile()));
+	transmitMenu->addAction(tr("Transmit using &PTC"),
+				this, SLOT(initTransmitPtc()));
 
-	QMenu* receiveMenu=new QMenu(this);
-	receiveMenu->insertItem(tr("Receive from d&sp"),DSP);
-	receiveMenu->insertItem(tr("Receive from f&ile"),FILE);
-	receiveMenu->insertItem(tr("Receive from P&TC"),SCSPTC);
-	connect(receiveMenu,SIGNAL(activated(int)),SLOT(initReception(int)));
+	QMenu* receiveMenu = new QMenu(tr("&Receive"));
+	menuBar()->addMenu(receiveMenu);
+	receiveMenu->addAction(tr("Receive from d&sp"),
+			       this, SLOT(initReceptionDsp()));
+	receiveMenu->addAction(tr("Receive from f&ile"),
+			       this, SLOT(initReceptionFile()));
+	receiveMenu->addAction(tr("Receive from P&TC"),
+			       this, SLOT(initReceptionPtc()));
 
-	imageMenu=new QMenu(this);
-	imageMenu->insertItem(tr("&Adjust IOC (change width)"),
-			      this,SLOT(adjustIOC()));
-	imageMenu->insertItem(tr("&Scale to IOC (scale whole image)"),
-			      this,SLOT(scaleToIOC()));
-	imageMenu->insertSeparator();
-	slantID=imageMenu->insertItem(tr("slant correction"),
-				      this,SLOT(slantWaitFirst()));
-	colDrawID=imageMenu->insertItem(tr("redraw as color facsimile")
-					,this,SLOT(redrawColor()));
-	monoDrawID=imageMenu->insertItem(tr("redraw as mono facsimile"),
-					 this,SLOT(redrawMono()));
-	imageMenu->insertSeparator();
-	imageMenu->insertItem(tr("shift colors (R->G,G->B,B->R)"),
-			      faxImage,SLOT(shiftColors()));
-	imageMenu->insertItem(tr("set beginning of line"),
-			      this,SLOT(setBegin()));
-	optionsMenu=new QMenu(this);
-	optionsMenu->insertItem(tr("device settings"),this,SLOT(doOptions()));
-	optionsMenu->insertItem(tr("&select font"),this,SLOT(selectFont()));
-	optionsMenu->insertSeparator();
-	pttID=optionsMenu->
-		insertItem(tr("key PTT while transmitting with DSP"),
-			   this,SLOT(changePTT()));
-	optionsMenu->setItemChecked(pttID,config.readBoolEntry("/hamfax/PTT/use"));
-	scrollID=optionsMenu->
-		insertItem(tr("automatic scroll to last received line"),
-			   this,SLOT(changeScroll()));
-	optionsMenu->setItemChecked(scrollID,
-				    config.readBoolEntry("/hamfax/GUI/autoScroll"));
-	toolTipID=optionsMenu->insertItem(tr("show tool tips"),
-					  this,SLOT(changeToolTip()));
+	QMenu* imageMenu = new QMenu(tr("&Image"));
+	menuBar()->addMenu(imageMenu);
+	imageMenu->addAction(tr("&Adjust IOC (change width)"),
+			     this, SLOT(adjustIOC()));
+	imageMenu->addAction(tr("&Scale to IOC (scale whole image)"),
+			     this, SLOT(scaleToIOC()));
+	imageMenu->addSeparator();
+	slantAction = imageMenu->addAction(tr("slant correction"),
+					      this, SLOT(slantWaitFirst()));
+	colorDrawAction = imageMenu->addAction(tr("redraw as color facsimile"),
+					       this, SLOT(redrawColor()));
+	monoDrawAction = imageMenu->addAction(tr("redraw as mono facsimile"),
+					      this, SLOT(redrawMono()));
+	imageMenu->addSeparator();
+	imageMenu->addAction(tr("shift colors (R->G,G->B,B->R)"),
+			     faxImage, SLOT(shiftColors()));
+	imageMenu->addAction(tr("set beginning of line"),
+			     this, SLOT(setBegin()));
+
+	QMenu* optionsMenu = new QMenu(tr("&Options"));
+	menuBar()->addMenu(optionsMenu);
+	optionsMenu->addAction(tr("device settings"), this, SLOT(doOptions()));
+	optionsMenu->addAction(tr("&select font"),this,SLOT(selectFont()));
+	optionsMenu->addSeparator();
+	pttAction = optionsMenu->addAction(tr("key PTT while transmitting with DSP"),
+					   this, SLOT(changePTT()));
+	pttAction->setCheckable(true);
+	pttAction->setChecked(config.readBoolEntry("/hamfax/PTT/use"));
+	scrollAction = optionsMenu->addAction(tr("automatic scroll to last received line"),
+					      this, SLOT(changeScroll()));
+	scrollAction->setCheckable(true);
+	scrollAction->setChecked(config.readBoolEntry("/hamfax/GUI/autoScroll"));
+	toolTipAction = optionsMenu->addAction(tr("show tool tips"),
+					       this, SLOT(changeToolTip()));
+	toolTipAction->setCheckable(true);
 	bool toolTipEnabled=config.readBoolEntry("/hamfax/GUI/toolTips");
-	optionsMenu->setItemChecked(toolTipID,toolTipEnabled);
+	toolTipAction->setChecked(toolTipEnabled);
 
-	QMenu* helpMenu=new QMenu(this);
-	helpMenu->insertItem(tr("&Help"),this,SLOT(help()));
-	helpMenu->insertSeparator();
-	helpMenu->insertItem(tr("&About hamfax"),this,SLOT(about()));
-	helpMenu->insertItem(tr("About &QT"),this,SLOT(aboutQT()));
-
-	menuBar()->insertItem(tr("&File"),fileMenu);
-	menuBar()->insertItem(tr("&Transmit"),transmitMenu);
-	menuBar()->insertItem(tr("&Receive"),receiveMenu);
-	menuBar()->insertItem(tr("&Image"),imageMenu);
-	menuBar()->insertItem(tr("&Options"),optionsMenu);
-	menuBar()->insertSeparator();
-	menuBar()->insertItem(tr("&Help"),helpMenu);
+	QMenu* helpMenu = new QMenu(tr("&Help"));
+	menuBar()->addSeparator();
+	menuBar()->addMenu(helpMenu);
+	helpMenu->addAction(tr("&Help"), this, SLOT(help()));
+	helpMenu->addSeparator();
+	helpMenu->addAction(tr("&About hamfax"), this, SLOT(about()));
+	helpMenu->addAction(tr("About &QT"), this, SLOT(aboutQT()));
 }
 
 void FaxWindow::createToolbars(void)
@@ -221,7 +224,7 @@ void FaxWindow::createToolbars(void)
 	carrier->setSingleStep(100);
 	carrier->setSuffix(tr("Hz"));
 	carrier->setValue(config.readNumEntry("/hamfax/modulation/carrier"));
-	QToolTip::add(carrier,tr("signal carrier for FM and AM"));
+	carrier->setToolTip(tr("signal carrier for FM and AM"));
 	connect(carrier,SIGNAL(valueChanged(int)),SLOT(setCarrier(int)));
 
 	modTool->addSeparator();
@@ -235,7 +238,7 @@ void FaxWindow::createToolbars(void)
 	deviation->setSingleStep(10);
 	deviation->setValue(config.readNumEntry("/hamfax/modulation/deviation"));
 	deviation->setSuffix(tr("Hz"));
-	QToolTip::add(deviation, tr("deviation for FM"));
+	deviation->setToolTip(tr("deviation for FM"));
 	connect(deviation,SIGNAL(valueChanged(int)),SLOT(setDeviation(int)));
 
 	modTool->addSeparator();
@@ -244,16 +247,16 @@ void FaxWindow::createToolbars(void)
 
 	modulation = new QComboBox();
 	modTool->addWidget(modulation);
-	modulation->insertItem(tr("AM"));
-	modulation->insertItem(tr("FM"));
-	modulation->setCurrentItem(config.readBoolEntry("/hamfax/modulation/FM")
+	modulation->addItem(tr("AM"));
+	modulation->addItem(tr("FM"));
+	modulation->setCurrentIndex(config.readBoolEntry("/hamfax/modulation/FM")
 				   ? 1 : 0);
-	connect(modulation,SIGNAL(activated(int)),SLOT(setUseFM(int)));
-	QToolTip::add(modulation,tr("AM is only used for getting images\n"
-				    "from weather satellites together with\n"
-				    "a FM receiver. FM together with a\n"
-				    "USB (upper side band) transceiver is\n"
-				    "the right setting for HF"));
+	modulation->setToolTip(tr("AM is only used for getting images\n"
+				  "from weather satellites together with\n"
+				  "a FM receiver. FM together with a\n"
+				  "USB (upper side band) transceiver is\n"
+				  "the right setting for HF"));
+	connect(modulation, SIGNAL(activated(int)), SLOT(setUseFM(int)));
 
 	modTool->addSeparator();
 
@@ -261,12 +264,12 @@ void FaxWindow::createToolbars(void)
 
 	filter = new QComboBox();
 	modTool->addWidget(filter);
-	filter->insertItem(tr("narrow"));
-	filter->insertItem(tr("middle"));
-	filter->insertItem(tr("wide"));
-	filter->setCurrentItem(config.readNumEntry("/hamfax/modulation/filter"));
-	connect(filter,SIGNAL(activated(int)),SLOT(setFilter(int)));
-	QToolTip::add(filter,tr("bandwidth of the software demodulator"));
+	filter->addItem(tr("narrow"));
+	filter->addItem(tr("middle"));
+	filter->addItem(tr("wide"));
+	filter->setCurrentIndex(config.readNumEntry("/hamfax/modulation/filter"));
+	filter->setToolTip(tr("bandwidth of the software demodulator"));
+	connect(filter, SIGNAL(activated(int)), SLOT(setFilter(int)));
 
 	addToolBarBreak();
 
@@ -284,8 +287,8 @@ void FaxWindow::createToolbars(void)
 	aptStartLength->setValue(config.readNumEntry("/hamfax/APT/startLength"));
 	connect(aptStartLength,SIGNAL(valueChanged(int)),
 		SLOT(setAptStartLength(int)));
-	QToolTip::add(aptStartLength,tr("length of the black/white pattern\n"
-					"at the beginning of a facsimile"));
+	aptStartLength->setToolTip(tr("length of the black/white pattern\n"
+				      "at the beginning of a facsimile"));
 
 	QSpinBox* aptStartFreq = new QSpinBox();
 	aptTool->addWidget(aptStartFreq);
@@ -296,8 +299,8 @@ void FaxWindow::createToolbars(void)
 	aptStartFreq->setValue(config.readNumEntry("/hamfax/APT/startFreq"));
 	connect(aptStartFreq,SIGNAL(valueChanged(int)),
 		SLOT(setAptStartFreq(int)));
-	QToolTip::add(aptStartFreq,tr("frequency of the black/white pattern\n"
-				      "at the beginning of a facsimile"));
+	aptStartFreq->setToolTip(tr("frequency of the black/white pattern\n"
+				    "at the beginning of a facsimile"));
 
 	aptTool->addSeparator();
 
@@ -310,8 +313,8 @@ void FaxWindow::createToolbars(void)
 	aptStopLength->setValue(config.readNumEntry("/hamfax/APT/stopLength"));
 	connect(aptStopLength,SIGNAL(valueChanged(int)),
 		SLOT(setAptStopLength(int)));
-	QToolTip::add(aptStopLength,tr("length of the black/white pattern\n"
-				       "at the end of a facsimile"));
+	aptStopLength->setToolTip(tr("length of the black/white pattern\n"
+				     "at the end of a facsimile"));
 
 	QSpinBox* aptStopFreq = new QSpinBox();
 	aptTool->addWidget(aptStopFreq);
@@ -322,8 +325,8 @@ void FaxWindow::createToolbars(void)
 	aptStopFreq->setValue(config.readNumEntry("/hamfax/APT/stopFreq"));
 	connect(aptStopFreq,SIGNAL(valueChanged(int)),
 		SLOT(setAptStopFreq(int)));
-	QToolTip::add(aptStopFreq,tr("frequency of the black/white pattern\n"
-				     "at the end of a facsimile"));
+	aptStopFreq->setToolTip(tr("frequency of the black/white pattern\n"
+				   "at the end of a facsimile"));
 	
 	addToolBarBreak();
 
@@ -339,7 +342,7 @@ void FaxWindow::createToolbars(void)
 	lpm->setSingleStep(10);
 	lpm->setValue(config.readNumEntry("/hamfax/fax/LPM"));
 	connect(lpm,SIGNAL(valueChanged(int)),SLOT(setLpm(int)));
-	QToolTip::add(lpm,tr("lines per minute"));
+	lpm->setToolTip(tr("lines per minute"));
 
 	faxTool->addSeparator();
 
@@ -352,40 +355,41 @@ void FaxWindow::createToolbars(void)
 	phaseLines->setSingleStep(1);
 	phaseLines->setValue(config.readNumEntry("/hamfax/phasing/lines"));
 	connect(phaseLines,SIGNAL(valueChanged(int)),SLOT(setPhaseLines(int)));
-	QToolTip::add(phaseLines,tr("phasing lines mark the beginning\n"
-				    "of a line and the speed (lpm)"));
+	phaseLines->setToolTip(tr("phasing lines mark the beginning\n"
+				  "of a line and the speed (lpm)"));
 
 	invertPhase = new QComboBox(false);
 	faxTool->addWidget(invertPhase);
-	invertPhase->insertItem(tr("normal"));
-	invertPhase->insertItem(tr("inverted"));
-	invertPhase->setCurrentItem(config.readBoolEntry("/hamfax/phasing/invert")
+	invertPhase->addItem(tr("normal"));
+	invertPhase->addItem(tr("inverted"));
+	invertPhase->setCurrentIndex(config.readBoolEntry("/hamfax/phasing/invert")
 				    ? 1 : 0);
 	connect(invertPhase,SIGNAL(activated(int)),SLOT(setPhaseInvert(int)));
-	QToolTip::add(invertPhase,tr("normal means 2.5% white, 95% black\n"
-				     "and again 2.5% white"));
+	invertPhase->setToolTip(tr("normal means 2.5% white, 95% black\n"
+				   "and again 2.5% white"));
 
 	faxTool->addSeparator();
 
 	colorBox = new QComboBox(false);
 	faxTool->addWidget(colorBox);
-	colorBox->insertItem(tr("mono"));
-	colorBox->insertItem(tr("color"));
-	colorBox->setCurrentItem(config.readBoolEntry("/hamfax/fax/color")?1:0);
+	colorBox->addItem(tr("mono"));
+	colorBox->addItem(tr("color"));
+	colorBox->setCurrentIndex(config.readBoolEntry("/hamfax/fax/color")?1:0);
 	connect(colorBox,SIGNAL(activated(int)),SLOT(setColor(int)));
-	QToolTip::add(colorBox,
-		      tr("In color mode each line\n"
-			 "is split in three lines:\n"
-			 "red, green and blue."));
+	colorBox->setToolTip(tr("In color mode each line\n"
+				"is split in three lines:\n"
+				"red, green and blue."));
 }
 
 void FaxWindow::createStatusBar()
 {
 	statusBar()->setSizeGripEnabled(false);
-	statusBar()->addWidget(sizeText=new QLabel(statusBar()),0,true);
-	statusBar()->addWidget(iocText=new QLabel(statusBar()),0,true);
-	QToolTip::add(iocText,tr("Index Of Cooperation:\n"
-				 "image width in pixels divided by PI"));
+	sizeText = new QLabel();
+	statusBar()->addPermanentWidget(sizeText);
+	iocText = new QLabel();
+	statusBar()->addPermanentWidget(iocText);
+	iocText->setToolTip(tr("Index Of Cooperation:\n"
+			       "image width in pixels divided by PI"));
 }
 
 void FaxWindow::endTransmission(void)
@@ -445,7 +449,7 @@ void FaxWindow::endReception(void)
 
 void FaxWindow::closeEvent(QCloseEvent* close)
 {
-	switch(QMessageBox::information(this,caption(),
+	switch(QMessageBox::information(this, windowTitle(),
 					tr("Really exit?"),
 					tr("&Exit"),tr("&Don't Exit"))) {
 	case 0:
@@ -495,9 +499,9 @@ void FaxWindow::enableControls(void)
 
 void FaxWindow::setImageAdjust(bool b)
 {
-	imageMenu->setItemEnabled(slantID,b);
-	imageMenu->setItemEnabled(colDrawID,b);
-	imageMenu->setItemEnabled(monoDrawID,b);
+	slantAction->setEnabled(b);
+	colorDrawAction->setEnabled(b);
+	monoDrawAction->setEnabled(b);
 }
 
 void FaxWindow::setBeginEnd(void)
@@ -518,8 +522,9 @@ void FaxWindow::load(void)
 	for (int i = 0; i < formats.size(); i++)
 		str_formats.append(formats.at(i));
 
-	QString filter = "*." + str_formats.join(" *.").lower();
-	QString name=QFileDialog::getOpenFileName(".",filter,this,0,caption());
+	QString filter = "*." + str_formats.join(" *.").toLower();
+	QString name = QFileDialog::getOpenFileName(this, windowTitle(), ".",
+						    filter);
 
 	if(!name.isEmpty()) {
 		faxImage->load(name);
@@ -534,13 +539,14 @@ void FaxWindow::save(void)
 	for (int i = 0; i< formats.size(); i++)
 		str_formats.append(formats.at(i));
 
-	QString filter = "*." + str_formats.join(" *.").lower();
-	QString name=QFileDialog::getSaveFileName(".",filter,this,0,caption());
+	QString filter = "*." + str_formats.join(" *.").toLower();
+	QString name = QFileDialog::getSaveFileName(this, windowTitle(), ".",
+						    filter);
 
 	if(!name.isEmpty()) {
 		bool result = faxImage->save(name);
 		if (result == false)
-			QMessageBox::warning(this, caption(),
+			QMessageBox::warning(this, windowTitle(),
 				tr("Could not save to file '%1'.").arg(name),
 				QMessageBox::Ok, Qt::NoButton);
 	}
@@ -558,97 +564,133 @@ void FaxWindow::quickSave(void)
 	faxImage->save(name);
 }
 
-void FaxWindow::initTransmit(int item)
+void FaxWindow::initTransmitCommon(int interface, int sampleRate)
+{
+	this->interface = interface;
+	faxTransmitter->start(sampleRate);
+	faxModulator->init(sampleRate);
+	transmitDialog->start();
+	disableControls();
+}
+
+void FaxWindow::initTransmitFile()
 {
 	try {
-		QString fileName;
-		int sampleRate;
-		switch(interface=item) {
-		case FILE:
-			fileName=QFileDialog::getSaveFileName(".","*.au",
-							      this,0,caption());
-			if(fileName.isEmpty()) {
-				return;
-			}
-			sampleRate=file->startOutput(fileName);
-			connect(file,SIGNAL(next(int)),
-				faxTransmitter,SLOT(doNext(int)));
-			connect(faxTransmitter,	SIGNAL(data(double*, int)),
-				faxModulator, SLOT(modulate(double*, int)));
-			connect(faxModulator, SIGNAL(data(short*, int)),
-				file, SLOT(write(short*, int)));
-			break;
-		case DSP:
-			sampleRate=sound->startOutput();
-			connect(sound,SIGNAL(spaceLeft(int)),
-				faxTransmitter,SLOT(doNext(int)));
-			connect(faxTransmitter,	SIGNAL(data(double*, int)),
-				faxModulator, SLOT(modulate(double*, int)));
-			connect(faxModulator, SIGNAL(data(short*, int)),
-				sound, SLOT(write(short*, int)));
-			break;
-		case SCSPTC:
-			sampleRate=ptc->startOutput();
-			connect(ptc,SIGNAL(spaceLeft(int)),
-				faxTransmitter,SLOT(doNext(int)));
-			connect(faxTransmitter,SIGNAL(data(double*, int)),
-				ptc,SLOT(transmit(double*, int)));
-			break;
-		}
-		faxTransmitter->start(sampleRate);
-		faxModulator->init(sampleRate);
-		transmitDialog->start();
-		disableControls();
+		QString	fileName;
+		fileName = QFileDialog::getSaveFileName(this, windowTitle(),
+							".", "*.au");
+		if(fileName.isEmpty())
+			return;
+
+		int sampleRate = file->startOutput(fileName);
+
+		connect(file,SIGNAL(next(int)), faxTransmitter,SLOT(doNext(int)));
+		connect(faxTransmitter,	SIGNAL(data(double*, int)),
+			faxModulator, SLOT(modulate(double*, int)));
+		connect(faxModulator, SIGNAL(data(short*, int)),
+			file, SLOT(write(short*, int)));
+
+		initTransmitCommon(FILE, sampleRate);
 	} catch (Error e) {
-		QMessageBox::warning(this,caption(),e.getText());
+		QMessageBox::warning(this, windowTitle(), e.getText());
 	}
 }
 
-void FaxWindow::initReception(int item)
+void FaxWindow::initTransmitDsp()
+{
+	try {
+		int sampleRate=sound->startOutput();
+		connect(sound,SIGNAL(spaceLeft(int)),
+			faxTransmitter,SLOT(doNext(int)));
+		connect(faxTransmitter,	SIGNAL(data(double*, int)),
+			faxModulator, SLOT(modulate(double*, int)));
+		connect(faxModulator, SIGNAL(data(short*, int)),
+			sound, SLOT(write(short*, int)));
+
+		initTransmitCommon(DSP, sampleRate);
+	} catch (Error e) {
+		QMessageBox::warning(this, windowTitle(), e.getText());
+	}
+}
+
+void FaxWindow::initTransmitPtc()
+{
+	try {
+		int sampleRate=ptc->startOutput();
+		connect(ptc,SIGNAL(spaceLeft(int)),
+			faxTransmitter,SLOT(doNext(int)));
+		connect(faxTransmitter,SIGNAL(data(double*, int)),
+			ptc,SLOT(transmit(double*, int)));
+
+		initTransmitCommon(SCSPTC, sampleRate);
+	} catch (Error e) {
+		QMessageBox::warning(this, windowTitle(), e.getText());
+	}
+}
+
+void FaxWindow::initReceptionCommon(int interface, int sampleRate)
+{
+	this->interface = interface;
+	faxReceiver->init(sampleRate);
+	receiveDialog->aptStart();
+	disableControls();
+	faxDemodulator->init(sampleRate);
+}
+
+void FaxWindow::initReceptionFile()
+{
+	try {
+		QString fileName;
+		fileName = QFileDialog::getOpenFileName(this, windowTitle(),
+							".", "*.au");
+		if(fileName.isEmpty())
+			return;
+		int sampleRate=file->startInput(fileName);
+		connect(file, SIGNAL(data(short*,int)),
+			faxDemodulator, SLOT(newSamples(short*,int)));
+		connect(faxDemodulator, SIGNAL(data(int*,int)),
+			faxReceiver, SLOT(decode(int*,int)));
+
+		initReceptionCommon(FILE, sampleRate);
+	} catch (Error e) {
+                QMessageBox::warning(this, windowTitle(), e.getText());
+	}
+}
+
+void FaxWindow::initReceptionDsp()
+{
+	try {
+		int sampleRate=sound->startInput();
+		connect(sound,SIGNAL(data(short*,int)),
+			faxDemodulator, SLOT(newSamples(short*,int)));
+		connect(faxDemodulator, SIGNAL(data(int*,int)),
+			faxReceiver, SLOT(decode(int*,int)));
+
+		initReceptionCommon(DSP, sampleRate);
+	} catch (Error e) {
+                QMessageBox::warning(this, windowTitle(), e.getText());
+	}
+}
+
+void FaxWindow::initReceptionPtc()
 {
         try {
-                int sampleRate;
-                QString fileName;
-                switch(interface=item) {
-                case FILE:
-                        fileName=QFileDialog::getOpenFileName(".","*.au",this,
-                                                              0,caption());
-                        if(fileName.isEmpty()) {
-                                return;
-                        }
-                        sampleRate=file->startInput(fileName);
-                        connect(file, SIGNAL(data(short*,int)),
-                                faxDemodulator, SLOT(newSamples(short*,int)));
-                        connect(faxDemodulator, SIGNAL(data(int*,int)),
-                                faxReceiver, SLOT(decode(int*,int)));
-                        break;
-                case DSP:
-                        sampleRate=sound->startInput();
-                        connect(sound,SIGNAL(data(short*,int)),
-                                faxDemodulator, SLOT(newSamples(short*,int)));
-                        connect(faxDemodulator, SIGNAL(data(int*,int)),
-                                faxReceiver, SLOT(decode(int*,int)));
-                        break;
-                case SCSPTC:
-                        sampleRate=ptc->startInput();
-                        connect(ptc,SIGNAL(data(int*,int)),
-                                faxReceiver, SLOT(decode(int*, int)));
-                        break;
-                }
-                faxReceiver->init(sampleRate);
-                receiveDialog->aptStart();
-                disableControls();
-                faxDemodulator->init(sampleRate);
-        } catch(Error e) {
-                QMessageBox::warning(this,caption(),e.getText());
-        }
+		int sampleRate=ptc->startInput();
+		connect(ptc,SIGNAL(data(int*,int)),
+			faxReceiver, SLOT(decode(int*, int)));
+
+		initReceptionCommon(SCSPTC, sampleRate);
+	} catch(Error e) {
+		QMessageBox::warning(this, windowTitle(), e.getText());
+	}
 }
 
 void FaxWindow::adjustIOC(void)
 {
 	bool ok;
-	int iocNew=QInputDialog::getInteger(caption(),tr("Please enter IOC"),
-					    ioc, 204, 576, 1, &ok, this );
+	int iocNew = QInputDialog::getInt(this, windowTitle(),
+					  tr("Please enter IOC"), ioc,
+					  204, 576, 1, &ok);
 	if(ok) {
 		faxReceiver->correctWidth(M_PI*iocNew);
 	}
@@ -657,8 +699,9 @@ void FaxWindow::adjustIOC(void)
 void FaxWindow::scaleToIOC(void)
 {
 	bool ok;
-	int newIOC=QInputDialog::getInteger(caption(),tr("Please enter IOC"),
-					    ioc, 204, 576, 1, &ok, this );
+	int newIOC = QInputDialog::getInt(this, windowTitle(),
+					  tr("Please enter IOC"), ioc,
+					  204, 576, 1, &ok);
 	if(ok) {
 		faxImage->scale(M_PI*newIOC);
 	}
@@ -675,14 +718,14 @@ void FaxWindow::slantWaitFirst(void)
 void FaxWindow::redrawColor(void)
 {
 	Config::instance().writeEntry("/hamfax/fax/color",true);
-	colorBox->setCurrentItem(1);
+	colorBox->setCurrentIndex(1);
 	faxReceiver->correctLPM(0);
 }
 
 void FaxWindow::redrawMono(void)
 {
 	Config::instance().writeEntry("/hamfax/fax/color",false);
-	colorBox->setCurrentItem(0);
+	colorBox->setCurrentIndex(0);
 	faxReceiver->correctLPM(0);
 }
 
@@ -706,30 +749,30 @@ void FaxWindow::selectFont(void)
 	bool ok;
 	QFont f=QFontDialog::getFont(&ok,QApplication::font(),this);
 	if (ok) {
-		QApplication::setFont(f,true);
+		QApplication::setFont(f);
 		Config::instance().writeEntry("/hamfax/GUI/font",f.toString());
 	}
 }
 
 void FaxWindow::changePTT(void)
 {
-	bool b=!optionsMenu->isItemChecked(pttID);
-	optionsMenu->setItemChecked(pttID,b);
-	Config::instance().writeEntry("/hamfax/PTT/use",b);
+	bool b = !pttAction->isChecked();
+	pttAction->setChecked(b);
+	Config::instance().writeEntry("/hamfax/PTT/use", b);
 }
 
 void FaxWindow::changeScroll(void)
 {
-	bool b=!optionsMenu->isItemChecked(scrollID);
-	optionsMenu->setItemChecked(scrollID,b);
+	bool b = !scrollAction->isChecked();
+	scrollAction->setChecked(b);
 	Config::instance().writeEntry("/hamfax/GUI/autoScroll",b);
 	faxImage->setAutoScroll(b);
 }
 
 void FaxWindow::changeToolTip(void)
 {
-	bool b=!optionsMenu->isItemChecked(toolTipID);
-	optionsMenu->setItemChecked(toolTipID,b);
+	bool b = !toolTipAction->isChecked();
+	toolTipAction->setChecked(b);
 	Config::instance().writeEntry("/hamfax/GUI/toolTips",b);
 }
 
@@ -743,19 +786,19 @@ void FaxWindow::help(void)
 void FaxWindow::about(void)
 {
 	QMessageBox::information(
-		this,caption(),
+		this, windowTitle(),
 		tr("hamfax is a Qt application for transmitting and receiving"
 		   "\nham radio facsimiles and weather broadcasts.\n\n"
 		   "Author: Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>"
 		   "\n\nThe demodulator is taken from ACfax"
 		   " by Andreas Czechanowski, DL4SDC"
 		   "\n\nLicense: GNU General Public License"
-		   "\nVersion: %1").arg(caption()));
+		   "\nVersion: %1").arg(windowTitle()));
 }
 
 void FaxWindow::aboutQT(void)
 {
-	QMessageBox::aboutQt(this,caption());
+	QMessageBox::aboutQt(this, windowTitle());
 }
 
 // slots for toolbar objects
@@ -777,7 +820,7 @@ void FaxWindow::setUseFM(int f)
 
 void FaxWindow::setFilter(int n)
 {
-	filter->setCurrentItem(n);
+	filter->setCurrentIndex(n);
 }
 
 void FaxWindow::setAptStartLength(int l)

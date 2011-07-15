@@ -23,6 +23,7 @@
 #include <qmainwindow.h>
 #include <qstring.h>
 #include <qtoolbar.h>
+#include <QAction>
 #include <QMenu>
 #include <QMainWindow>
 #include "CorrectDialog.hpp"
@@ -44,14 +45,12 @@ public:
 private:
 	// menus
 	void createMenubar();
-	QMenu* imageMenu;
-	int slantID;
-	int colDrawID;
-	int monoDrawID;
-	QMenu* optionsMenu;
-	int pttID;
-	int scrollID;
-	int toolTipID;
+	QAction* slantAction;
+	QAction* colorDrawAction;
+	QAction* monoDrawAction;
+	QAction* pttAction;
+	QAction* scrollAction;
+	QAction* toolTipAction;
 
 	// tool bars
 	void createToolbars();
@@ -86,6 +85,9 @@ private:
 	enum { FILE, DSP, SCSPTC };
 	int interface;
 	enum { WAITFIRST, WAITSECOND, NOTHING } slantState;
+
+	void initTransmitCommon(int interface, int sampleRate);
+	void initReceptionCommon(int interface, int sampleRate);
 public slots:
         // part of set begin of line
 	void setBeginEnd(void);
@@ -110,8 +112,12 @@ private slots:
 	void quickSave(void);
 
 	// Transmit and Receive
-	void initTransmit(int item);
-	void initReception(int item);
+	void initTransmitFile(void);
+	void initTransmitDsp(void);
+	void initTransmitPtc(void);
+	void initReceptionFile(void);
+	void initReceptionDsp(void);
+	void initReceptionPtc(void);
 
 	// Image
         void adjustIOC(void);
