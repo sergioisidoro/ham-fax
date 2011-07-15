@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="de">
 <context>
     <name>CorrectDialog</name>
     <message>
@@ -376,6 +376,10 @@ Bildbreite in Pixeln dividiert durch PI</translation>
     <message>
         <source>&amp;Close</source>
         <translation>&amp;Schließen</translation>
+    </message>
+    <message>
+        <source>Could not open help file.</source>
+        <translation>Hilfe-Datei konnte nicht geöffnet werden.</translation>
     </message>
 </context>
 <context>

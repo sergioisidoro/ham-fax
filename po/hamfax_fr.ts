@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="fr">
 <context>
     <name>CorrectDialog</name>
     <message>
@@ -364,6 +364,10 @@ Version: %1</translation>
     <message>
         <source>&amp;Close</source>
         <translation>&amp;Fermer</translation>
+    </message>
+    <message>
+        <source>Could not open help file.</source>
+        <translation>Impossible d&apos;ouvrir le fichier de aide.</translation>
     </message>
 </context>
 <context>
