@@ -688,9 +688,9 @@ void FaxWindow::initReceptionPtc()
 void FaxWindow::adjustIOC(void)
 {
 	bool ok;
-	int iocNew = QInputDialog::getInt(this, windowTitle(),
-					  tr("Please enter IOC"), ioc,
-					  204, 576, 1, &ok);
+	int iocNew = QInputDialog::getInteger(this, windowTitle(),
+					      tr("Please enter IOC"), ioc,
+					      204, 576, 1, &ok);
 	if(ok) {
 		faxReceiver->correctWidth(M_PI*iocNew);
 	}
@@ -699,9 +699,9 @@ void FaxWindow::adjustIOC(void)
 void FaxWindow::scaleToIOC(void)
 {
 	bool ok;
-	int newIOC = QInputDialog::getInt(this, windowTitle(),
-					  tr("Please enter IOC"), ioc,
-					  204, 576, 1, &ok);
+	int newIOC = QInputDialog::getInteger(this, windowTitle(),
+					      tr("Please enter IOC"), ioc,
+					      204, 576, 1, &ok);
 	if(ok) {
 		faxImage->scale(M_PI*newIOC);
 	}
