@@ -20,52 +20,13 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
-#include <unistd.h>
+#include <sys/socket.h>
 #include <sys/soundcard.h>
+#include <unistd.h>
 #include <qtimer.h>
 #include <qthread.h>
 #include "Config.hpp"
 #include "Error.hpp"
-
-#ifdef QT_THREAD_SUPPORT
-// If QT was built with thread support, we can do things
-// a little differently (better)
-// *** This is untested as my QT does not have threads! ***
-//#define HF_QT_THREAD
-#endif
-
-#ifdef HF_QT_THREAD
-#include <qwaitcondition.h>
-class TransferThread: public QThread {
-public:
-	virtual void run();
-	Sound   *sound;
-	int     quit;
-	int     mode;
-	QWaitCondition have_data;
-};
-
-#define XM_READ  1
-#define XM_WRITE 2
-void TransferThread::run()
-{
-	quit=0;
-	while (!quit) {
-	    have_data.wait();
-	    if (mode==XM_WRITE) {
-		sound->checkSpace(-1);
-	    } else {
-	       while (!quit && sound->readALSAdata());
-	    }
-	}
-}
-
-#else
-
-#include <sys/socket.h>
-
-#endif
-
 
 Sound::Sound(QObject* parent)
 	: QObject(parent), sampleRate(8000), 
@@ -73,9 +34,6 @@ Sound::Sound(QObject* parent)
 #ifdef USE_ALSA
 	  pcm(NULL), handler(NULL), frames(512), framesize(sizeof(short)),
 	  buffer(NULL),
-#endif
-#ifdef HF_QT_THREAD
-	  xfer_thread(NULL),
 #endif
 	  dsp(-1), notifier(0), rateF(1)
 {
@@ -94,15 +52,6 @@ Sound::Sound(QObject* parent)
 
 Sound::~Sound(void)
 {
-#ifdef HF_QT_THREAD
-	if (xfer_thread) {
-	   xfer_thread->quit=1;
-	   xfer_thread->have_data.wake();
-	   xfer_thread.wait();
-	   delete xfer_thread;
-	   xfer_thread=NULL;
-	}
-#endif
 	if(dsp!=-1) {
 		::close(dsp);
 	}
@@ -130,23 +79,15 @@ Sound::~Sound(void)
 void Sound::ALSA_write_callback(snd_async_handler_t *handler)
 {
   Sound *sound=(Sound *)snd_async_handler_get_callback_private(handler);
-#ifdef HF_QT_THREAD
-  sound->xfer_thread->have_data.wake();
-#else
   char a=1;
   ::write(sound->callbackSocket[0], &a, sizeof(a));
-#endif
 }
 
 void Sound::ALSA_read_callback(snd_async_handler_t *handler)
 {
   Sound *sound=(Sound *)snd_async_handler_get_callback_private(handler);
-#ifdef HF_QT_THREAD
-  sound->xfer_thread->have_data.wake();
-#else
   char a=1;
   ::write(sound->callbackSocket[0], &a, sizeof(a));
-#endif
 }
 #endif /* USE_ALSA */
 
@@ -215,13 +156,6 @@ int Sound::startOutput(void)
 
 		//buffer=(short *)malloc(frames * framesize);
 
-#ifdef HF_QT_THREAD
-		// set up a thread waiting for data
-		if (!xfer_thread) xfer_thread = new TransferHandler();
-		xfer_thread->sound=this;
-		xfer_thread->mode=XM_WRITE;
-		xfer_thread->start(QThread::HighPriority);
-#else
 		// set up a unix socket with a notifier on it
 		if (::socketpair(AF_UNIX, SOCK_STREAM, 0, callbackSocket)) {
 		   // couldn't create socket pair...
@@ -232,7 +166,6 @@ int Sound::startOutput(void)
 		notifier=new QSocketNotifier(callbackSocket[1],QSocketNotifier::Write,this);
 		connect(notifier,SIGNAL(activated(int)),
 			this,SLOT(checkSpace(int)));
-#endif
 		
 		snd_async_add_pcm_handler(&handler, pcm, ALSA_write_callback, this);
 		//snd_pcm_start(pcm);
@@ -356,13 +289,6 @@ int Sound::startInput(void)
 
 		buffer=(short *)malloc(frames * framesize);
 
-#ifdef HF_QT_THREAD
-		// set up a thread waiting for data
-		if (!xfer_thread) xfer_thread = new TransferHandler();
-		xfer_thread->sound=this;
-		xfer_thread->mode=XM_READ;
-		xfer_thread->start(QThread::HighPriority);
-#else
 		// set up a unix socket with a notifier on it
 		if (::socketpair(AF_UNIX, SOCK_STREAM, 0, callbackSocket)) {
 		   // couldn't create socket pair...
@@ -372,7 +298,6 @@ int Sound::startInput(void)
 		notifier=new QSocketNotifier(callbackSocket[1],QSocketNotifier::Read,this);
 		connect(notifier,SIGNAL(activated(int)),
 			this,SLOT(readALSA(int)));
-#endif
 		
 		snd_pcm_start(pcm);
 		
@@ -455,9 +380,7 @@ void Sound::write(short* samples, int number)
 		}
 #ifdef USE_ALSA
 		if (pcm) {
-#ifndef HF_QT_THREAD
 			notifier->setEnabled(false);
-#endif
 			int rc=snd_pcm_writei(pcm,samples, number);
 			if (rc == -EPIPE) {
 			   // underrun occurred
@@ -471,9 +394,7 @@ void Sound::write(short* samples, int number)
 			} else if (rc != number) {
 				throw Error();
 			}
-#ifndef HF_QT_THREAD
 			notifier->setEnabled(true);
-#endif
 		}
 #endif /* USE_ALSA */
 	} catch(Error) {
@@ -566,10 +487,8 @@ void Sound::checkSpace(int fd)
 {
 #ifdef USE_ALSA
 	if (pcm) {
-#ifndef HF_QT_THREAD
 	  char tmp;
 	  ::read(callbackSocket[1], &tmp, sizeof(tmp));
-#endif
 	  emit spaceLeft(snd_pcm_avail_update(pcm));
 	} else 
 #endif /* USE_ALSA */
@@ -599,17 +518,10 @@ void Sound::close(void)
 	   snd_pcm_close(pcm);
 	   pcm=NULL;
 	}
-#ifdef HF_QT_THREAD
-	if (xfer_thread) {
-		xfer_thread->quit=1;
-		xfer_thread->have_data.wake();
-	}
-#else
 	if (callbackSocket[0]!=-1) ::close(callbackSocket[0]);
 	if (callbackSocket[1]!=-1) ::close(callbackSocket[1]);
 	callbackSocket[0]=-1;
 	callbackSocket[1]=-1;
-#endif
 	
 	if (buffer) {
 	   free(buffer);

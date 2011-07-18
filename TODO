@@ -1,8 +1,5 @@
 Things to do sometime:
 
-- ALSA: remove QT_THREAD ifdefs from ALSA code: a single thread makes things much
-  simpler, and the QT_THREAD parts are "untested" anyway
-
 - ALSA: Move ALSA code to a new class, e.g. SoundAlsa and only have OSS code in
   the class Sound
 

@@ -56,11 +56,7 @@ private:
 	int		  framesize;
 	short		  *buffer;
 #endif
-#ifdef QT_THREAD_SUPPORT
-	QThread   *xfer_thread;
-#else
 	int	  callbackSocket[2];
-#endif
 	int dsp;
 	QSocketNotifier* notifier;
 	PTT ptt;
