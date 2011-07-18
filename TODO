@@ -91,3 +91,7 @@ Things to do sometime:
 
 - FaxWindow: remove "int interface", split endReception and endTransmit() in
   three functions each
+
+- Spectrum: remove pixmap member; instead of drawing on the pixmap and then the
+  pixmap on the QFrame, buffer the data and directly draw on the QFrame during
+  the PaintEvent
