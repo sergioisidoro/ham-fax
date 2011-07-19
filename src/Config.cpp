@@ -17,6 +17,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Config.hpp"
+#include "config.h"
 #include <qdir.h>
 
 Config& Config::instance()
@@ -33,6 +34,10 @@ Config::Config()
 	setDefault("/hamfax/PTC/speed",38400);
 	setDefault("/hamfax/PTT/device","/dev/ttyS1");
 	setDefault("/hamfax/PTT/use",false);
+#ifdef HAVE_LIBHAMLIB
+	setDefault("/hamfax/HAMLIB/hamlib_model", 1); // dummy interface
+	setDefault("hamlib optional parameters", "");
+#endif
 	setDefault("/hamfax/APT/startLength",5);
 	setDefault("/hamfax/APT/startFrequency",300);
 	setDefault("/hamfax/APT/stopLength",5);
