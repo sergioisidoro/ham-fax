@@ -19,11 +19,11 @@
 #ifndef OPTIONSDIALOG_HPP
 #define OPTIONSDIALOG_HPP
 
-#include <qdialog.h>
-#include <qstring.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-
+#include <QComboBox>
+#include <QDialog>
+#include <QGridLayout>
+#include <QLineEdit>
+#include <QString>
 #include "config.h"
 
 class OptionsDialog : public QDialog {
@@ -31,6 +31,9 @@ class OptionsDialog : public QDialog {
 public:
 	OptionsDialog(QWidget* parent);
 private:
+	QLineEdit* addItem(const QString& name,  const QString& config);
+	QGridLayout *settings;
+	int row;
 	QLineEdit* devDSP;
 	QLineEdit* devPTT;
 	QLineEdit* devPTC;

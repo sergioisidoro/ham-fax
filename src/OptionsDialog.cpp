@@ -16,36 +16,40 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include <QLabel>
+#include <QPushButton>
 #include "Config.hpp"
 #include "OptionsDialog.hpp"
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <QBoxLayout>
-#include "config.h"
+
+QLineEdit* OptionsDialog::addItem(const QString& name, const QString& config)
+{
+
+	QLineEdit *lineEdit = new QLineEdit();
+	lineEdit->setText(Config::instance().readEntry("/hamfax/" + config));
+
+	settings->addWidget(new QLabel(name), row, 1);
+	settings->addWidget(lineEdit, row, 2);
+
+	row++;
+	return lineEdit;
+}
 
 OptionsDialog::OptionsDialog(QWidget* parent)
+                : row(1)
 {
 	Config& c=Config::instance();
 	setWindowTitle(parent->windowTitle());
 	QBoxLayout* layout=new QBoxLayout(QBoxLayout::TopToBottom, this);
 
-	QGridLayout* settings=new QGridLayout();
+	settings = new QGridLayout();
 	layout->addLayout(settings);
-	settings->addWidget(new QLabel(tr("dsp device"),this),1,1);
-	settings->addWidget(devDSP=new QLineEdit(this),1,2);
-	devDSP->setText(c.readEntry("/hamfax/sound/device"));
 
-	settings->addWidget(new QLabel(tr("ptt device"),this),2,1);
-	settings->addWidget(devPTT=new QLineEdit(this),2,2);
-	devPTT->setText(c.readEntry("/hamfax/PTT/device"));
+	devDSP = addItem(tr("dsp device"), "sound/device");
+	devPTT = addItem(tr("ptt device"), "PTT/device");
+	devPTC = addItem(tr("ptc device"), "PTC/device");
 
-	settings->addWidget(new QLabel(tr("ptc device"),this),3,1);
-	settings->addWidget(devPTC=new QLineEdit(this),3,2);
-	devPTC->setText(c.readEntry("/hamfax/PTC/device"));
-
-	settings->addWidget(new QLabel(tr("ptc speed"),this),4,1);
-	settings->addWidget(speedPTC=new QComboBox(this),4,2);
+	settings->addWidget(new QLabel(tr("ptc speed"), this),row , 1);
+	settings->addWidget(speedPTC = new QComboBox(this), row++, 2);
 	speedPTC->addItem(tr("38400bps"));
 	speedPTC->addItem(tr("57600bps"));
 	speedPTC->addItem(tr("115200bps"));
@@ -58,13 +62,9 @@ OptionsDialog::OptionsDialog(QWidget* parent)
 	speedPTC->setCurrentIndex(i);
 
 #ifdef HAVE_LIBHAMLIB
-	settings->addWidget(new QLabel(tr("hamlib model number"),this),5,1);
-	settings->addWidget(hamlibModel=new QLineEdit(this),5,2);
-	hamlibModel->setText(c.readEntry("/hamfax/HAMLIB/hamlib_model"));
-
-	settings->addWidget(new QLabel(tr("hamlib optional parameters"),this),6,1);
-	settings->addWidget(hamlibParams=new QLineEdit(this),6,2);
-	hamlibParams->setText(c.readEntry("/hamfax/HAMLIB/hamlib_parameters"));
+	hamlibModel = addItem(tr("hamlib model number"), "HAMLIB/hamlib_model");
+	hamlibParams = addItem(tr("hamlib optional parameters"),
+			       "HAMLIB/hamlib_parameters");
 #endif
 
 	QBoxLayout* buttons=new QBoxLayout(QBoxLayout::LeftToRight);
