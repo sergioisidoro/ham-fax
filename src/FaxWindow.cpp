@@ -456,6 +456,7 @@ void FaxWindow::closeEvent(QCloseEvent* close)
 		close->accept();
 		break;
 	case 1:
+		close->ignore();
 		break;
 	}
 }
