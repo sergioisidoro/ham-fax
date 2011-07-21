@@ -216,7 +216,9 @@ void FaxWindow::createToolbars(void)
 	Config& config=Config::instance();
 
 	modTool = new QToolBar(tr("modulation settings"),this);
+	modTool->setObjectName("modulation toolbar");
 	addToolBar(modTool);
+
 	modTool->addWidget(new QLabel(tr("carrier")));
 
 	QSpinBox* carrier = new QSpinBox();
@@ -276,6 +278,7 @@ void FaxWindow::createToolbars(void)
 	addToolBarBreak();
 
 	aptTool = new QToolBar(tr("apt settings"),this);
+	aptTool->setObjectName("apt toolbar");
 	addToolBar(aptTool);
 
 	aptTool->addWidget(new QLabel(tr("apt start")));
@@ -333,6 +336,7 @@ void FaxWindow::createToolbars(void)
 	addToolBarBreak();
 
 	faxTool = new QToolBar(tr("facsimile settings"),this);
+	faxTool->setObjectName("facsimile toolbar");
 	addToolBar(faxTool);
 
 	faxTool->addWidget(new QLabel(tr("lpm")));
