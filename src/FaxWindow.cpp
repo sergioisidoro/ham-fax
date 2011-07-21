@@ -360,7 +360,7 @@ void FaxWindow::createToolbars(void)
 	phaseLines->setToolTip(tr("phasing lines mark the beginning\n"
 				  "of a line and the speed (lpm)"));
 
-	invertPhase = new QComboBox(false);
+	invertPhase = new QComboBox();
 	faxTool->addWidget(invertPhase);
 	invertPhase->addItem(tr("normal"));
 	invertPhase->addItem(tr("inverted"));
@@ -372,7 +372,7 @@ void FaxWindow::createToolbars(void)
 
 	faxTool->addSeparator();
 
-	colorBox = new QComboBox(false);
+	colorBox = new QComboBox();
 	faxTool->addWidget(colorBox);
 	colorBox->addItem(tr("mono"));
 	colorBox->addItem(tr("color"));
