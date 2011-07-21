@@ -129,7 +129,9 @@ FaxWindow::FaxWindow(const QString& version)
 		faxReceiver,SLOT(correctLPM(double)));
 	
 	faxImage->create(904,904);
-	resize(600,440);
+
+	restoreGeometry(Config::instance().value("GUI/geometry").toByteArray());
+	restoreState(Config::instance().value("GUI/windowState").toByteArray());
 }
 
 void FaxWindow::createMenubar(void)
@@ -453,6 +455,8 @@ void FaxWindow::closeEvent(QCloseEvent* close)
 					tr("Really exit?"),
 					tr("&Exit"),tr("&Don't Exit"))) {
 	case 0:
+		Config::instance().setValue("GUI/geometry", saveGeometry());
+		Config::instance().setValue("GUI/windowState", saveState());
 		close->accept();
 		break;
 	case 1:
