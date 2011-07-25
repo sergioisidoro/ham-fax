@@ -3,9 +3,6 @@ Things to do sometime:
 - ALSA: Move ALSA code to a new class, e.g. SoundAlsa and only have OSS code in
   the class Sound
 
-- ALSA: remove the socket and use the snd_pcm_poll_descriptors interface
-  instead, as it is done for OSS.
-
 - hamlib: Move hamlib code to new file, e.g. PttHamlib
 
 - hamlib/PTT: Implement abstract interface for calling into e.g. PttSerial and

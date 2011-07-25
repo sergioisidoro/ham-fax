@@ -20,11 +20,11 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
-#include <sys/socket.h>
 #include <sys/soundcard.h>
 #include <unistd.h>
 #include <qtimer.h>
 #include <qthread.h>
+#include <cstring>
 #include "Config.hpp"
 #include "Error.hpp"
 
@@ -68,28 +68,66 @@ Sound::~Sound(void)
 #endif
 }
 
-
 #ifdef USE_ALSA
-/*
-   A couple of functions to turn ALSA callbacks into:
-   No QThreads: socket activity which is picked up by a QSocketNotifier
-                and triggers a read/write of audio data.
-   With QThreads: wakeup of the TransferThread to do the read/write
-*/
-void Sound::ALSA_write_callback(snd_async_handler_t *handler)
+
+void Sound::setupNotifiers(const char *method)
 {
-  Sound *sound=(Sound *)snd_async_handler_get_callback_private(handler);
-  char a=1;
-  ::write(sound->callbackSocket[0], &a, sizeof(a));
+	count_fds = snd_pcm_poll_descriptors_count(pcm);
+	if (count_fds <= 0)
+		throw Error(tr("ALSA: invalid poll descriptors count: %1").
+			    arg(snd_strerror(count_fds)));
+
+	pollfds = new pollfd[count_fds];
+	int rc = snd_pcm_poll_descriptors(pcm, pollfds, count_fds);
+	if (rc < 0)
+		throw Error(tr("ALSA: Unable to obtain poll descriptors: %1").
+			    arg(snd_strerror(rc)));
+
+	int count_ns = 0;
+
+	for (int i = 0; i < count_fds; i++) {
+		if (pollfds[i].events & POLLIN)
+			count_ns++;
+		if (pollfds[i].events & POLLOUT)
+			count_ns++;
+	}
+
+	// Add one to mark the end with a NULL pointer.
+	notifiers = new QSocketNotifier*[count_ns + 1];
+	std::memset(notifiers, 0, (count_ns + 1) * sizeof(QSocketNotifier*));
+	QSocketNotifier **notifier = notifiers;
+
+	for (int i = 0; i < count_fds; i++) {
+		if (pollfds[i].events & POLLIN) {
+			*notifier = new QSocketNotifier(pollfds[i].fd,
+							QSocketNotifier::Read,
+							this);
+		}
+		if (pollfds[i].events & POLLOUT) {
+			*notifier = new QSocketNotifier(pollfds[i].fd,
+							QSocketNotifier::Write,
+							this);
+		}
+		connect(*notifier, SIGNAL(activated(int)), this, method);
+	}
 }
 
-void Sound::ALSA_read_callback(snd_async_handler_t *handler)
+void Sound::deleteNotifiers(void)
 {
-  Sound *sound=(Sound *)snd_async_handler_get_callback_private(handler);
-  char a=1;
-  ::write(sound->callbackSocket[0], &a, sizeof(a));
+	QSocketNotifier **notifier = notifiers;
+
+	while (*notifier) {
+		(*notifier)->setEnabled(false);
+		(*notifier)->disconnect();
+		delete *notifier;
+		notifier++;
+	}
+
+	delete[] notifiers;
+	notifiers = 0;
 }
-#endif /* USE_ALSA */
+
+#endif
 
 int Sound::startOutput(void)
 {
@@ -156,19 +194,8 @@ int Sound::startOutput(void)
 
 		//buffer=(short *)malloc(frames * framesize);
 
-		// set up a unix socket with a notifier on it
-		if (::socketpair(AF_UNIX, SOCK_STREAM, 0, callbackSocket)) {
-		   // couldn't create socket pair...
-		   }
-		fcntl(callbackSocket[0], F_SETFL, O_NONBLOCK);
-		fcntl(callbackSocket[1], F_SETFL, O_NONBLOCK);
-
-		notifier=new QSocketNotifier(callbackSocket[1],QSocketNotifier::Write,this);
-		connect(notifier,SIGNAL(activated(int)),
-			this,SLOT(checkSpace(int)));
-		
-		snd_async_add_pcm_handler(&handler, pcm, ALSA_write_callback, this);
-		//snd_pcm_start(pcm);
+		setupNotifiers(SLOT(checkSpace(int)));
+		snd_pcm_start(pcm);
 	     } else {
 #endif /* USE_ALSA */
 		
@@ -281,24 +308,9 @@ int Sound::startInput(void)
 //		snd_pcm_hw_params_free(hwparams);
 //		snd_pcm_sw_params_free(swparams);
 
-		rc=snd_async_add_pcm_handler(&handler, pcm, ALSA_read_callback, this);
-		if (rc<0) {
-		   fprintf(stderr, "add_handler failed: %s\n", snd_strerror(rc));
-		   throw Error(tr(snd_strerror(rc)));
-		}
-
 		buffer=(short *)malloc(frames * framesize);
-
-		// set up a unix socket with a notifier on it
-		if (::socketpair(AF_UNIX, SOCK_STREAM, 0, callbackSocket)) {
-		   // couldn't create socket pair...
-		   }
-		fcntl(callbackSocket[1], F_SETFL, O_NONBLOCK);
 		
-		notifier=new QSocketNotifier(callbackSocket[1],QSocketNotifier::Read,this);
-		connect(notifier,SIGNAL(activated(int)),
-			this,SLOT(readALSA(int)));
-		
+		setupNotifiers(SLOT(readALSA(int)));
 		snd_pcm_start(pcm);
 		
 	     } else {
@@ -365,6 +377,11 @@ void Sound::end(void)
 	} else {
 		QTimer::singleShot(1000,this,SLOT(close()));
 	}
+
+#ifdef USE_ALSA
+	if (notifiers)
+		deleteNotifiers();
+#endif
 }
 
 void Sound::write(short* samples, int number)
@@ -380,7 +397,6 @@ void Sound::write(short* samples, int number)
 		}
 #ifdef USE_ALSA
 		if (pcm) {
-			notifier->setEnabled(false);
 			int rc=snd_pcm_writei(pcm,samples, number);
 			if (rc == -EPIPE) {
 			   // underrun occurred
@@ -394,7 +410,6 @@ void Sound::write(short* samples, int number)
 			} else if (rc != number) {
 				throw Error();
 			}
-			notifier->setEnabled(true);
 		}
 #endif /* USE_ALSA */
 	} catch(Error) {
@@ -439,25 +454,20 @@ void Sound::read(int fd)
 }
 
 #ifdef USE_ALSA
-// stub for when using non-threaded approach
 void Sound::readALSA(int fd)
 {
-  char tmp;
-  ::read(fd, &tmp, sizeof(tmp));
-  //while (readALSAdata());
-  readALSAdata();
-}
-#else /* USE_ALSA */
-// empty stub since it cannot be ifdef'ed in the hpp file
-void Sound::readALSA(int fd) { }
-#endif /* USE_ALSA */
-
-#ifdef USE_ALSA
-bool Sound::readALSAdata()
-{
 	int n;
+	unsigned short revents;
 
-	if (!pcm) return FALSE;
+	snd_pcm_poll_descriptors_revents(pcm, pollfds, count_fds, &revents);
+	if (revents & POLLERR) {
+		snd_pcm_recover(pcm, -EPIPE, 0);
+		return;
+	}
+
+	if (!(revents & POLLIN))
+		return;
+
 	n=snd_pcm_readi(pcm, buffer, frames);
 	if (n == -EPIPE) {
 	   // overrun
@@ -479,17 +489,24 @@ bool Sound::readALSAdata()
 	if(n>0 && n<=(int)frames) {
 		emit data(buffer,n);
 	}
-	return (n>0 && n<=(int)frames);;
 }
+#else /* USE_ALSA */
+// empty stub since it cannot be ifdef'ed in the hpp file
+void Sound::readALSA(int fd) { }
 #endif /* USE_ALSA */
 
 void Sound::checkSpace(int fd)
 {
 #ifdef USE_ALSA
 	if (pcm) {
-	  char tmp;
-	  ::read(callbackSocket[1], &tmp, sizeof(tmp));
-	  emit spaceLeft(snd_pcm_avail_update(pcm));
+		unsigned short revents;
+		snd_pcm_poll_descriptors_revents(pcm, pollfds, count_fds,
+						 &revents);
+
+		if (revents & POLLERR)
+			snd_pcm_recover(pcm, -EPIPE, 0);
+		else if (revents & POLLOUT)
+			  emit spaceLeft(snd_pcm_avail_update(pcm));
 	} else 
 #endif /* USE_ALSA */
 	if (dsp!=-1) {
@@ -518,11 +535,12 @@ void Sound::close(void)
 	   snd_pcm_close(pcm);
 	   pcm=NULL;
 	}
-	if (callbackSocket[0]!=-1) ::close(callbackSocket[0]);
-	if (callbackSocket[1]!=-1) ::close(callbackSocket[1]);
-	callbackSocket[0]=-1;
-	callbackSocket[1]=-1;
-	
+
+	if (pollfds) {
+		delete[] pollfds;
+		pollfds = 0;
+	}
+
 	if (buffer) {
 	   free(buffer);
 	   buffer=NULL;

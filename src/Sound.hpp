@@ -50,13 +50,24 @@ private:
 	snd_pcm_t *pcm;
 	snd_async_handler_t *handler;
 	snd_pcm_uframes_t frames;
-	static void ALSA_read_callback(snd_async_handler_t *handler);
-	static void ALSA_write_callback(snd_async_handler_t *handler);
-	bool readALSAdata();
 	int		  framesize;
 	short		  *buffer;
+	int		  count_fds;
+	struct pollfd	  *pollfds;
+
+	/**
+	 * ALSA provides file descriptors for select()/poll(). The data
+	 * direction (POLLIN, POLLOUT) does not necessarily match the intended
+	 * flow of sound data and there can be more than one file descriptor to
+	 * listen to. To make proper use of the ALSA API, allocate an array of
+	 * QSocketNotifiers here, and map each POLLIN/POLLOUT per file
+	 * descriptor to one QSocketNotifier.
+	 */
+	QSocketNotifier** notifiers;
+
+	void setupNotifiers(const char *method);
+	void deleteNotifiers(void);
 #endif
-	int	  callbackSocket[2];
 	int dsp;
 	QSocketNotifier* notifier;
 	PTT ptt;
