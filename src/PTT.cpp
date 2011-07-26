@@ -29,6 +29,13 @@
 #include <qmessagebox.h>
 #endif
 
+PTT::PTT(void)
+#ifdef HAVE_LIBHAMLIB
+	: hamlibRigPtr(NULL)
+#endif
+{
+}
+
 #ifdef HAVE_LIBHAMLIB
 static void ThrowError( const char * formatString, ... )
 {

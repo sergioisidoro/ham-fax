@@ -29,6 +29,7 @@
 
 class PTT {
 public:
+	PTT(void);
 	~PTT(void);
 	void set(void);
 	void release(void);

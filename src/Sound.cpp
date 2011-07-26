@@ -33,7 +33,7 @@ Sound::Sound(QObject* parent)
 	  use_alsa(1),
 #ifdef USE_ALSA
 	  pcm(NULL), handler(NULL), frames(512), framesize(sizeof(short)),
-	  buffer(NULL),
+	  buffer(NULL), pollfds(NULL), notifiers(NULL),
 #endif
 	  dsp(-1), notifier(0), rateF(1)
 {
