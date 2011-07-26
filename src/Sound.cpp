@@ -419,38 +419,12 @@ void Sound::write(short* samples, int number)
 
 void Sound::read(int fd)
 {
-    #define RX_BUF (BUFSIZ*8) 
-	short buffer [RX_BUF];
-    short usbuf  [RX_BUF/2];
+	short buffer[512];
+	int n;
 
-    int n=::read (fd, buffer, sizeof(buffer));
-
-    if ( n > 0 ) {
-
-        #if 0
-        int i;
-        int ns = n / 2;  // # of shorts !!!
-        int j;
-
-        //for (i=0; i < n; ++i) {
-        //    printf("i=%d, value=%d ", i, (int)buffer[j]);
-        //}
-        
-
-        // copy the even short only !!!
-        for (i = 0, j=0; i < ns; i++) {
-            if ( (i % 2) == 0 ) {
-                usbuf[j] = buffer [i];
-                //printf("i=%d, j=%d, value=%d ", i, j, (int)usbuf[j]);
-                j++;
-            }
-        }
-        //printf("READ: %d\n", i);
-        emit data ( usbuf, j);
-        #else
-        emit data ( buffer, n / sizeof(short));
-        #endif
-    }
+	n = ::read(fd, buffer, sizeof(buffer));
+	if ( n > 0 )
+		emit data(buffer, n / sizeof(short));
 }
 
 #ifdef USE_ALSA
