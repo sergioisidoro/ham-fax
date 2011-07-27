@@ -1,3 +1,9 @@
+hamfax 0.8
+ * Use Qt4 instead of Qt3
+ * Save and restore window size and state
+ * Update ALSA implementation: works now with pulseaudio
+ * Small fixes
+
 hamfax 0.7
  * French translation from Jean-michel Déchamps
  * ALSA support (patch from Mike Nix)
