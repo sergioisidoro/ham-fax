@@ -36,6 +36,7 @@
 #include "PTC.hpp"
 #include "ReceiveDialog.hpp"
 #include "Sound.hpp"
+#include "ToolTipFilter.hpp"
 #include "TransmitDialog.hpp"
 
 class FaxWindow : public QMainWindow {
@@ -76,6 +77,7 @@ private:
 	CorrectDialog* correctDialog;
 	TransmitDialog* transmitDialog;
 	ReceiveDialog* receiveDialog;
+	ToolTipFilter* toolTipFilter;
 
 	int ioc;
 	virtual void closeEvent(QCloseEvent* close);

@@ -15,6 +15,7 @@ hamfax_SOURCES = \
         src/ReceiveDialog.cpp src/ReceiveDialog.hpp\
         src/Spectrum.cpp src/Spectrum.hpp\
         src/TransmitDialog.cpp src/TransmitDialog.hpp\
+	src/ToolTipFilter.cpp src/ToolTipFilter.hpp\
         \
         src/FaxDemodulator.cpp src/FaxDemodulator.hpp\
         src/FaxModulator.cpp src/FaxModulator.hpp\
@@ -53,6 +54,7 @@ nodist_hamfax_SOURCES = \
 	src/moc_PTC.cpp\
 	src/moc_File.cpp\
 	src/moc_Sound.cpp\
+	src/moc_ToolTipFilter.cpp\
 	src/moc_PTT.cpp
 
 moc_%.cpp: %.hpp

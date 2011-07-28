@@ -57,6 +57,8 @@ FaxWindow::FaxWindow(const QString& version)
 	receiveDialog=new ReceiveDialog(this);
 	correctDialog=new CorrectDialog(this);
 
+	toolTipFilter = new ToolTipFilter(this);
+
 	createStatusBar();
 	createToolbars();
 	createMenubar();
@@ -237,6 +239,7 @@ void FaxWindow::createToolbars(void)
 	carrier->setSuffix(tr("Hz"));
 	carrier->setValue(config.readNumEntry("/hamfax/modulation/carrier"));
 	carrier->setToolTip(tr("signal carrier for FM and AM"));
+	carrier->installEventFilter(toolTipFilter);
 	connect(carrier,SIGNAL(valueChanged(int)),SLOT(setCarrier(int)));
 
 	modTool->addSeparator();
@@ -251,6 +254,7 @@ void FaxWindow::createToolbars(void)
 	deviation->setValue(config.readNumEntry("/hamfax/modulation/deviation"));
 	deviation->setSuffix(tr("Hz"));
 	deviation->setToolTip(tr("deviation for FM"));
+	deviation->installEventFilter(toolTipFilter);
 	connect(deviation,SIGNAL(valueChanged(int)),SLOT(setDeviation(int)));
 
 	modTool->addSeparator();
@@ -268,6 +272,7 @@ void FaxWindow::createToolbars(void)
 				  "a FM receiver. FM together with a\n"
 				  "USB (upper side band) transceiver is\n"
 				  "the right setting for HF"));
+	modulation->installEventFilter(toolTipFilter);
 	connect(modulation, SIGNAL(activated(int)), SLOT(setUseFM(int)));
 
 	modTool->addSeparator();
@@ -281,6 +286,7 @@ void FaxWindow::createToolbars(void)
 	filter->addItem(tr("wide"));
 	filter->setCurrentIndex(config.readNumEntry("/hamfax/modulation/filter"));
 	filter->setToolTip(tr("bandwidth of the software demodulator"));
+	filter->installEventFilter(toolTipFilter);
 	connect(filter, SIGNAL(activated(int)), SLOT(setFilter(int)));
 
 	addToolBarBreak();
@@ -302,6 +308,7 @@ void FaxWindow::createToolbars(void)
 		SLOT(setAptStartLength(int)));
 	aptStartLength->setToolTip(tr("length of the black/white pattern\n"
 				      "at the beginning of a facsimile"));
+	aptStartLength->installEventFilter(toolTipFilter);
 
 	QSpinBox* aptStartFreq = new QSpinBox();
 	aptTool->addWidget(aptStartFreq);
@@ -314,6 +321,7 @@ void FaxWindow::createToolbars(void)
 		SLOT(setAptStartFreq(int)));
 	aptStartFreq->setToolTip(tr("frequency of the black/white pattern\n"
 				    "at the beginning of a facsimile"));
+	aptStartFreq->installEventFilter(toolTipFilter);
 
 	aptTool->addSeparator();
 
@@ -328,6 +336,7 @@ void FaxWindow::createToolbars(void)
 		SLOT(setAptStopLength(int)));
 	aptStopLength->setToolTip(tr("length of the black/white pattern\n"
 				     "at the end of a facsimile"));
+	aptStopLength->installEventFilter(toolTipFilter);
 
 	QSpinBox* aptStopFreq = new QSpinBox();
 	aptTool->addWidget(aptStopFreq);
@@ -340,6 +349,7 @@ void FaxWindow::createToolbars(void)
 		SLOT(setAptStopFreq(int)));
 	aptStopFreq->setToolTip(tr("frequency of the black/white pattern\n"
 				   "at the end of a facsimile"));
+	aptStopFreq->installEventFilter(toolTipFilter);
 	
 	addToolBarBreak();
 
@@ -357,6 +367,7 @@ void FaxWindow::createToolbars(void)
 	lpm->setValue(config.readNumEntry("/hamfax/fax/LPM"));
 	connect(lpm,SIGNAL(valueChanged(int)),SLOT(setLpm(int)));
 	lpm->setToolTip(tr("lines per minute"));
+	lpm->installEventFilter(toolTipFilter);
 
 	faxTool->addSeparator();
 
@@ -371,6 +382,7 @@ void FaxWindow::createToolbars(void)
 	connect(phaseLines,SIGNAL(valueChanged(int)),SLOT(setPhaseLines(int)));
 	phaseLines->setToolTip(tr("phasing lines mark the beginning\n"
 				  "of a line and the speed (lpm)"));
+	phaseLines->installEventFilter(toolTipFilter);
 
 	invertPhase = new QComboBox();
 	faxTool->addWidget(invertPhase);
@@ -381,6 +393,7 @@ void FaxWindow::createToolbars(void)
 	connect(invertPhase,SIGNAL(activated(int)),SLOT(setPhaseInvert(int)));
 	invertPhase->setToolTip(tr("normal means 2.5% white, 95% black\n"
 				   "and again 2.5% white"));
+	invertPhase->installEventFilter(toolTipFilter);
 
 	faxTool->addSeparator();
 
@@ -393,6 +406,7 @@ void FaxWindow::createToolbars(void)
 	colorBox->setToolTip(tr("In color mode each line\n"
 				"is split in three lines:\n"
 				"red, green and blue."));
+	colorBox->installEventFilter(toolTipFilter);
 }
 
 void FaxWindow::createStatusBar()
@@ -404,6 +418,7 @@ void FaxWindow::createStatusBar()
 	statusBar()->addPermanentWidget(iocText);
 	iocText->setToolTip(tr("Index Of Cooperation:\n"
 			       "image width in pixels divided by PI"));
+	iocText->installEventFilter(toolTipFilter);
 }
 
 void FaxWindow::endTransmission(void)
