@@ -221,10 +221,10 @@ int Sound::startOutput(void)
 		notifier=new QSocketNotifier(dsp,QSocketNotifier::Write,this);
 		connect(notifier,SIGNAL(activated(int)),
 			this,SLOT(checkSpace(int)));
-		ptt.set();
 #ifdef USE_ALSA
 	     }
 #endif /* USE_ALSA */
+		ptt.set();
 	} catch(Error) {
 		close();
 		throw;
