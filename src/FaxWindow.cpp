@@ -188,19 +188,27 @@ void FaxWindow::createMenubar(void)
 	optionsMenu->addAction(tr("device settings"), this, SLOT(doOptions()));
 	optionsMenu->addAction(tr("&select font"),this,SLOT(selectFont()));
 	optionsMenu->addSeparator();
-	pttAction = optionsMenu->addAction(tr("key PTT while transmitting with DSP"),
-					   this, SLOT(changePTT()));
+
+	QAction *pttAction = optionsMenu->addAction(
+				tr("key PTT while transmitting with DSP"));
 	pttAction->setCheckable(true);
 	pttAction->setChecked(config.readBoolEntry("/hamfax/PTT/use"));
-	scrollAction = optionsMenu->addAction(tr("automatic scroll to last received line"),
-					      this, SLOT(changeScroll()));
+	connect(pttAction, SIGNAL(triggered(bool)),
+		this, SLOT(changePTT(bool)));
+
+	QAction *scrollAction = optionsMenu->addAction(
+				tr("automatic scroll to last received line"));
 	scrollAction->setCheckable(true);
 	scrollAction->setChecked(config.readBoolEntry("/hamfax/GUI/autoScroll"));
-	toolTipAction = optionsMenu->addAction(tr("show tool tips"),
-					       this, SLOT(changeToolTip()));
+	connect(scrollAction, SIGNAL(triggered(bool)),
+		this, SLOT(changeScroll(bool)));
+
+	QAction *toolTipAction = optionsMenu->addAction(tr("show tool tips"));
 	toolTipAction->setCheckable(true);
 	bool toolTipEnabled=config.readBoolEntry("/hamfax/GUI/toolTips");
 	toolTipAction->setChecked(toolTipEnabled);
+	connect(toolTipAction, SIGNAL(triggered(bool)),
+		this, SLOT(changeToolTip(bool)));
 
 	QMenu* helpMenu = new QMenu(tr("&Help"));
 	menuBar()->addSeparator();
@@ -763,25 +771,19 @@ void FaxWindow::selectFont(void)
 	}
 }
 
-void FaxWindow::changePTT(void)
+void FaxWindow::changePTT(bool b)
 {
-	bool b = !pttAction->isChecked();
-	pttAction->setChecked(b);
 	Config::instance().writeEntry("/hamfax/PTT/use", b);
 }
 
-void FaxWindow::changeScroll(void)
+void FaxWindow::changeScroll(bool b)
 {
-	bool b = !scrollAction->isChecked();
-	scrollAction->setChecked(b);
 	Config::instance().writeEntry("/hamfax/GUI/autoScroll",b);
 	faxImage->setAutoScroll(b);
 }
 
-void FaxWindow::changeToolTip(void)
+void FaxWindow::changeToolTip(bool b)
 {
-	bool b = !toolTipAction->isChecked();
-	toolTipAction->setChecked(b);
 	Config::instance().writeEntry("/hamfax/GUI/toolTips",b);
 }
 

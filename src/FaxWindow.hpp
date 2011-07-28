@@ -48,9 +48,6 @@ private:
 	QAction* slantAction;
 	QAction* colorDrawAction;
 	QAction* monoDrawAction;
-	QAction* pttAction;
-	QAction* scrollAction;
-	QAction* toolTipAction;
 
 	// tool bars
 	void createToolbars();
@@ -131,9 +128,9 @@ private slots:
 	// Options
 	void doOptions(void);
 	void selectFont(void);
-	void changePTT(void);
-	void changeScroll(void);
-	void changeToolTip(void);
+	void changePTT(bool b);
+	void changeScroll(bool b);
+	void changeToolTip(bool b);
 
 	// Help
 	void help(void);
