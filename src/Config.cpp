@@ -35,7 +35,7 @@ Config::Config()
 	setDefault("/hamfax/PTT/device","/dev/ttyS1");
 	setDefault("/hamfax/PTT/use",false);
 #ifdef HAVE_LIBHAMLIB
-	setDefault("/hamfax/HAMLIB/hamlib_model", 1); // dummy interface
+	setDefault("/hamfax/HAMLIB/hamlib_model", "");
 	setDefault("hamlib optional parameters", "");
 #endif
 	setDefault("/hamfax/APT/startLength",5);
