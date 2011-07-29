@@ -77,13 +77,9 @@ std::cout << "pttDev=" << pttDeviceString << "\n" ;
 	strncpy(hamlibRigPtr->state.rigport.pathname, pttDeviceString.c_str(), FILPATHLEN);
 
 	std::string hamlibParametersQString = c.readEntry("/hamfax/HAMLIB/hamlib_parameters").toStdString();
-	std::vector<char> hamlibParametersVector(
-			hamlibParametersQString.c_str(),
-			hamlibParametersQString.c_str() +
-			hamlibParametersQString.length() );
 
 	/// It must be terminated with a zero.
-	char *ptrParams = &hamlibParametersVector[0] ;
+	char *ptrParams = &hamlibParametersQString[0] ;
 std::cout << "pttDev=" << ptrParams << "\n" ;
 
 	/// Parses the optional hamlib arguments separated by commas.
