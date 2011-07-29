@@ -1,3 +1,8 @@
+hamfax 0.8.1
+ * Fix checkable entries in options menu
+ * Fix hamlib parameters handling
+ * Fix hamlib usage: Set PTT for ALSA and do not open hamlib in receive path
+
 hamfax 0.8
  * Use Qt4 instead of Qt3
  * Save and restore window size and state
