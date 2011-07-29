@@ -184,8 +184,9 @@ void PTT::set(void)
 void PTT::release(void)
 {
 #ifdef HAVE_LIBHAMLIB
-	if (hamlibInit()){
+	if (hamlibRigPtr) {
 		hamlibSetPtt( RIG_PTT_OFF );
+		hamlibClose();
 		return ;
 	};
 #endif
