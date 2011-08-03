@@ -6,4 +6,5 @@ Name=hamfax
 Comment=Send and receive radio facsimiles
 Comment[de]=Senden und Empfangen von Radio-Faksimile-Sendungen
 Exec=hamfax
+Icon=hamfax
 Categories=AudioVideo;Audio;HamRadio;Qt

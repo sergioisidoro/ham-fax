@@ -74,10 +74,12 @@ endif
 pkgdata_DATA = doc/hamfax.html $(TRANSLATION)
 
 EXTRA_DIST = po/hamfax_de.qm po/hamfax_de.ts po/hamfax_fr.qm po/hamfax_fr.ts \
-	     doc/hamfax.html data/hamfax.desktop
+	     doc/hamfax.html data/hamfax.desktop data/hamfax.svg
 
 applicationsdir=$(datadir)/applications
 applications_DATA=data/hamfax.desktop
+iconsdir=$(datadir)/icons
+icons_DATA=data/hamfax.svg
 dist_man_MANS=doc/hamfax.1
 
 .ts.qm:

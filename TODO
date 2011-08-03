@@ -89,3 +89,5 @@ Things to do sometime:
 - Spectrum: remove pixmap member; instead of drawing on the pixmap and then the
   pixmap on the QFrame, buffer the data and directly draw on the QFrame during
   the PaintEvent
+
+- Create better application icon.
