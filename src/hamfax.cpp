@@ -32,6 +32,7 @@
 #include <qstring.h>
 #include "Config.hpp"
 #include "FaxWindow.hpp"
+#include "log.h"
 
 /**
  * \mainpage hamfax inline documentation
@@ -84,5 +85,8 @@
 	f.fromString(config.readEntry("/hamfax/GUI/font"));
 	app.setFont(f);
 	faxWindow->show();
+
+	log_open_argv(argc, argv);
+
 	return app.exec();
 }

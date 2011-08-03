@@ -25,8 +25,8 @@
 #ifdef HAVE_LIBHAMLIB
 #include <stdarg.h>
 #include <vector>
-#include <iostream>
 #include <qmessagebox.h>
+#include "log.h"
 #endif
 
 PTT::PTT(void)
@@ -44,7 +44,7 @@ static void ThrowError( const char * formatString, ... )
 	char tmpBuffer[2048];
 	vsprintf( tmpBuffer, formatString, args );
 	va_end( args );
-	std::cerr << "Throw:" << tmpBuffer << "\n" ;
+	log_debug("Throw: %s", tmpBuffer);
 	/// tr() should be applied to the string but I prefer not to have PTT inherit from QObject.
 	throw Error( tmpBuffer );
 };
@@ -54,7 +54,7 @@ bool PTT::hamlibInit(void)
 	if (hamlibRigPtr){
 		return true;
 	}
-std::cout << this << " ctor " << __FUNCTION__ << "\n" ;
+	log_debug("%p hamlibInit", this);
 	Config& c=Config::instance();
 	std::string hamlibModelString = c.readEntry("/hamfax/HAMLIB/hamlib_model").toStdString();
 	if( hamlibModelString.empty() )
@@ -73,14 +73,13 @@ std::cout << this << " ctor " << __FUNCTION__ << "\n" ;
 	if( pttDeviceString.size() >= FILPATHLEN ) {
 		ThrowError("Hamlib: rig_init PTT device too long=%s", pttDeviceString.c_str() );
 	};
-std::cout << "pttDev=" << pttDeviceString << "\n" ;
+	log_debug("pttDev=%s", pttDeviceString.c_str());
 	strncpy(hamlibRigPtr->state.rigport.pathname, pttDeviceString.c_str(), FILPATHLEN);
 
 	std::string hamlibParametersQString = c.readEntry("/hamfax/HAMLIB/hamlib_parameters").toStdString();
 
-	/// It must be terminated with a zero.
 	char *ptrParams = &hamlibParametersQString[0] ;
-std::cout << "pttDev=" << ptrParams << "\n" ;
+	log_debug("pttDev=%s", ptrParams);
 
 	/// Parses the optional hamlib arguments separated by commas.
 	while (ptrParams && *ptrParams != '\0') {

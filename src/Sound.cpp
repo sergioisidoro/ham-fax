@@ -27,6 +27,7 @@
 #include <cstring>
 #include "Config.hpp"
 #include "Error.hpp"
+#include "log.h"
 
 Sound::Sound(QObject* parent)
 	: QObject(parent), sampleRate(8000), 
@@ -46,7 +47,7 @@ Sound::Sound(QObject* parent)
 
 		rateF = sampleRate / 8000;
 
-		printf("New sample rate: %d rate: %d\n", sampleRate, rateF);
+		log_debug("New sample rate: %d rate: %d", sampleRate, rateF);
 	}
 }
 
@@ -291,7 +292,7 @@ int Sound::startInput(void)
 		/* Write the parameters to the driver */
 		rc = snd_pcm_hw_params(pcm, hwparams);
 		if (rc < 0) {
-		   fprintf(stderr, "write parameters failed: %s\n", snd_strerror(rc));
+			log_debug("write parameters failed: %s", snd_strerror(rc));
 		   throw Error(tr(snd_strerror(rc)));
 		}
 
@@ -404,7 +405,7 @@ void Sound::write(short* samples, int number)
 			} else if (rc < 0) {
 			   // other error (recover or print it)
 			   if (snd_pcm_recover(pcm, rc, 1)) {
-			      fprintf(stderr, "ALSA write error: %s\n", snd_strerror(rc));
+			      log_debug("ALSA write error: %s", snd_strerror(rc));
 			      snd_pcm_prepare(pcm);
 			      }
 			} else if (rc != number) {
@@ -445,7 +446,7 @@ void Sound::readALSA(int fd)
 	n=snd_pcm_readi(pcm, buffer, frames);
 	if (n == -EPIPE) {
 	   // overrun
-	   fprintf(stderr, "ALSA overrun\n");
+	   log_debug("ALSA overrun");
 	   snd_pcm_recover(pcm,n,0);
 	   snd_pcm_start(pcm);
 	} else if (n == -EAGAIN) {
@@ -453,12 +454,11 @@ void Sound::readALSA(int fd)
 	} else if (n < 0) {
 	   // other error - recover or print
 	   if (snd_pcm_recover(pcm,n,0)) {
-	      fprintf(stderr, "ALSA Read error:%s\n",snd_strerror(n));
+	      log_debug("ALSA Read error:%s",snd_strerror(n));
 	      snd_pcm_prepare(pcm);
 	      }
 	   snd_pcm_start(pcm);
 	}
-//	else { fprintf(stderr,"ALSA read ok %d frames\n",n); }
 	  
 	if(n>0 && n<=(int)frames) {
 		emit data(buffer,n);
@@ -527,7 +527,7 @@ void Sound::close(void)
 
 void Sound::closeNow(void)
 {
-	fprintf(stderr,"Sound::closeNow\n");
+	log_debug("Sound::closeNow");
 	if(dsp!=-1) {
 		notifier->setEnabled(false);
 		delete notifier;

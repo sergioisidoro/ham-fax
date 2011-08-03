@@ -4,13 +4,21 @@
 hamfax \- Qt based shortwave fax
 
 .SH SYNOPSIS
-.B hamfax
+.B hamfax [ -l [ logfile ] ] [ Qt command line options ]
 
 .SH DESCRIPTION
 .B hamfax
 is a program for sending and receiving fax images. 
 This is a mode used by hamradio operators. 
 Hamfax uses a soundcard to send and receive images.
+
+.B -l
+print debug log output. When no logfile name has been specified, the output is
+printed to stderr.
+
+.B Qt command line options
+see the Qt documentation for the command line options that can be provided to
+the Qt framework.
 
 .SH SEE ALSO
 The hamfax documentation in html format in
