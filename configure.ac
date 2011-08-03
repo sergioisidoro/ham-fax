@@ -20,10 +20,11 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(hamfax, 0.8.1, cschmitt@users.sourceforge.net)
 AM_INIT_AUTOMAKE($PACKAGE_NAME, $PACKAGE_VERSION)
-AM_CONFIG_HEADER(src/config.h)
+AM_CONFIG_HEADER(include/config.h)
 
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
+AM_PROG_CC_C_O
 AC_PROG_INSTALL
 
 PKG_PROG_PKG_CONFIG

@@ -2,6 +2,8 @@
 
 AUTOMAKE_OPTIONS = check-news dist-bzip2 nostdinc subdir-objects
 
+lib_src = lib/log.c
+
 bin_PROGRAMS = hamfax
 hamfax_SOURCES = \
 	src/Config.cpp src/Config.hpp\
@@ -29,11 +31,12 @@ hamfax_SOURCES = \
         src/Error.hpp src/Error.cpp\
         src/FirFilter.hpp\
         src/LookUpTable.hpp\
-        src/hamfax.cpp
+        src/hamfax.cpp\
+	$(lib_src)
 
 LIBS+=@Qt4_LIBS@
 hamfax_CXXFLAGS = @Qt4_CFLAGS@ -Wall
-hamfax_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\"
+hamfax_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" -Iinclude/
 
 nodist_hamfax_SOURCES = \
 	src/moc_Config.cpp\
