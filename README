@@ -1,20 +1,22 @@
 hamfax
 ******
 
-Copyright (C) 2001, 2002, 2003
+Copyright (C) 2001, 2011
 Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 
-hamfax is a Qt/X11 application for sending and receiving
-facsimiles. It is licensed under the GNU General Public License (GPL),
-see the file COPYING for the complete text.
+hamfax is a Qt application for sending and receiving facsimiles. It is licensed
+under the GNU General Public License (GPL) version 2 or newer, see the file
+COPYING for the complete text.
 
-If you have questions or comments please send them to me
-(cschmitt@users.sourceforge.net). I would like to have some feedback.
+If you have questions or comments please send them to the hamfax-devel mailing
+list: https://lists.sourceforge.net/lists/listinfo/hamfax-devel
+
+Feedback and contributions are always welcome.
 
 New versions of this program and some related information can be found
 at http://hamfax.sourceforge.net/
 
-Requirements:
+Requirements
 ************
 
 Hardware:
@@ -26,14 +28,15 @@ Software:
  - Linux (Other Unix-like operating systems may work, too. Please
           report success or failures.)
  - X11
- - Qt v3.0 or newer (http://www.trolltech.com/)
+ - Qt v4 or newer (http://www.trolltech.com/)
  - Audiofile (http://www.68k.org./~michael/audiofile/)
- - Support for the Open Sound System (OSS) or something compatible
+ - Support for the Open Sound System (OSS) or ALSA
+ - optional: hamlib (http://hamlib.sourceforge.net/)
 
-Note: They are standard packages in most recent linux distributions.
+Note: They are standard packages in most recent Linux distributions.
 
-Notes / Features:
-*****************
+Notes / Features
+****************
 
  - All image formats supported by Qt can be used.
  
@@ -64,10 +67,11 @@ Notes / Features:
     - Set the parameters (note: the apt and phasing length are ignored)
     - Select the desired mode in the receive menu
 
-see file TODO for information on missing features
+See the file TODO for information on missing features and ideas for future
+development.
 
-Installation:
-*************
+Installation
+************
 
 hamfax uses automake and autoconf for the build process.  For building
 from a tar ball you don't need them, only if you grab the code from
@@ -87,15 +91,3 @@ make
 make install
 
 Check the documentation in INSTALL for questions on build options.
-
-If configure fails, check that you have the required software (see
-above) available on your system; especially Qt3 and Qt3's development
-files.  Next check where Qt's files are located and specify the
-locations.  For instance:
-
-./configure --with-Qt-dir=/usr/lib/qt3 --with-Qt-includes=/usr/lib/qt3/include
-
--- 
-73 and have fun :)
-
-Christof, DH1CS
