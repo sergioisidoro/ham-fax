@@ -1,5 +1,5 @@
 // hamfax -- an application for sending and receiving amateur radio facsimiles
-// Copyright (C) 2001,2002
+// Copyright (C) 2001, 2002, 2012
 // Christof Schmitt, DH1CS <cschmitt@users.sourceforge.net>
 //  
 // This program is free software; you can redistribute it and/or
@@ -19,10 +19,17 @@
 #include "File.hpp"
 #include "Error.hpp"
 
+static const char *last_error = NULL;
+
+static void audiofile_error(long l, const char *c)
+{
+	last_error = c;
+}
+
 File::File(QObject* parent)
 	: QObject(parent), aFile(0)
 {
-	afSetErrorHandler(0);
+	afSetErrorHandler(audiofile_error);
 	timer=new QTimer(this);
 }
 
@@ -36,7 +43,8 @@ int File::startOutput(const QString& fileName)
 	try {
 		AFfilesetup fs;
 		if((fs=afNewFileSetup())==AF_NULL_FILESETUP) {
-			throw Error(tr("could not allocate AFfilesetup"));
+			throw Error(tr("could not allocate AFfilesetup: %1").
+				    arg(last_error));
 		}
 		afInitFileFormat(fs,AF_FILE_NEXTSND);
 		afInitSampleFormat(fs,AF_DEFAULT_TRACK,AF_SAMPFMT_TWOSCOMP,16);
@@ -47,7 +55,8 @@ int File::startOutput(const QString& fileName)
 		aFile = afOpenFile(fileName.toAscii(), "w", fs);
 		if(aFile == AF_NULL_FILEHANDLE) {
 			aFile=0;
-			throw Error(tr("could not open file"));
+			throw Error(tr("could not open file: %1").
+				    arg(last_error));
 		}
 		afFreeFileSetup(fs);
 		timer->start(0);
@@ -65,7 +74,8 @@ int File::startInput(const QString& fileName)
 		AFfilesetup fs=0;
 		aFile = afOpenFile(fileName.toAscii(), "r", fs);
 		if(aFile == AF_NULL_FILEHANDLE) {
-			throw Error(tr("could not open file"));
+			throw Error(tr("could not open file: %1").
+				    arg(last_error));
 		}
 		if(afGetFrameSize(aFile,AF_DEFAULT_TRACK,0)!=2) {
 			throw Error(tr("samples size not 16 bit"));

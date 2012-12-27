@@ -355,16 +355,16 @@ Bildbreite in Pixeln dividiert durch PI</translation>
 <context>
     <name>File</name>
     <message>
-        <source>could not allocate AFfilesetup</source>
-        <translation>AFfilesetup konnte nicht angelegt werden</translation>
+        <source>could not allocate AFfilesetup: %1</source>
+        <translation>AFfilesetup konnte nicht angelegt werden: %1</translation>
     </message>
     <message>
         <source>samples size not 16 bit</source>
         <translation>Samplegröße ist nicht 16 Bit</translation>
     </message>
     <message>
-        <source>could not open file</source>
-        <translation>Datei konnte nicht geöffnet werden</translation>
+        <source>could not open file: %1</source>
+        <translation>Datei konnte nicht geöffnet werden: %1</translation>
     </message>
     <message>
         <source>sample rate is not 8000 Hz</source>

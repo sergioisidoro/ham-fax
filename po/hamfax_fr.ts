@@ -343,12 +343,12 @@ Version: %1</translation>
 <context>
     <name>File</name>
     <message>
-        <source>could not allocate AFfilesetup</source>
-        <translation>Imopssible d&apos;initialiser AFfilesetup</translation>
+        <source>could not allocate AFfilesetup: %1</source>
+        <translation>Impossible d&apos;initialiser AFfilesetup: %1</translation>
     </message>
     <message>
-        <source>could not open file</source>
-        <translation>Impossible d&apos;ouvrir le fichier</translation>
+        <source>could not open file: %1</source>
+        <translation>Impossible d&apos;ouvrir le fichier: %1</translation>
     </message>
     <message>
         <source>samples size not 16 bit</source>
