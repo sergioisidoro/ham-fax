@@ -332,7 +332,7 @@ The demodulator is taken from ACfax by Andreas Czechanowski, DL4SDC
 License: GNU General Public License
 Version: %1</source>
         <translation>hamfax est une application QT destinée à la réception et àn l&apos;emmission de fax radios et des fax météos.
-Auteur: Cristof Schmitt, DH1CS &lt;cschmitt@users.sourceforge.net&gt;
+Auteur: Christof Schmitt, DH1CS &lt;cschmitt@users.sourceforge.net&gt;
 
 Le démodulateur est tiré d&apos;ACfax par Andreas Czechanowski, DL4SDC
 License : GNU General Public License
