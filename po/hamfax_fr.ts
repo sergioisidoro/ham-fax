@@ -482,6 +482,14 @@ Version: %1</translation>
         <source>could not open ALSA:default</source>
         <translation>Impossible d&apos;ouvrir le périphérique son ALSA par défaut</translation>
     </message>
+    <message>
+        <source>ALSA: invalid poll descriptors count: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ALSA: Unable to obtain poll descriptors: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Spectrum</name>

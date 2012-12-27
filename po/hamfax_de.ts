@@ -494,6 +494,14 @@ Bildbreite in Pixeln dividiert durch PI</translation>
         <source>could not open ALSA:default</source>
         <translation>ALSA:default konnte nicht geöffnet werden.</translation>
     </message>
+    <message>
+        <source>ALSA: invalid poll descriptors count: %1</source>
+        <translation>ALSA: Ungültige Anzahl von Poll-Deskriptoren: %1</translation>
+    </message>
+    <message>
+        <source>ALSA: Unable to obtain poll descriptors: %1</source>
+        <translation>ALSA: Konnte Poll-Deskriptoren nicht bekommen: %1</translation>
+    </message>
 </context>
 <context>
     <name>Spectrum</name>
