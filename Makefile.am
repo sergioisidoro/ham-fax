@@ -34,8 +34,8 @@ hamfax_SOURCES = \
         src/hamfax.cpp\
 	$(lib_src)
 
-LIBS+=@Qt4_LIBS@
-hamfax_CXXFLAGS = @Qt4_CFLAGS@ -Wall
+LIBS+=@Qt5_LIBS@
+hamfax_CXXFLAGS = @Qt5_CFLAGS@ -Wall -fPIC
 hamfax_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" -Iinclude/
 
 nodist_hamfax_SOURCES = \
@@ -61,7 +61,7 @@ nodist_hamfax_SOURCES = \
 	src/moc_PTT.cpp
 
 moc_%.cpp: %.hpp
-	moc $< -o $@
+	@MOC@ $< -o $@
 
 if USE_LRELEASE
 
@@ -69,8 +69,8 @@ TRANSLATION = po/hamfax_de.qm po/hamfax_fr.qm
 
 # helper target for updating translation files
 lupdate: $(hamfax_SOURCES)
-	lupdate $(hamfax_SOURCES) -ts po/hamfax_de.ts
-	lupdate $(hamfax_SOURCES) -ts po/hamfax_fr.ts
+	@LUPDATE@ $(hamfax_SOURCES) -ts po/hamfax_de.ts
+	@LUPDATE@ $(hamfax_SOURCES) -ts po/hamfax_fr.ts
 
 endif
 

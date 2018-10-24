@@ -42,7 +42,7 @@ void PTC::open(void)
 {
 	try {
 		Config& c=Config::instance();
-		device=::open(c.readEntry("/hamfax/PTC/device").toAscii(),
+		device=::open(c.readEntry("/hamfax/PTC/device").toLatin1(),
 			      O_RDWR | O_NOCTTY | O_NONBLOCK);
 		if(device==-1) {
 			throw Error("could not open serial device");
@@ -73,13 +73,13 @@ void PTC::open(void)
 		}
 		write(device,"\r\r",2);
 		QString s=QString("FAX MBAUD %1\r").arg(speed);
-		write(device, s.toAscii(), s.length());
+		write(device, s.toLatin1(), s.length());
 		s=QString("FAX DEVIATION %1\r")
 			.arg(c.readNumEntry("/hamfax/modulation/deviation"));
-		write(device, s.toAscii(), s.length());
+		write(device, s.toLatin1(), s.length());
 		fm=c.readBoolEntry("/hamfax/modulation/FM");
 		s=QString("FAX %1\r").arg(fm ? "JVCOMM :hamfax FM":"AMFAX");
-		write(device, s.toAscii(), s.length());
+		write(device, s.toLatin1(), s.length());
 		usleep(300000);
 		tcflush(device,TCIOFLUSH);
 	} catch(Error) {

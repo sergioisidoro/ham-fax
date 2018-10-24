@@ -135,7 +135,7 @@ bool FaxImage::save(QString fileName)
 
 	if(n != -1) {
 		QString ext = fileName.right(fileName.length() - n - 1).toUpper();
-		if(QImageWriter::supportedImageFormats().contains(ext.toAscii()))
+		if(QImageWriter::supportedImageFormats().contains(ext.toLatin1()))
 			handler = ext;
 	}
 
@@ -143,7 +143,7 @@ bool FaxImage::save(QString fileName)
 	fileName.append(".png");
 	handler = "PNG";
 
-	return image.save(fileName,handler.toAscii());
+	return image.save(fileName,handler.toLatin1());
 }
 
 void FaxImage::scale(int width, int height)
