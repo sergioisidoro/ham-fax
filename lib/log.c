@@ -34,7 +34,7 @@ static FILE *log_file;
  * The default setting for hamlib is logging to stderr. Adjust it to our log,
  * or use /dev/null to redirect the hamlib log.
  */
-static void set_hamlib_log()
+static void set_hamlib_log(FILE *file)
 {
 	if (log_file) {
 		rig_set_debug_file(log_file);
@@ -48,7 +48,7 @@ static void set_hamlib_log()
 	}
 }
 #else
-static inline void set_hamlib_log(FILE *) { }
+static inline void set_hamlib_log(FILE *file) { }
 #endif
 
 int log_open(const char *file)
@@ -57,7 +57,7 @@ int log_open(const char *file)
 	if (!log_file)
 		return errno;
 
-	set_hamlib_log();
+	set_hamlib_log(log_file);
 	return 0;
 }
 
@@ -85,7 +85,7 @@ int log_open_argv(int argc, char **argv)
 	if (open && !filename)
 		log_file = stderr;
 
-	set_hamlib_log();
+	set_hamlib_log(log_file);
 
 	return 0;
 }
