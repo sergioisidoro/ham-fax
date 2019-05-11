@@ -355,7 +355,15 @@ int Sound::startInput(void)
 void Sound::end(void)
 {
 #ifdef USE_ALSA
-	if (pcm) snd_pcm_drain(pcm);
+	if (pcm) {
+		if (snd_pcm_stream(pcm) == SND_PCM_STREAM_CAPTURE) {
+			snd_pcm_drop(pcm);
+		}
+		else {
+			// Finish playback
+			snd_pcm_drain(pcm);
+		};
+	}
 #endif /* USE_ALSA */
 	
 	if(notifier) {
